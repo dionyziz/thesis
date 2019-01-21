@@ -1,3 +1,6 @@
+# Exclude compiled output file
+thesis.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
