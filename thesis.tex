@@ -2,6 +2,8 @@
 \usepackage{preamble}
 
 \begin{document}
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
 \begin{titlepage}
   \title{
     {Decentralized Cross-Chain Communication Mechanisms for Proof-of-Work and Proof-of-Stake Blockchains} \\
@@ -43,6 +45,7 @@ We provide numerous experiments, simulations and implementations illustrating th
 
 \newpage
 
+% TODO: list of figures, list of tables
 \input{chapters/preface.tex}
 \input{chapters/introduction.tex}
 \input{chapters/background.tex}
@@ -51,7 +54,10 @@ We provide numerous experiments, simulations and implementations illustrating th
 \input{chapters/sidechains.tex}
 % lite clients?
 \input{chapters/conclusion.tex}
+\appendix
+\input{chapters/appendix.tex}
 
 \bibliography{bibliography}
+\printindex
 
 \end{document}
