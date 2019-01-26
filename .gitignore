@@ -41,3 +41,6 @@ latex.out/
 *.ilg
 *.ind
 *.ist
+
+# macOS files
+.DS_Store
