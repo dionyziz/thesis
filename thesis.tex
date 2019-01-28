@@ -15,41 +15,7 @@
 \null
 
 \newpage
-\begin{abstract}
-Recently the blockchain space has exploded with a plethora of new
-cryptocurrencies covering a wide array of different features. Each of these
-coins functions in a stand-alone manner.  Sidechains have been envisioned as a
-mechanism to allow blockchains to communicate with one another and allow the
-transfer of value between them, but so far there have been no decentralized
-constructions.
-
-In this thesis, we put forth the first decentralized communication mechanism
-between proof-of-work and proof-of-stake blockchains, or combinations thereof.
-To construct it, we propose two new cryptographic primitives
-which function as cross-chain certificates. For proof-of-stake sources, the ATMS
-primitive (Ad-Hoc Threshold Multisignatures) allows attesting to the shifting of
-stake from epoch to epoch. For proof-of-work sources, the NIPoPoWs primitive
-(Non-Interactive Proofs of Proof-of-Work) allows compressing proof-of-work into
-succinct strings that shrink a long blockchain into a short proof. We provide
-the first ATMS and NIPoPoWs constructions. We put forth the first definition of
-sidechain security and formally prove our constructions secure. Our proofs are
-in the Backbone model for work and in the Ouroboros model for stake.
-
-Our cross-chain certificates allow the transmission of generic information
-between blockchains. Therefore, one application is the construction of clients
-with small communication complexity. These superlight clients are the first
-asymptotic improvement upon SPV. For work, our proofs are polylogarithmic in
-chain length. For stake, our proofs are linear in the epoch count. We describe
-multiple applications of our sidechains, including remote ICOs and two-way pegs.
-We demonstrate the feasibility of our schemes with experiments, simulations, and
-implementations, including measurements of security and performance metrics. We
-give concrete proposals for deployment security parameters. We have worked with
-the industry to ensure implementation in practice. Our protocols have been
-implemented and deployed in the real world proof-of-work blockchains ERGO, nimiq
-and WebDollar and the proof-of-stake blockchain Cardano.
-
-% Future work: we will consider the security of our construction in a semi-synchronous setting. We will also explore the feasibility of various sidechain topologies and the challenges occurring throughout the lifecycle of a blockchain and its sidechains, from the birth of a sidechain where honest majority is difficult to achieve, to the death of a blockchain in which its assets need to be migrated to new blockchains. Last, we will provide full production implementations for both proof-of-stake (in the Cardano cryptocurrency) and in proof-of-work (in the Ethereum, Ethereum Classic and Bitcoin Cash) settings, as well as hybrid settings.
-\end{abstract}
+\input{abstract}
 \newpage
 
 \tableofcontents
