@@ -1,4 +1,10 @@
-thesis.pdf:
+SOURCES := $(shell find . -iname '*.tex')
+
+.PHONY: all clean
+
+all: thesis.pdf
+
+thesis.pdf: $(SOURCES)
 	pdflatex thesis.tex
 	bibtex thesis
 	pdflatex thesis.tex
