@@ -1,0 +1,23 @@
+\ifuniversity
+\else
+  % Redefine page numbering so that PDF pages match printed pages
+  % This requires that the title environment does not restart page numbers
+  % See: https://tex.stackexchange.com/a/172005/59770
+  \renewenvironment{titlepage}
+   {%
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse\newpage
+    \fi
+    \thispagestyle{empty}%
+   }
+   {%
+    \if@restonecol
+      \twocolumn
+    \else
+      \newpage
+    \fi
+   }
+  \makeatother
+\fi
