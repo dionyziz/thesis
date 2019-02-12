@@ -1,0 +1,107 @@
+\chapter{Background}
+
+This chapter gives an overview of prerequisites upon which we build our
+cross-chain protocols.
+
+\section{Notation}
+We use standard mathematical notation throughout this work. We define all the
+non-standard or unusual notation in this section. We use standard cryptographic
+notation, which is also introduced here for reference. The reader unfamiliar
+with this notation can consult some reference book in the subject such
+as~\cite{katz} for a more complete treatment.
+
+\subsection{Asymptotic probabilistic security}
+The shorthand \emph{PPT} is used to denote a probabilistic polynomial-time
+Turing machine. In our cryptographic model, we will model adversaries as such.
+Our theorems are then by computational reduction, in which we show that bad
+events happen only with negligible probability.
+
+\begin{definition}[Negligible]
+  A function $f: \mathbb{N} \longrightarrow \mathbb{R}^+$ is
+  \emph{negligible} if for all $k \in \mathbb{N}$ it holds that
+  $f \in \mathcal{O}(\frac{1}{n^k})$.
+\end{definition}
+
+We will use the notation $\textsf{negl}$ to denote any negligible function.
+
+\begin{definition}[Overwhelming]
+  A function $f: \mathbb{N} \longrightarrow \mathbb{R}^+$ is
+  \emph{overwhelming} if it can be written as $f(n) = 1 - \textsf{negl}(n)$ for
+  some negligible function $\textsf{negl}$.
+\end{definition}
+
+\subsection{Sequences}
+We use $[n]$ to denote the set of natural numbers from $0$ up to and including
+$n$. We use $\epsilon$ to denote the empty sequence (or empty string). We write
+one sequence next to another to denote string concatenation. Likewise, we
+concatenate sequences to symbols by juxtaposition.
+
+Our sequences are indexed starting at $0$. Given a sequence $\chain$, we use
+$|\chain|$ to denote its length. We use Python notation to denote sequence
+addressing. For $i \in [n - 1]$, we denote the $i^\text{th}$ element from the
+beginning as $\chain[i]$. The first element of the sequence is thus $\chain[0]$.
+For $i \in [n] \setminus \{0\}$, we denote the $i^\text{th}$ element from the
+end as $\chain[-i]$. The last element of the sequence is thus $\chain[-1]$. We
+call this the \emph{tip} of the sequence. Given $i \in \mathbb{Z},
+j \in \mathbb{Z}$ with $i \leq j$, we denote $\chain[i:j]$ the subsequence from
+$i$ (inclusive) to $j$ (exclusive), that is the sequence which contains exactly
+the elements $\chain[i], \chain[i + 1], \dots, \chain[j - 1]$. If $i > j$, then
+by convention we set $\chain[i:j] = \epsilon$. We allow this \emph{range}
+notation to be used with negative indices as well, indicating ranges starting or
+ending (or both) in indices considered from the end of the sequence, hence
+allowing for $\chain[-i:j], \chain[i:-j]$, and $\chain[-i:-j]$. The left end of
+a range can omitted if it is $i = 0$. The right end of a range can be omitted if
+it is $j = |\chain|$. For example, $\chain[:-k]$ is the sequence $\chain$ with
+the last $k$ elements excluded. In this example, if $|\chain| < k$, then
+$\chain[:-k] = \epsilon$.
+
+% TODO: \chain\{A:Z\} notation (inclusive, exclusive). But how to include Z?
+\subsection{Probabilities}
+
+\section{Cryptographic Primitives}
+\subsection{Hash Functions}
+% collision resistance
+% SHA256
+\subsection{Signatures}
+% elliptic curves, secp256k1
+\subsection{Proof-of-Work}
+
+\section{The Transaction Layer}
+\subsection{Transactions}
+\subsection{The UTXO Model}
+\subsection{The Account Model}
+
+\section{Authenticated Data Structures}
+\subsection{Merkle Trees}
+\subsection{Merkle–Patricia Tries}
+
+\section{Blockchains}
+\subsection{The Consensus Problem}
+\subsection{Blocks}
+\subsection{Chains of Blocks}
+\subsection{Blockchain Addressing}
+\subsection{SPV}
+
+\section{Cryptocurrencies}
+\subsection{Bitcoin}
+\subsection{Ethereum}
+
+\section{Smart Contracts}
+\subsection{Bitcoin Script}
+\subsection{Solidity}
+
+\section{Model}
+\subsection{The Random Oracle}
+% Random Oracles as machines and as random functions
+\subsection{Blockchain Backbone}
+% Honest Majority Assumption
+% Chain Growth
+% Common Prefix
+% Chain Quality
+% The Constant Difficulty assumption and its relaxation
+\subsection{The Common Reference String}
+% Mention that CRS is not needed (due to Bootstrapping the Blockchain - Directly paper)
+\subsection{Ouroboros}
+% Epochs
+
+% SPV?
