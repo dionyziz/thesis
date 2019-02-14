@@ -58,6 +58,15 @@ it is $j = |\chain|$. For example, $\chain[:-k]$ is the sequence $\chain$ with
 the last $k$ elements excluded. In this example, if $|\chain| < k$, then
 $\chain[:-k] = \epsilon$.
 
+If an element $A$ is a member of a sequence $\chain$ we will use the notation $A
+\in \chain$ to denote this, i.e. that there exist words $w, v$ such that $\chain
+= wAv$. It will be clear from the context whether we are speaking about sequence
+or sets. Given $A, Z \in \chain$ such that $A$ and $Z$ exist only once in
+$\chain$, we denote by $\chain\{A:Z\}$ the subsequence of $\chain$ starting from
+$A$ (inclusive) and ending in $Z$ (exclusive). If $A = \chain[0]$, it can be
+omitted. Omitting $Z$ denotes the sequence starting with $A$ and containing all
+subsequent elements until the end of the sequence.
+
 % TODO: \chain\{A:Z\} notation (inclusive, exclusive). But how to include Z?
 \section{Probabilities}
 
