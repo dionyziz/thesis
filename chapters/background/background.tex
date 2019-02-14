@@ -14,12 +14,15 @@ as~\cite{katz} for a more complete treatment.
 The shorthand \emph{PPT} is used to denote a probabilistic polynomial-time
 Turing machine. In our cryptographic model, we will model adversaries as such.
 Our theorems are then by computational reduction, in which we show that bad
-events happen only with negligible probability.
+events happen only with negligible probability in some security parameter, which
+we will denote $\lambda \in \mathbb{N}$. This parameter allows all our
+cryptographic primitives to be instantiated with the required level of security;
+for example, it provides the number of bits in the output of our hash function.
 
 \begin{definition}[Negligible]
   A function $f: \mathbb{N} \longrightarrow \mathbb{R}^+$ is
   \emph{negligible} if for all $k \in \mathbb{N}$ it holds that
-  $f \in \mathcal{O}(\frac{1}{n^k})$.
+  $f \in \mathcal{O}(\frac{1}{\lambda^k})$.
 \end{definition}
 
 We will use the notation $\textsf{negl}$ to denote any negligible function.
