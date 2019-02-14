@@ -97,6 +97,35 @@ proof-of-work. Notably, similar to most blockchain protocols, we will not be
 using any encryption or decryption.
 
 \subsection{Hash Functions}
+A hash function $H^s: \{0, 1\}^* \longrightarrow \{0, 1\}^\lambda$ is a function
+parameterized by the security parameter $\lambda$ which takes any string and
+outputs a string of constant size $\lambda$. For technical reasons, the hash
+function is instantiated using a key-generating function
+$\textsf{Gen}(1^\lambda)$ which generates a hash key $s$.
+
+It is desired that it is difficult to find collisions in hash functions. This is
+formalized in the next definition.
+
+\input{./algorithms/alg.collision-resistance.tex}
+
+\begin{definition}[Collision resistance]
+  A hash function $H: \{0, 1\}^* \longrightarrow \{0, 1\}^\lambda$ is called
+  \emph{collision resistant} if for any PPT adversary $\mathcal{A}$ there
+  exists a negligible function negl such that:
+
+  \[
+    \Pr[\textsf{collision-resistance}(\mathcal{A})] \leq negl
+  \]
+\end{definition}
+
+\begin{definition}[First pre-image resistance]
+  TODO
+\end{definition}
+
+\begin{definition}[Second pre-image resistance]
+  TODO
+\end{definition}
+
 % collision resistance
 % SHA256
 \subsection{Signatures}

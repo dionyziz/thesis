@@ -1,0 +1,17 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.hash-collision} The collision-finding
+             experiment $\textsf{hash-collision}_{\mathcal{A},\Pi}$.}
+    \begin{algorithmic}[1]
+        \Function{\sf hash-collision$_{\mathcal{A},\Pi}$}{$\lambda$}
+            \Let{s}{\textsf{Gen}(1^\lambda)}
+            \Let{x_1, x_2}{\mathcal{A}(s)}
+            \If{$H^s(x_1) = H^s(x_2) \land x_1 \neq x_2$}
+                \State\Return{true}
+            \EndIf
+            \State\Return{false}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
