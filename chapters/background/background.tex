@@ -56,7 +56,26 @@ the last $k$ elements excluded. In this example, if $|\chain| < k$, then
 $\chain[:-k] = \epsilon$.
 
 % TODO: \chain\{A:Z\} notation (inclusive, exclusive). But how to include Z?
-\subsection{Probabilities}
+\section{Probabilities}
+
+\subsection{The Chernoff Bound}
+
+The following well-known theorem is due to
+Rubin~\cite{chernoff1952measure,chernoff2014career}. It will help us derive
+negligible bounds for probabilities of bad events.
+
+\begin{theorem}[Chernoff Bounds]
+  Let $\{X_i: i \in [n]\}$ be mutually independent Boolean random variables
+  such that for all $i \in [n]$ it holds that $\Pr[X_i = 1] = p$. Let
+  $X = \sum_{i = 1}^n X_i$ and $\mu = \Ex[X] = pn$. Then, for all
+  $\delta \in (0, 1]$ it holds that:
+
+  \[
+    \Pr[X \leq (1 - \delta)\mu] \leq \exp(-\frac{\delta^2\mu}{2})
+    \text{ and }
+    \Pr[X \geq (1 + \delta)\mu] \leq \exp(-\frac{\delta^2\mu}{3})
+  \]
+\end{theorem}
 
 \section{Cryptographic Primitives}
 \subsection{Hash Functions}
