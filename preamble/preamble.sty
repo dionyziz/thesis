@@ -1,10 +1,5 @@
 \ProvidesPackage{preamble}
 
-\input{preamble/macros}
-\input{preamble/environments}
-\input{preamble/hyphenation}
-\input{preamble/title}
-
 % Geometry
 \usepackage[lmargin=142pt,rmargin=95pt,tmargin=127pt,bmargin=123pt]{geometry}
 
@@ -14,6 +9,8 @@
 
 % Math packages
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{amsfonts}
 \usepackage{thm-restate}
 
@@ -28,6 +25,11 @@
 \usepackage[nottoc]{tocbibind}
 \usepackage{makeidx}
 \usepackage[titletoc]{appendix}
+
+\input{preamble/macros}
+\input{preamble/hyphenation}
+\input{preamble/title}
+\input{preamble/environments}
 
 % License
 \usepackage[type={CC},modifier={by}]
