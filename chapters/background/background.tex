@@ -46,13 +46,13 @@ beginning as $\chain[i]$. The first element of the sequence is thus $\chain[0]$.
 For $i \in [n] \setminus \{0\}$, we denote the $i^\text{th}$ element from the
 end as $\chain[-i]$. The last element of the sequence is thus $\chain[-1]$. We
 call this the \emph{tip} of the sequence. Given $i \in \mathbb{Z},
-j \in \mathbb{Z}$ with $i \leq j$, we denote $\chain[i:j]$ the subsequence from
+j \in \mathbb{Z}$ with $i \leq j$, we denote $\chain[i{:}j]$ the subsequence from
 $i$ (inclusive) to $j$ (exclusive), that is the sequence which contains exactly
 the elements $\chain[i], \chain[i + 1], \dots, \chain[j - 1]$. If $i > j$, then
-by convention we set $\chain[i:j] = \epsilon$. We allow this \emph{range}
+by convention we set $\chain[i{:}j] = \epsilon$. We allow this \emph{range}
 notation to be used with negative indices as well, indicating ranges starting or
 ending (or both) in indices considered from the end of the sequence, hence
-allowing for $\chain[-i:j], \chain[i:-j]$, and $\chain[-i:-j]$. The left end of
+allowing for $\chain[-i{:}j], \chain[i{:}-j]$, and $\chain[-i{:}-j]$. The left end of
 a range can omitted if it is $i = 0$. The right end of a range can be omitted if
 it is $j = |\chain|$. For example, $\chain[:-k]$ is the sequence $\chain$ with
 the last $k$ elements excluded. In this example, if $|\chain| < k$, then
@@ -62,7 +62,7 @@ If an element $A$ is a member of a sequence $\chain$ we will use the notation $A
 \in \chain$ to denote this, i.e. that there exist words $w, v$ such that $\chain
 = wAv$. It will be clear from the context whether we are speaking about sequence
 or sets. Given $A, Z \in \chain$ such that $A$ and $Z$ exist only once in
-$\chain$, we denote by $\chain\{A:Z\}$ the subsequence of $\chain$ starting from
+$\chain$, we denote by $\chain\{A{:}Z\}$ the subsequence of $\chain$ starting from
 $A$ (inclusive) and ending in $Z$ (exclusive). If $A = \chain[0]$, it can be
 omitted. Omitting $Z$ denotes the sequence starting with $A$ and containing all
 subsequent elements until the end of the sequence.
