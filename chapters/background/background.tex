@@ -91,10 +91,10 @@ formalized in the next definition.
 \begin{definition}[Collision resistance]
   A hash function $H: \{0, 1\}^* \longrightarrow \{0, 1\}^\lambda$ is called
   \emph{collision resistant} if for any PPT adversary $\mathcal{A}$ there
-  exists a negligible function negl such that:
+  exists a negligible function $\negl$ such that:
 
   \[
-    \Pr[\textsf{collision-resistance}(\mathcal{A})] \leq negl
+    \Pr[\textsf{hash-collision}(\mathcal{A})] \leq \negl
   \]
 \end{definition}
 
