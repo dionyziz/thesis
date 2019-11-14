@@ -33,6 +33,16 @@ We will use the notation $\textsf{negl}$ to denote any negligible function.
   some negligible function $\textsf{negl}$.
 \end{definition}
 
+We will define the \emph{security} of various cryptographic protocols by making use of challenger-adversary games in which the challenger is a known Turing Machine defined by us, but the adversary is an \emph{arbitrary} Turing Machine. Herein lies the beauty of cryptography as a science; it allows us to create protocols which we prove our protocols secure against \emph{any} adversary, even those we cannot think of. A protocol will be considered \emph{secure} if no PPT adversary can win the respective game, except with negligible probability. We call such games \emph{unwinnable}.
+
+\begin{definition}[Unwinnability]
+  A game defined by a challenger Turing Machine $M_\mathcal{A}(\lambda)$ and parameterized by an adversary $\mathcal{A}$ is \emph{unwinnable} if for all PPT adversaries $\mathcal{A}$ there exists a negligible function $\negl$ such that:
+
+  \[
+    \Pr[M_\mathcal{A}(\lambda) = 1] \leq \negl(\lambda)
+  \]
+\end{definition}
+
 \subsection{Sequences}
 We use $[n]$ to denote the set of natural numbers from $0$ up to and including
 $n$. We use $\epsilon$ to denote the empty sequence (or empty string). We write
@@ -90,12 +100,7 @@ formalized in the next definition.
 
 \begin{definition}[Collision resistance]
   A hash function $H: \{0, 1\}^* \longrightarrow \{0, 1\}^\lambda$ is called
-  \emph{collision resistant} if for any PPT adversary $\mathcal{A}$ there
-  exists a negligible function $\negl$ such that:
-
-  \[
-    \Pr[\textsf{hash-collision}(\mathcal{A})] \leq \negl
-  \]
+  \emph{collision resistant} if the game $\textsf{hash-collision}$ is unwinnable.
 \end{definition}
 
 \begin{definition}[First pre-image resistance]
