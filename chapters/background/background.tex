@@ -103,15 +103,21 @@ formalized in the next definition.
   \emph{collision resistant} if the game $\textsf{hash-collision}_\Pi$ is unwinnable.
 \end{definition}
 
-\begin{definition}[First pre-image resistance]
-  TODO
+A weaker notion of security mandates that no adversary can reverse the function (pre-image resistance) or that no adversary can find a second value giving the same output as a given random value. The two cryptographic games and definitions are as follows.
+
+\input{./algorithms/alg.preimage.tex}
+\input{./algorithms/alg.second-preimage.tex}
+
+\begin{definition}[Pre-image resistance]
+  A hash function $H: \{0, 1\}^* \longrightarrow \{0, 1\}^\lambda$ is called
+  \emph{pre-image resistant} if the game $\textsf{hash-preimage}_\Pi$ is unwinnable.
 \end{definition}
 
 \begin{definition}[Second pre-image resistance]
-  TODO
+  A hash function $H: \{0, 1\}^* \longrightarrow \{0, 1\}^\lambda$ is called
+  \emph{second pre-image resistant} if the game $\textsf{hash-second-preimage}_\Pi$ is unwinnable.
 \end{definition}
 
-% collision resistance
 % SHA256
 \subsection{Signatures}
 % elliptic curves, secp256k1

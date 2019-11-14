@@ -1,0 +1,18 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.hash-preimage} The preimage-finding
+             experiment $\textsf{hash-preimage}_{\Pi,\mathcal{A}}$.}
+    \begin{algorithmic}[1]
+        \Function{\sf hash-preimage$_{\Pi,\mathcal{A}}$}{$\lambda$}
+            \Let{s}{\textsf{Gen}(1^\lambda)}
+            \Let{x}{\{0, 1\}^\lambda}
+            \Let{x'}{\mathcal{A}(s, H^s(x))}
+            \If{$H^s(x) = H^s(x')$}
+                \State\Return{true}
+            \EndIf
+            \State\Return{false}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
