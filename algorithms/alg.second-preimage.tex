@@ -5,7 +5,7 @@
     \begin{algorithmic}[1]
         \Function{\sf hash-second-preimage$_{\Pi,\mathcal{A}}$}{$\lambda$}
             \Let{s}{\textsf{Gen}(1^\lambda)}
-            \Let{x}{\{0, 1\}^\lambda}
+            \Let{x}{\mathcal{M}}
             \Let{x'}{\mathcal{A}(s, x)}
             \If{$H^s(x) = H^s(x') \land x \neq x'$}
                 \State\Return{true}
