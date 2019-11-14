@@ -118,6 +118,8 @@ A weaker notion of security mandates that no adversary can reverse the function 
   \emph{second pre-image resistant} if the game $\textsf{hash-second-preimage}_\Pi$ is unwinnable.
 \end{definition}
 
+A hash function that is collision-resistant is also pre-image resistant; additionally, if it is pre-image resistant, then it must also be second pre-image resistant, as long as it provides sufficient compression~\cite{rogaway2004cryptographic}.
+
 % SHA256
 \subsection{Signatures}
 % elliptic curves, secp256k1
