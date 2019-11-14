@@ -1,9 +1,9 @@
 \begin{figure}[t]
 \begin{algorithm}[H]
     \caption{\label{alg.hash-collision} The collision-finding
-             experiment $\textsf{hash-collision}_{\mathcal{A},\Pi}$.}
+             experiment $\textsf{hash-collision}_{\Pi,\mathcal{A}}$.}
     \begin{algorithmic}[1]
-        \Function{\sf hash-collision$_{\mathcal{A},\Pi}$}{$\lambda$}
+        \Function{\sf hash-collision$_{\Pi,\mathcal{A}}$}{$\lambda$}
             \Let{s}{\textsf{Gen}(1^\lambda)}
             \Let{x_1, x_2}{\mathcal{A}(s)}
             \If{$H^s(x_1) = H^s(x_2) \land x_1 \neq x_2$}
