@@ -123,6 +123,14 @@ A weaker notion of security mandates that no adversary can reverse the function 
 
 A hash function that is collision-resistant is also pre-image resistant; additionally, if it is pre-image resistant, then it must also be second pre-image resistant, as long as it provides sufficient compression~\cite{rogaway2004cryptographic}.
 
+Protocols deployed in practice make use of fixed hash functions; that is, hash
+functions with a fixed security parameter and a fixed key. In Bitcoin, the hash
+function $\SHA$~\cite{sha256} is used. Its domain and range are
+$\SHA: \{0, 1\}^* \longrightarrow \{0, 1\}^{256}$. In Ethereum, the hash
+function $\keccak$~\cite{bertoni2008indifferentiability}, a variant of
+$\texttt{SHA3}$, is used. Its domain and range are $\keccak: \{0, 1\}^*
+\longrightarrow \{0, 1\}^{256}$.
+
 % SHA256
 \subsection{Signatures}
 % elliptic curves, secp256k1
