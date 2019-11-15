@@ -144,13 +144,14 @@ A hash function that is collision-resistant is also pre-image resistant; additio
 
 Protocols deployed in practice make use of fixed hash functions; that is, hash
 functions with a fixed security parameter and a fixed key. In Bitcoin, the hash
-function $\SHA$~\cite{sha256} is used. Its domain and range are
+function $\SHA$~\cite{sha256} is used for both commitments and proof-of-work.
+Its domain and range are
 $\SHA: \{0, 1\}^* \longrightarrow \{0, 1\}^{256}$. In Ethereum, the hash
 function $\keccak$~\cite{bertoni2008indifferentiability}, a variant of
-$\texttt{SHA3}$, is used. Its domain and range are $\keccak: \{0, 1\}^*
-\longrightarrow \{0, 1\}^{256}$.
+$\texttt{SHA3}$, is used for commitments. Its domain and range are $\keccak: \{0, 1\}^*
+\longrightarrow \{0, 1\}^{256}$. The function used for proof-of-work is a
+variant of this.
 
-% SHA256
 \subsection{Signatures}
 % elliptic curves, secp256k1
 \subsection{Proof-of-Work}
