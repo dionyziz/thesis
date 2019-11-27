@@ -1,0 +1,17 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.forgery} The forgery
+             experiment $\textsf{sig-forge}_{\Pi,\mathcal{A}}$.}
+    \begin{algorithmic}[1]
+        \Function{\sf sig-forge$_{\Pi,\mathcal{A}}$}{$\lambda$}
+            \Let{(pk, sk)}{\textsf{Gen}(1^\lambda)}
+            \Let{(m, \sigma)}{\mathcal{A}^{Sig_{sk}}(pk)}
+            \If{$Ver(pk, m, \sigma)$}
+                \State\Return{true}
+            \EndIf
+            \State\Return{false}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
