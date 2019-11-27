@@ -33,12 +33,12 @@ for example, it provides the number of bits in the output of our hash function.
   $f \in \mathcal{O}(\frac{1}{\lambda^k})$.
 \end{definition}
 
-We will use the notation $\textsf{negl}$ to denote any negligible function.
+We will use the notation $\negl$ to denote any negligible function.
 
 \begin{definition}[Overwhelming]
   A function $f: \mathbb{N} \longrightarrow \mathbb{R}^+$ is
-  \emph{overwhelming} if it can be written as $f(n) = 1 - \textsf{negl}(n)$ for
-  some negligible function $\textsf{negl}$.
+  \emph{overwhelming} if it can be written as $f(n) = 1 - \negl(n)$ for
+  some negligible function $\negl$.
 \end{definition}
 
 We will define the \emph{security} of various cryptographic protocols by making use of challenger-adversary games in which the challenger is a known Turing Machine defined by us, but the adversary is an \emph{arbitrary} Turing Machine. Herein lies the beauty of cryptography as a science; it allows us to create protocols which we prove our protocols secure against \emph{any} adversary, even those we cannot think of. A protocol will be considered \emph{secure} if no PPT adversary can win the respective game, except with negligible probability.
