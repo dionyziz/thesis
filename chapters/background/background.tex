@@ -17,11 +17,11 @@ As a shorthand for probabilities and to avoid excessive subscripting, we will wr
 \subsection{Asymptotic probabilistic security}
 Following the extended Church--Turing definition, we consider the class of
 problems in $\textsc{P}$ to be \emph{easy}, and we call \emph{hard} those which
-are not easy.
-
+are not easy~\cite{sipser}. It is assumed that all honest parties and the adversary have polynomial available time. Both the honest parties and the adversary have access to true randomness and are thus probabilistic Turing Machines.
 The shorthand \emph{PPT} is used to denote a probabilistic polynomial-time
-Turing machine. In our cryptographic model, we will model adversaries as such.
-Our theorems are then by computational reduction, in which we show that bad
+Turing machine.
+
+Our theorems are by computational reduction, in which we show that bad
 events happen only with negligible probability in some security parameter, which
 we will denote $\lambda \in \mathbb{N}$. This parameter allows all our
 cryptographic primitives to be instantiated with the required level of security;
