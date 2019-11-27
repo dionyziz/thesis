@@ -10,6 +10,10 @@ notation, which is also introduced here for reference. The reader unfamiliar
 with this notation can consult some reference book in the subject such
 as~\cite{katz} for a more complete treatment.
 
+Given a distribution $\mathcal{M}$, we denote by $m \gets \mathcal{M}$ the experiment by which the random variable $m$ is chosen according to the distribution $\mathcal{M}$. Given a finite set $M$, we use $\uniform(M)$ to denote the uniform distribution which assigns probability $1 / 2^{|M|}$ to each element $m \in M$. We will use $m \getsrandomly M$ to denote the experiment in which $m$ is sampled from $\uniform(M)$.
+
+As a shorthand for probabilities and to avoid excessive subscripting, we will write the experimental set up (such as the sampling of random variables) within the $\Pr[\cdot]$ prior to the predicate of interest and separated by $;\,$. For example, $\Pr[x \gets \mathcal{D}_1, y \gets \mathcal{D}_2; x + y = 1]$ denotes the experiment of independently sampling two random variables, $x$ and $y$, from the distributions $\mathcal{D}_1$ and $\mathcal{D}_2$ respectively, summing their values, and observing whether their sum is equal to $1$.
+
 \subsection{Asymptotic probabilistic security}
 Following the extended Church--Turing definition, we consider the class of
 problems in $\textsc{P}$ to be \emph{easy}, and we call \emph{hard} those which
