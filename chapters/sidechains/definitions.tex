@@ -1,0 +1,403 @@
+\section{Defining Security of Pegged Ledgers}
+\label{sec:definition}
+
+\todo{Clean up this section}
+
+In this section we give the first formal definition of security desiderata for
+a system of pegged ledgers (popularly often called sidechains).
+We start by conveying its intuition and then proceed to the formal treatment.
+
+We consider a setting where a set of parties run a protocol maintaining $n$
+ledgers $\Ledger_1,\Ledger_2, \ldots,\Ledger_n$, each of the ledgers potentially
+carrying many different assets. (This protocol might of course be a combination
+of subprotocols for each of the ledgers.)
+%At any given time $t$, in the
+%view of any given party $\party$, a ledger $\Ledger_i$ will is at state
+%$\LState_i^{\party}[t]$.
+For each $i\in[n]$, we denote by~$\Assum_i$ the security assumption
+required by $\Ledger_i$: For example, $\Assum_i$ may denote that
+there has never been a majority of hashing power (or stake in a particular
+asset, on this ledger or elsewhere) under the control of the adversary; that a
+particular entity (in case of a centralized ledger) was not corrupted; and so
+on.  We assume that all $\Assum_i$ are \emph{monotone} in the sense that once
+violated, they cannot become true again. Formally, $\Assum_i$ is a
+sequence of events $\Assum_i[t]$ for each time slot $t$ that satisfy
+$\lnot\Assum_i[t] \Rightarrow \lnot\Assum_i[t+1]$ for all $t$.
+%monotone
+%predicate (which can only go from \textit{true} to \textit{false}) evaluated on
+%the whole execution of the respective ledger protocol.
+%We denote by $\Secure$ the set $\setd{i}{\Assum_i\text{ is satisfied}}$ of indices
+%of currently uncompromised ledgers.
+
+There is an a priori unlimited number of (types of) assets, each asset
+representing e.g. a different cryptocurrency.
+For simplicity we assume that assets of the same type
+are fungible, but our treatment easily covers also non-fungible assets.
+We will allow specific rules of behavior for each asset (called \emph{validity
+languages}), and each asset behaves
+according to these rules on each of the ledgers where it is present.
+
+We will fix an operator $\merge(\cdot)$ that
+ merges a set of ledger states
+$\mathcal{L}=\{\LState_1,\LState_2,\ldots,\LState_n\}$ into a single ledger
+state  denoted by $\merge(\mathcal{L})$. We will discuss concrete instantiations
+of $\merge(\cdot)$ later, for now simply assume that some canonical way of
+merging all ledger states into one is given.
+
+Informally, at any point $t$ during the execution, our security definition only
+provides guarantees to the  subset $\Secure$ of ledgers that have their security
+assumptions $\Assum_i[t]$ satisfied (and hence are all considered uncorrupted). We
+require that:
+  \begin{itemize}
+    \item[-] each ledger in $\Secure$ individually maintains both persistence and liveness;
+    \item[-] for each asset~$\Asset$, when looking at the sequence of all
+      $\Asset$-trans\-actions $\sigma$ that occurred on the ledgers in $\Secure$
+      (sequentialized via the $\merge$ operator), there must exist a
+      hypothetical sequence of $\Asset$-transactions $\tau$ that could have happened on the
+      compromised ledgers, such that the merge of $\sigma$ and $\tau$ would be
+      valid according to the validity language of $\Asset$.
+  \end{itemize}
+We now proceed to formalize the above intuition.
+
+\begin{definition}[Assets, syntactically valid transactions]
+  For an asset $\Asset$, we denote by~$\Trans_{\Asset}$ the \emph{valid
+  transaction set of $\Asset$}, i.e., the set of all syntactically
+  valid transactions involving $\Asset$.
+  %We assume that $\Trans_{\Asset}$ is finite.
+  For a ledger $\Ledger$ we denote by $\Trans_\Ledger$ the set of transactions
+  that can be included into~$\Ledger$. For notational convenience, we define
+  $\Trans_{\Asset,\Ledger}\defeq\Trans_{\Asset}\cap\Trans_\Ledger$.
+  Let $\Assets(\Ledger)$  denote the set of all assets that are supported by
+  $\Ledger$.
+  Formally,
+  $\Assets(\Ledger)
+  \defeq
+  \setd
+    {\Asset}
+    {\Trans_{\Asset,\Ledger}\neq\emptyset}$.
+\end{definition}
+
+
+%We will write $L \subseteq \Trans_\Ledger$ to indicate that $L$ is a sequence of
+%transactions such that for all $\tx$ in the sequence $L$ we have that
+%$\tx \in \Trans_\Ledger$.
+% PG: if L is a sequence, the correct notation would be $L\in\Trans_\Ledger^*$,
+% but I think this is clear and does not have to be spelled out.
+
+We assume that each transaction pertains to a particular asset
+and belongs to a particular ledger, i.e., for distinct
+$\Asset_1\neq\Asset_2$ and
+$\Ledger_1\neq\Ledger_2$, we have that
+$\Trans_{\Asset_1}\cap\Trans_{\Asset_2}=\emptyset$ and
+$\Trans_{\Ledger_1}\cap\Trans_{\Ledger_2}=\emptyset$.
+However, our treatment can be easily generalized to alleviate this restriction.
+
+We now generically characterize the \emph{validity} of a sequence of
+transactions involving a particular asset. This is captured individually for each
+asset via a notion of an asset's \emph{validity language},
+which is simply  a set of words over the alphabet of this asset's transactions.
+The asset's validity language is meant to capture how the asset is mandated to
+behave in the system.
+Let $\eps$ denote the empty sequence and $\concat$ represent
+concatenation.
+
+\begin{definition}[Asset validity language]
+  For an asset $\Asset$,
+  the \emph{asset validity language of $\Asset$}
+  is any language
+  $\ValLang_\Asset\subseteq\Trans_{\Asset}^*$
+  that satisfies the following properties:
+  \begin{enumerate}
+    \item \textbf{Base.}
+      $\eps\in\ValLang_\Asset$.
+    \item \textbf{Monotonicity.}
+      For any $w,w'\in\Trans_{\Asset}^*$ we have
+      $
+      w\not\in\ValLang_\Asset
+      \Rightarrow
+      w\concat w'\not\in\ValLang_\Asset
+      $.
+    \item \textbf{Uniqueness of transactions.}
+      Words from $\ValLang_{\Asset}$ never contain the same transaction twice:
+      for any $\tx\in\Trans_{\Asset}$ and any $w_1,w_2,w_3\in\Trans_{\Asset}^*$ we
+      have $w_1\concat\tx\concat w_2\concat\tx\concat w_3\not\in\ValLang_{\Asset}$.
+  \end{enumerate}
+\end{definition}
+
+The first condition in the definition above is trivial, the second one mandates
+the natural property that if a sequence of transactions is invalid, it cannot
+become valid again by adding further transactions. Finally, the third condition
+reflects a natural ``uniqueness'' property of transactions in existing
+implementations. While not necessary for our treatment, it allows for some
+simplifications.
+
+The following definition allows us to focus on a particular asset or ledger
+within a sequence of transactions.
+
+\begin{definition}[Ledger state projection]
+  Given a ledger state $\LState$, we call a
+  \emph{projection of~$\LState$ with respect to a set $\set{X}$}
+  (and denote by $\proj_{\set{X}}(\LState)$) the ledger state that is obtained from
+  $\LState$ by removing all transactions not in $\set{X}$. To simplify
+  notation, we will use $\proj_\Asset$ and $\proj_{\I}$ as a shorthand for
+  $\proj_{\Trans_\Asset}$ and $\proj_{\bigcup_{i\in\I} \Trans_{\Ledger_i}}$,
+  denoting the projection of the transactions of a ledger state with respect to
+  particular asset $\Asset$ or a particular set of individual ledger
+  indices.
+  Naturally, for a language $\ValLang$ we define the
+  \emph{projected language}
+  $\proj_\set{X}(\ValLang):=\setd{\proj_\set{X}(w)}{w\in\ValLang}$, which
+  contains all the sequences of transactions from the original language,
+  each of them projected with respect to $\set{X}$.
+\end{definition}
+
+The concept of {\em effect transactions} below captures ledger interoperability
+at the syntactic level.
+
+\begin{definition}[Effect Transactions]
+\label{def:effect}
+For two ledgers $\Ledger$ and $\Ledger'$, the \emph{effect mapping} is a
+mapping of the form
+$
+  \eff{\Ledger}{\Ledger'}
+\colon
+\Trans_{\Ledger}
+\to
+\left(
+  \Trans_{\Ledger'}
+  \cup
+  \{\noeffect\}
+\right)
+%\; .
+$.
+  A transaction $ \tx'=\eff{\Ledger}{\Ledger'}(\tx) \neq \noeffect$ is called the \emph{effect
+transaction} of the transaction $\tx$.
+\end{definition}
+
+Intuitively, for any transaction $\tx\in\Trans_{\Ledger}$, the corresponding transaction
+$\eff{\Ledger}{\Ledger'}(\tx) \in \Trans_{\Ledger'}\cup\{\noeffect\}$ identifies
+the necessary effect  on ledger $\Ledger'$ of the  event of the inclusion of the transaction $\tx$ into the ledger
+$\Ledger$. With foresight, in an implementation of a  system of ledgers where a ``pegging''   exists, the transaction
+$\eff{\Ledger}{\Ledger'}(\tx)$ has to be eventually valid and includable in
+$\Ledger'$ in response to the inclusion of $\tx$ in $\Ledger$.
+Additionally, throughout the paper we assume that an effect transaction is
+always clearly identifiable as such, and its corresponding ``sending''
+transaction can be derived from it; our instantiation does have this property.
+
+
+We use a special symbol $\noeffect$ to indicate that the transaction $\tx$ does
+not necessitate any action on $\Ledger'$ (this will be the case for most
+transactions).
+We will now be interested mostly in transactions that \emph{do}
+require an action on the other ledger.
+
+\begin{definition}[Cross-Ledger Transfers]
+For two ledgers $\Ledger$ and $\Ledger'$ and an effect mapping
+$\eff{\Ledger}{\Ledger'}(\cdot)$, we refer to a transaction in
+$\Trans_\Ledger$ that requires some effect on $\Ledger'$ as
+a \emph{$(\Ledger,\Ledger')$-cross-ledger transfer
+transaction} (or \emph{cross-ledger transfer} for short).
+The set of all cross-ledger transfers is denoted by
+  $\Trans_{\Ledger,\Ledger'}^\cl\subseteq\Trans_\Ledger$,
+formally
+$
+  \Trans_{\Ledger,\Ledger'}^\cl
+\defeq
+\setd
+  {\tx \in \Trans_\Ledger}
+  {\eff{\Ledger}{\Ledger'}(\tx)\neq\noeffect}
+%\; .
+$.
+\end{definition}
+
+%\medskip
+Given ledger states $\LState_1, \LState_2, \ldots,\LState_n$, we need to
+consider a joint ordered view of the transactions in all these ledgers. This is provided
+by the  $\merge$ operator. Intuitively, $\merge$  allows us to
+create a combined view of multiple ledgers, putting all of the transactions
+across multiple ledgers into a linear ordering.
+%The $\merge$ function is formally defined later in this section.
+%We are now ready to formally describe the requirements of the $\merge$ function.
+We expect that even if certain ledgers are missing from its input,
+$\merge$ is still able to produce a global ordering for the remaining ledgers.
+With foresight, this ability of the $\merge$ operator will enable us to reason
+about the
+%firewall property
+% PG: undefined yet
+situation
+when some ledgers fail: In that case, the respective
+inputs to the $\merge$ function will be missing. The $\merge$ function
+definition below depends on the $\effect$ mappings, we keep this dependence
+implicit for simpler notation.
+
+\begin{definition}[Merging ledger states]
+  \label{def:merge}
+  The $\merge(\cdot)$ function is any mapping taking a
+  subset of ledger states $\mathcal{L} \subseteq
+  \{\LState_1,\LState_2,\ldots,\LState_n\}$
+  and producing a ledger state $\merge(\mathcal{L})$
+  such that:
+  \begin{enumerate}
+    \item \textbf{Partitioning.}
+      The ledger states in $\mathcal{L}$ are disjoint subsequences of
+      $\merge(\mathcal{L})$ that cover the whole sequence $\merge(\mathcal{L})$.
+    \item \textbf{Topological soundness.}
+      %For any set of $n$ ledger states $\mathcal{L} = \{\LState_1,
+      %\LState_2,\ldots\}$ and the effect mappings
+      For any $i\neq j$ such that $\LState_i,\LState_j\in\mathcal{L}$
+      and any two transactions $\tx \in
+      \LState_i$ and $\tx' \in \LState_j$,
+      if $\tx' = \eff{\Ledger_i}{\Ledger_j}(\tx)$
+      then $\tx$ precedes $\tx'$ in $\merge(\mathcal{L})$.
+  \end{enumerate}
+\end{definition}
+
+%From the above definition, it follows that, if for some ledger state
+%$\LState_i$, $\tx_1$ precedes $\tx_2$ in $\LState_i$, then $\tx_1$ precedes
+%$\tx_2$ in $\merge(\mathcal{L})$.
+
+%In our treatment of pegged ledgers we will consider protocols that have certain
+%common characteristics. We call any such protocol a {\em system-of-ledgers
+%protocol}. Such a protocol $\Pi$ for a system of ledgers
+%$\{\Ledger_i\}_{i\in[n]}$ is initialized among $n$ parties with some initial
+%stake, and allows the environment (which is
+%adversarial) to ask the issuance of transactions that can move state among parties. The
+%standard assumptions on stake distribution apply, i.e., \emph{honest majority} and
+%a \emph{finite bound} on stake redistribution. For a detailed treatment of these assumptions
+%and their necessity, see~\cite{C:KRDO17}.
+
+%In our construction, in the interest of space and readability, we will skip some
+%of the formalities in the exact messages exchanged between the environment and
+%the honest parties and imply them in our protocol description. This will be in
+%understanding that the protocol can always be expressed with exact messages to
+%the lowest level of Interactive Turing Machines as done in,
+%e.g.,~\cite{EC:GarKiaLeo15}.
+
+We will require that our validity languages are \emph{correct} in the following
+sense.
+
+\begin{definition}[Correctness of $\ValLang_{\Asset}$]
+  \label{def:correctness}
+  A validity language $\ValLang_{\Asset}$ is \emph{correct}
+  with respect to
+      a mapping $\merge\left(\cdot\right)$,
+if
+  for any ledger states
+  $\mathcal{L}\defeq(\LState_1, \ldots, \LState_n)$
+  such that
+  $
+    \proj_{\Asset}\left(
+      \merge\left(
+       \mathcal{L}
+      \right)
+    \right)
+    \in \ValLang_{\Asset}
+  $,
+indices $i \neq j$,
+and any cross-ledger transfer %transaction
+$\tx\in\LState_i\cap\Trans_{\Ledger_i,\Ledger_j}^\cl$
+such that  %its effect transaction
+  $\eff{\Ledger_i}{\Ledger_j}(\tx)=\tx'\neq\noeffect$
+  is not in $\LState_j$,
+we have
+$$
+  \proj_{\Asset}\left(
+    \merge\left(
+      \LState_1, \ldots, \LState_i, \ldots,
+      %\LState_{j-1},
+      \LState_j\concat\tx',
+      %\LState_{j+1},
+      \ldots, \LState_n
+      \right)
+  \right)
+\in \ValLang_{\Asset}
+\; .
+$$
+\end{definition}
+
+The above definition makes sure that if a cross-ledger transfer of an asset
+$\Asset$  is included into
+some ledger $\Ledger_i$ and mandates an effect transaction on $\Ledger_j$, then
+the inclusion of this effect transaction will be consistent with
+$\ValLang_\Asset$. Note that this does not yet guarantee that the effect
+transaction will indeed be included into $\Ledger_j$, this will be provided by
+the liveness of $\Ledger_j$ required below.
+
+%The above definition captures the fact that the protocol~$\Pi$
+%advances the ledgers so that an effect transaction will always be permitted in the view
+%of a single party that has adopted the corresponding ledgers.
+%The security of the pegging construction is captured by the following
+%definition.
+
+We are now ready to give our main security definition.
+In what follows, we call a \emph{system-of-ledgers protocol} any protocol run by a
+(possibly dynamically changing) set of parties that maintains an evolving state
+of $n$ ledgers $\{\Ledger_i\}_{i\in[n]}$.
+
+\begin{definition}[Pegging security]
+  \label{def:security}
+  A system-of-ledgers protocol~$\Pi$ for $\{\Ledger_i\}_{i\in[n]}$ is
+  \emph{pegging-secure} with liveness parameter $u\in\N$
+  with respect to:
+  \begin{itemize}
+    \item[-]
+      a set of assumptions $\Assum_i$ for ledgers $\{\Ledger_i\}_{i\in[n]}$,
+    \item[-]
+      a merge mapping $\merge\left(\cdot\right)$,
+    \item[-]
+      validity languages $\ValLang_\Asset$ for each %asset
+      $\Asset\in\bigcup_{i\in[n]}\Assets(\Ledger_i)$,
+  \end{itemize}
+  if for all PPT adversaries, all slots $t$
+  and for
+  $
+  \Secure_t\defeq\setd{i}{\Assum_i[t] \text{ holds}}
+  %\; ,
+  $
+  we have that except with negligible probability in the security parameter:
+  \begin{description}
+    \item \textbf{Ledger persistence:}
+      For each $i\in\Secure_t$, $\Ledger_i$ satisfies the persistence property. %parametrized by $k\in\N$.
+    \item \textbf{Ledger liveness:}
+      For each $i\in\Secure_t$, $\Ledger_i$ satisfies the liveness property para\-metrized by $u$.
+    \item \textbf{Firewall:}
+      For all $\Asset\in\bigcup_{i\in\Secure_t}\Assets(\Ledger_i)$,
+      %we have:
+      $$
+      \proj_{\Asset}\left(
+        \merge\left(
+          \setd
+            {\Ledger_i^{\cup}[t]}
+            {i\in\Secure_t}
+        \right)
+      \right)
+      \in
+      \proj_{\Secure_t}(\ValLang_{\Asset})
+      \; .
+      $$
+  \end{description}
+\end{definition}
+
+%The \textit{firewall property} in the above security definition captures the
+%fact that assets remain valid after $\merge(\cdot)$.
+%The reason why this
+%property really does capture firewalling is as follows.
+Intuitively, the firewall property above gives the following guarantee:
+If the security
+assumption of a particular sidechain has been violated, we demand that the
+sequence of transactions $\sigma$ that appears in the still uncompromised
+ledgers is a valid projection of some word from the asset validity language onto
+these ledgers. This means that there exists a sequence of transactions $\tau$
+that \emph{could have happened} on the compromised ledgers, such that it would
+``justify'' the current state of the uncompromised ledgers as a valid state.  Of
+course, we don't know whether this sequence $\tau$ actually occurred on the
+compromised ledger, however, given that this ledger itself no longer provides
+any reliable state, this is the best guarantee we can still offer to the
+uncompromised ledgers.
+
+Looking ahead, when we define a particular validity language for our concrete,
+fungible, constant-supply asset, we will see that this property will translate
+into the mainchain maintaining ``limited liability'' towards the sidechain: the
+amount of money transferred back from the sidechain can never exceed the amount
+of money that was previously moved towards the sidechain, because no plausible
+history of sidechain transactions can exist that would justify such a transfer.
