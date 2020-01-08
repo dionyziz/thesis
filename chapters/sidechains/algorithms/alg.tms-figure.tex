@@ -3,37 +3,14 @@
     The game is parameterized by a security parameter $\kappa$ and an
     integer $p(\kappa)$.
     \caption{\label{alg.tms-game}The game $\textsf{ATMS}_{\Pi,\mathcal{A}}$}
+
     \begin{algorithmic}[1]
       \import{chapters/sidechains/}{algorithms/alg.tms-game.tex}
+      \import{chapters/sidechains/}{algorithms/alg.tms-oracle-gen.tex}
+      \import{chapters/sidechains/}{algorithms/alg.tms-oracle-sig.tex}
+      \import{chapters/sidechains}{algorithms/alg.tms-oracle-cor.tex}
     \end{algorithmic}
   \end{algorithm}
-  \vskip -15mm
-  \begin{minipage}[t]{0.3\textwidth}
-    \begin{algorithm}[H]
-      \caption{\label{alg.tms-oracle-gen} The oracle $\mathcal{O}^\textsf{gen}$}
-      \begin{algorithmic}[1]
-        \import{chapters/sidechains/}{algorithms/alg.tms-oracle-gen.tex}
-      \end{algorithmic}
-    \end{algorithm}
-  \end{minipage}
-  \hskip 0.03\textwidth
-  \begin{minipage}[t]{0.3\textwidth}
-    \begin{algorithm}[H]
-      \caption{\label{alg.tms-oracle-sig} The oracle $\mathcal{O}^\textsf{sig}$}
-      \begin{algorithmic}[1]
-        \import{chapters/sidechains/}{algorithms/alg.tms-oracle-sig.tex}
-      \end{algorithmic}
-    \end{algorithm}
-  \end{minipage}
-  \hskip 0.03\textwidth
-  \begin{minipage}[t]{0.3\textwidth}
-    \begin{algorithm}[H]
-      \caption{\label{alg.tms-oracle-cor} The oracle $\mathcal{O}^\textsf{cor}$}
-      \begin{algorithmic}[1]
-        \import{chapters/sidechains}{algorithms/alg.tms-oracle-cor.tex}
-      \end{algorithmic}
-    \end{algorithm}
-  \end{minipage}
   \caption{The ATMS security game $\textsf{ATMS}_{\Pi,\mathcal{A}}$.}
   \label{fig:ATMS-game}
 \end{figure}
