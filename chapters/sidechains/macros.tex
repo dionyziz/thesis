@@ -1,13 +1,13 @@
-% \newcommand{\msg}[2]{%
-  % \ifthenelse
-    % {\isempty{#1}}
-    % {\ensuremath{(#2)}}
-    % {\ifthenelse
-      % {\isempty{#2}}
-      % {\ensuremath{(\mathsf{#1})}}
-      % {\ensuremath{(\mathsf{#1}, #2)}}
-    % }
-% }
+\newcommand{\msg}[2]{%
+  \ifthenelse
+    {\isempty{#1}}
+    {\ensuremath{(#2)}}
+    {\ifthenelse
+      {\isempty{#2}}
+      {\ensuremath{(\mathsf{#1})}}
+      {\ensuremath{(\mathsf{#1}, #2)}}
+    }
+}
 %
 % %----- Comments ----------------------------------------------------------------
 % \RequirePackage{totcount}
@@ -123,27 +123,27 @@
 %
 % \newcommand{\on}{\textsc{on}}
 % \newcommand{\off}{\textsc{off}}
-% \newcommand{\bin}{\{0,1\}}
+\newcommand{\bin}{\{0,1\}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\I}{\mathcal{I}}
 \newcommand{\Secure}{\mathcal{S}}
 \newcommand{\Trans}{\mathcal{T}}
 \newcommand{\tx}{\mathsf{tx}}
-% \newcommand{\txid}{\mathsf{txid}}
-% \newcommand{\llid}{\mathsf{lid}}
-% \newcommand{\type}{\mathsf{type}}
-% \newcommand{\send}{\mathsf{send}}
-% \newcommand{\txsend}{\tx_{\send}}
-% \newcommand{\txrec}{\tx_{\rec}}
-% \newcommand{\seen}{\mathsf{seen}}
-% \newcommand{\balances}{\mathsf{bal}}
-% \newcommand{\rec}{\mathsf{rec}}
+\newcommand{\txid}{\mathsf{txid}}
+\newcommand{\llid}{\mathsf{lid}}
+\newcommand{\type}{\mathsf{type}}
+\newcommand{\send}{\mathsf{send}}
+\newcommand{\txsend}{\tx_{\send}}
+\newcommand{\txrec}{\tx_{\rec}}
+\newcommand{\seen}{\mathsf{seen}}
+\newcommand{\balances}{\mathsf{bal}}
+\newcommand{\rec}{\mathsf{rec}}
 \newcommand{\cl}{{\mathsf{cl}}}
 \newcommand{\Chain}{\mathsf{C}}
-% \newcommand{\ChainSC}{\mathsf{C_{\SC}}}
-% \newcommand{\ChainMC}{\mathsf{C_{\MC}}}
-% \newcommand{\Chainsc}{\mathsf{C_{sc}}}
-% \newcommand{\Chainmc}{\mathsf{C_{mc}}}
+\newcommand{\ChainSC}{\mathsf{C_{\SC}}}
+\newcommand{\ChainMC}{\mathsf{C_{\MC}}}
+\newcommand{\Chainsc}{\mathsf{C_{sc}}}
+\newcommand{\Chainmc}{\mathsf{C_{mc}}}
 \newcommand{\Ledger}{\mathbf{L}}
 \newcommand{\LState}{\mathsf{L}}
 % \newcommand{\LStateFull}{\tilde\mathsf{L}}
@@ -192,11 +192,11 @@
 %
 \newcommand{\Assets}{\mathsf{Assets}}
 % \newcommand{\HAssets}{\mathsf{HAssets}}
-% \newcommand{\sendAccount}{\mathsf{sAcc}}
-% \newcommand{\recAccount}{\mathsf{rAcc}}
+\newcommand{\sendAccount}{\mathsf{sAcc}}
+\newcommand{\recAccount}{\mathsf{rAcc}}
 % \newcommand{\Account}{\mathsf{Acc}}
-% \newcommand{\amount}{v}
-% \newcommand{\sig}{\sigma}
+\newcommand{\amount}{v}
+\newcommand{\sig}{\sigma}
 \newcommand{\merge}{\mathsf{merge}}
 \newcommand{\ValLang}{\mathbb{V}}
 % \newcommand{\HAValLang}{\mathbb{W}}
@@ -204,20 +204,20 @@
 \newcommand{\noeffect}{\bot}
 % \newcommand{\unknown}{\Bot}
 \newcommand{\length}{\mathsf{length}}
-% \newcommand{\MC}{\mathbf{MC}}
-% \newcommand{\stateMC}{\mathsf{MC}}
-% \newcommand{\SC}{\mathbf{SC}}
-% \newcommand{\stateSC}{\mathsf{SC}}
+\newcommand{\MC}{\mathbf{MC}}
+\newcommand{\stateMC}{\mathsf{MC}}
+\newcommand{\SC}{\mathbf{SC}}
+\newcommand{\stateSC}{\mathsf{SC}}
 \newcommand{\SD}{\mathsf{SD}}
-% \newcommand{\SDb}{\mathsf{\overline{SD}}}
-% \newcommand{\epoch}{e}
+\newcommand{\SDb}{\mathsf{\overline{SD}}}
+\newcommand{\epoch}{e}
 \newcommand{\eps}{\varepsilon}
 % \renewcommand{\l}{\ell}
 % \newcommand{\Excluded}{\mathcal{I}}
-% \newcommand{\id}{\mathsf{id}}
-% \newcommand{\idSC}{\id_\SC}
+\newcommand{\id}{\mathsf{id}}
+\newcommand{\idSC}{\id_\SC}
 % \newcommand{\txw}{\mathsf{tx}_\mathsf{W}}
-% \newcommand{\pool}{\mathsf{pool}}
+\newcommand{\pool}{\mathsf{pool}}
 % \newcommand{\dest}{\mathsf{dest}}
 % \newcommand{\com}{\mathsf{com}}
 % \newcommand{\sign}{\mathsf{sign}}
@@ -231,7 +231,7 @@
 % \newcommand{\txx}[1]{\tx^{(#1)}}
 % \newcommand{\stable}[1]{\hat{#1}}
 % \newcommand{\Genesis}{\mathsf{G}}
-% \newcommand{\Genesisb}{\mathsf{\overline{G}}}
+\newcommand{\Genesisb}{\mathsf{\overline{G}}}
 \newcommand{\setd}[2]{\left\{ #1 \,:\, #2 \right\}}
 \newcommand{\set}[1]{\mathcal{#1}}
 \newcommand{\slot}{sl}
@@ -240,7 +240,7 @@
 \newcommand{\adv}{\ensuremath{\mathcal{A}}}
 % \newcommand{\delayed}{\mathsf{delayed}}
 % \newcommand{\mc}{\mathcal}
-% \newcommand{\eqdef}{\triangleq}
+% \newcommand{\defeq}{\triangleq}
 \newcommand{\defeq}{\triangleq}
 %
 % \newcommand{\Init}{\textsf{Initialize}}
@@ -251,14 +251,12 @@
 % \newcommand{\PostTransaction}{\textsf{PostTransaction}}
 % \newcommand{\RequestState}{\textsf{RequestState}}
 \newcommand{\rnd}{\eta}
-% \newcommand{\rndb}{\bar{\eta}}
+\newcommand{\rndb}{\bar{\eta}}
 %
-% \newcommand{\ada}{\mathfrak{A}}
-% \newcommand{\adasub}{\ada}
-%
-% \newcommand{\xsubsubsection}[1]{\ifieee \subsubsection{#1} \else \subsubsection{#1.} \fi}
-% \newcommand{\adalang}{\ValLang_{\adasub}}
-% \newcommand{\adatrans}{\Trans_{\adasub}}
+\newcommand{\ada}{\mathfrak{A}}
+\newcommand{\adasub}{\ada}
+\newcommand{\adalang}{\ValLang_{\adasub}}
+\newcommand{\adatrans}{\Trans_{\adasub}}
 \newcommand{\cordelay}{\Lambda}
 \newcommand{\party}{P}
 %
@@ -269,50 +267,50 @@
 % \makeatother
 % \newcommand{\ADA}{\ensuremath{\mathpalette\superimpose{{{\Lambda}}{\raisebox{-0.01pt}{=}}}}}
 %
-% \newcommand{\params}{\mathcal{P}}
-% \newcommand{\GenParam}{\textsf{PGen}}
+\newcommand{\params}{\mathcal{P}}
+\newcommand{\GenParam}{\textsf{PGen}}
 % \newcommand{\Gen}{\textsf{Gen}}
-% \newcommand{\KeyCombine}{\textsf{AKey}}
-% \newcommand{\Comprises}{\textsf{ACheck}}
+\newcommand{\KeyCombine}{\textsf{AKey}}
+\newcommand{\Comprises}{\textsf{ACheck}}
 % \newcommand{\Sig}{\textsf{Sig}}
 % \newcommand{\Ver}{\textsf{Ver}}
-% \newcommand{\SigCombine}{\textsf{ASig}}
-% \newcommand{\VerCombined}{\textsf{AVer}}
+\newcommand{\SigCombine}{\textsf{ASig}}
+\newcommand{\VerCombined}{\textsf{AVer}}
 %
-% \newcommand{\jstart}{j_{\mathsf{start}}}
-% \newcommand{\jadopt}{j_{\mathsf{adopt}}}
-% \newcommand{\jsend}{j_{\mathsf{send}}}
+\newcommand{\jstart}{j_{\mathsf{start}}}
+\newcommand{\jadopt}{j_{\mathsf{adopt}}}
+\newcommand{\jsend}{j_{\mathsf{send}}}
 %
-% \newcommand{\sccert}{\mathsf{sc\_cert}}
+\newcommand{\sccert}{\mathsf{sc\_cert}}
 %
 % \newcommand{\Bsig}{\Pi_{\textsf{MGS}}}
-% \newcommand{\VK}{\mathcal{VK}}
-% \newcommand{\commit}[1]{\left\langle #1 \right\rangle}
+\newcommand{\VK}{\mathcal{VK}}
+\newcommand{\commit}[1]{\left\langle #1 \right\rangle}
 % \newcommand{\vkh}{\widehat{vk}}
 % \newcommand{\VKh}{\widehat{\mathcal{VK}}}
 %
-% \newcommand{\ActSuccess}{\mathsf{ActivationSuccess}}
-% \newcommand{\ActFail}{\mathsf{ActivationFailure}}
-% \newcommand{\ActEpoch}{\mathsf{ActivationEpoch}}
-% \newcommand{\SidechainAdoption}{\mathsf{SidechainAdoption}}
+\newcommand{\ActSuccess}{\mathsf{ActivationSuccess}}
+\newcommand{\ActFail}{\mathsf{ActivationFailure}}
+\newcommand{\ActEpoch}{\mathsf{ActivationEpoch}}
+\newcommand{\SidechainAdoption}{\mathsf{SidechainAdoption}}
 % \newcommand{\Cleanup}{\mathsf{Cleanup}}
 \newcommand{\NewEpoch}{\mathsf{NewEpoch}}
 \newcommand{\EpochIndex}{\mathsf{EpochIndex}}
 \newcommand{\NewSlot}{\mathsf{NewSlot}}
 \newcommand{\SlotIndex}{\mathsf{SlotIndex}}
-% \newcommand{\scstate}{\mathsf{sidechain\_state}}
-% \newcommand{\constant}[1]{\mathsf{#1}}
-% \newcommand{\initializing}{\constant{initializing}}
-% \newcommand{\initialized}{\constant{initialized}}
-% \newcommand{\failed}{\constant{failed}}
+\newcommand{\scstate}{\mathsf{sidechain\_state}}
+\newcommand{\constant}[1]{\mathsf{#1}}
+\newcommand{\initializing}{\constant{initializing}}
+\newcommand{\initialized}{\constant{initialized}}
+\newcommand{\failed}{\constant{failed}}
 % \newcommand{\ValidateSCChains}{\mathsf{ValidateSCChains}}
 % \newcommand{\ValidateMCChains}{\mathsf{ValidateMCChains}}
 \newcommand{\ValidConsLevel}{\mathsf{ValidateConsensusLevel}}
-% \newcommand{\Filter}{\mathsf{Filter}}
-% \newcommand{\verifierSC}{\textsc{verifier}_\SC}
-% \newcommand{\verifierMC}{\textsc{verifier}_\MC}
-% \newcommand{\verifierSCtx}{\textsc{verifytx}_\SC}
-% \newcommand{\verifierMCtx}{\textsc{verifytx}_\MC}
+\newcommand{\Filter}{\mathsf{Filter}}
+\newcommand{\verifierSC}{\textsc{verifier}_\SC}
+\newcommand{\verifierMC}{\textsc{verifier}_\MC}
+\newcommand{\verifierSCtx}{\textsc{verifytx}_\SC}
+\newcommand{\verifierMCtx}{\textsc{verifytx}_\MC}
 \newcommand{\PickWinningChain}{\mathsf{PickWinningChain}}
 \newcommand{\GetDistr}{\mathsf{GetDistr}}
 \newcommand{\GetRandomness}{\mathsf{GetRandomness}}
@@ -320,18 +318,18 @@
 % \newcommand{\ConstructMCBlock}{\mathsf{ConstructMCBlock}}
 % \newcommand{\SwitchMCEpoch}{\mathsf{SwitchMCEpoch}}
 % \newcommand{\SwitchSCEpoch}{\mathsf{SwitchSCEpoch}}
-% \newcommand{\Diffuse}{\mathsf{Diffuse}}
+\newcommand{\Diffuse}{\mathsf{Diffuse}}
 \newcommand{\SlotLeader}{\mathsf{SlotLeader}}
 % \newcommand{\Ouroboros}{\mathsf{Ouroboros}}
-% \newcommand{\pending}{\mathsf{pending}}
-% \newcommand{\valid}{\mathsf{valid}}
-% \newcommand{\validtx}{\mathsf{validtx}}
-% \newcommand{\prev}{\mathsf{prev}}
-% \newcommand{\state}{\mathsf{state}}
+\newcommand{\pending}{\mathsf{pending}}
+\newcommand{\valid}{\mathsf{valid}}
+\newcommand{\validtx}{\mathsf{validtx}}
+\newcommand{\prev}{\mathsf{prev}}
+\newcommand{\state}{\mathsf{state}}
 % \newcommand{\hm}{\mathsf{hm}}
 % \newcommand{\bss}{\mathsf{bss}}
 % \newcommand{\MerkleTreeCommitment}{\mathsf{MerkleTreeCommitment}}
-% \newcommand{\keyseq}{\textsf{keys}}
+\newcommand{\keyseq}{\textsf{keys}}
 % \newcommand{\usedkeys}{\textsf{used}}
 % \newcommand{\goodkeys}{\textsf{good}}
 % \newcommand{\badkeys}{\textsf{bad}}

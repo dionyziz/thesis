@@ -1,0 +1,25 @@
+\Function{\textsc{annotatetx}$_\SC$}{$\Chainsc, \Chainmc$}
+    \Let{\vec\tx}{\emptyset}
+    \label{alg.sidechain.interspersing}
+    \For{\text{each time slot }$t$}
+        \Let{\vec\tx'}{\epsilon}
+        \If{$\Chainsc$ has a block generated at slot $t$}
+            \Let{B}{\text{the block in }\Chainsc\text{ generated at }t}
+            \For{$\tx \in B$}
+                \Let{\vec\tx'}{\vec\tx' \concat \tx}
+            \EndFor
+        \EndIf
+        \If{$\Chainmc$ has a block generated at slot $t$}
+            \Let{B}{\text{the block in }\Chainmc\text{ generated at }t}
+            \For{$\tx \in B$}
+                \Let{\vec\tx'}{\vec\tx' \concat \tx}
+            \EndFor
+        \EndIf
+        \For{$\tx \in \vec\tx'$}
+            \CommentLine{Mark the time of each $\tx$ in $\vec\tx'$}
+            \Let{\tx\text{.}t}{t}
+        \EndFor
+        \Let{\vec\tx}{\vec\tx \concat \vec\tx'}
+    \EndFor
+    \Return{$\vec\tx$}
+\EndFunction

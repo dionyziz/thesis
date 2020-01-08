@@ -1,0 +1,66 @@
+\begin{algorithm}[H]
+  \caption{\label{alg.withdraw}Withdrawing from $\SC$ to $\MC$.}
+  \smallskip
+  The algorithm is run by a stakeholder $U$ in control of the secret key $sk$
+  corresponding to the account $\sendAccount$ on $\SC$.
+  \smallskip
+  \begin{algorithmic}[1]
+    \Function{\sf Send}{$\sendAccount,\recAccount,\amount$}
+      \Comment{Send $\amount$ from $\sendAccount$ on $\SC$ to $\recAccount$ on $\MC$}
+      \Sample{\txid}{\bin^{k}}
+      \Let{\sig}{\Sig_{sk}
+        \left(
+          \txid,
+          \SC,
+          (\SC, \sendAccount),
+          (\MC, \recAccount),
+          \amount
+        \right)
+      }
+      \Let{\txsend}{
+        \left(
+          \txid,
+          \SC,
+          (\SC, \sendAccount),
+          (\MC, \recAccount),
+          \amount,
+          \sig
+        \right)
+      }
+      \Post{$\txsend$}{$\SC$}
+    \EndFunction
+    \Function{\sf Receive}{$\txid,\sendAccount,\recAccount,\amount$}
+      \Wait{$\txsend\in\ChainSC$}
+      \Let{j'}{\text{epoch where $\ChainSC$ contains $\txsend$}}
+      \If{($\txsend$ included in slot $sl\leq R-4$ of $\epoch_{j'}$)}
+        \Let{\jsend}{j'}
+      \Else
+        \Let{\jsend}{j'+1}
+      \EndIf
+      \Wait{$\sccert_{\jsend+1}\in\ChainMC$}
+      \Let{\pi}{\text{Merkle-tree proof of $\txsend$ in $\sccert_{\jsend + 1}$}}
+      \Let{\sig}{\Sig_{sk}
+        \left(
+          \txid,
+          \MC,
+          (\SC, \sendAccount),
+          (\MC, \recAccount),
+          \amount,
+          \pi
+        \right)
+      }
+      \Let{\txrec}{
+        \left(
+          \txid,
+          \MC,
+          (\SC, \sendAccount),
+          (\MC, \recAccount),
+          \amount,
+          \pi,
+          \sig
+        \right)
+      }
+      \Post{$\txrec$}{$\MC$}
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}

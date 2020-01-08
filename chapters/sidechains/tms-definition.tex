@@ -1,0 +1,168 @@
+\subsection{Ad-Hoc Threshold Multisignatures}
+\label{sec:ats}
+
+We  introduce a new  primitive, \textit{ad-hoc threshold
+multisignatures (ATMS)}, which borrow  properties from multisignatures and
+threshold signatures and are ad-hoc in the sense that signers need to
+be selected on the fly from an existing key set.
+In Section~\ref{sec:const} we describe how ATMS
+are useful for periodically updating the ``anchor of trust'' that the  mainchain parties
+ have w.r.t. the sidechain they are not
+following.
+
+ATMS %are used by a set of $n$ parties and
+are parametrized by a threshold $t$.
+On top of the usual digital signatures functionality, ATMS also provide a way to:
+%\begin{itemize}
+  %\item[-]
+  (1)
+  aggregate the public keys of a subset of these parties into a single aggregate public
+  key $avk$;
+%\item[-]
+    (2)
+  check that a given $avk$ was created using the right sequence of individual public keys;
+  %\item[-]
+  and (3)
+  aggregate $t'\geq t$ individual signatures from $t'$ of the parties into a single
+    aggregate signature that can then be verified using $avk$, which is
+    impossible if less than $t$ individual signatures are used.
+%\end{itemize}
+
+The definition of an ATMS is given below.
+
+\begin{definition}
+  A \textit{$t$-ATMS} is a tuple of algorithms
+  $\Pi = (
+    \GenParam,
+    \Gen,
+    \Sig,
+    \Ver,
+    \KeyCombine,
+    \Comprises,
+    \SigCombine,
+    \VerCombined
+  )$
+  where:
+  \begin{description}
+  \item $\GenParam(1^\kappa)$
+     is the parameter generation algorithm that takes the security parameter
+     $1^\kappa$ and returns system parameters~$\params$.
+   \item $\Gen(\params)$
+     is the key-generation algorithm that takes $\params$ and produces a
+     public/private key pair $(vk_i, sk_i)$ for the party invoking it.
+   \item $\Sig(sk_i,m)$
+    is the signature algorithm as in an ordinary signature scheme: it takes a private
+    key and a message and produces a (so-called \emph{local}) signature $\sigma$.
+   \item $\Ver(m, pk_i, \sigma)$
+    is the verification algorithm that takes a public key, a message and a
+    signature and returns \emph{true} or \emph{false}.
+   \item $\KeyCombine(\VK)$
+    is the key aggregation algorithm that takes a sequence of public keys $\VK$
+    and aggregates them into an \emph{aggregate public key} $avk$.
+  \item $\Comprises(\mathcal{VK},avk)$
+    is the aggregation-checking algorithm that takes a public key sequence
+    $\mathcal{VK}$ and an aggregate public key $avk$ and returns \emph{true} or
+    \emph{false}, determining whether $\mathcal{VK}$ were used to produce $avk$.
+  \item $\SigCombine\left(m,\VK,\left<(vk_1,\sigma_1),\cdots, (vk_d, \sigma_d)\right>\right)$
+    is the signature-aggregation algorithm that takes a message $m$, a sequence of
+    public keys $\mathcal{VK}$ and a sequence of $d$ pairs $\left<(vk_1,\sigma_1), \cdots, (vk_d, \sigma_d)\right>$
+    where each $\sigma_i$ is a local signature on $m$ verifiable by $vk_i$ and
+    each $vk_i$ is in a distinct position within $\mathcal{VK}$, $\SigCombine$
+    combines these into a multisignature $\sigma$ that can later be verified with
+    respect to the aggregate public key $avk$ produced from $\mathcal{VK}$ (as
+    long as $d \geq t$, see below).
+  \item $\VerCombined(m,avk,\sigma)$
+    is the aggregate-signature verification algorithm that takes
+    a message $m$, an aggregate public key $avk$, and a multisignature $\sigma$,
+    and returns \emph{true} or \emph{false}.
+  \end{description}
+\end{definition}
+
+\begin{definition}[ATMS correctness]
+  \label{def:ATMS-correctness}
+  Let $\Pi$ be a $t$-ATMS scheme
+  initialized with $\params \gets \GenParam(1^\kappa)$, let
+  $(vk_1, sk_1), \cdots, (vk_n, sk_n)$
+  be a sequence of keys generated via $\Gen(\params)$, let $\VK$ be a sequence
+  containing (not necessarily unique) keys from the above and $avk$ be generated
+  by invoking $avk \gets \KeyCombine(\VK)$. Let $m$ be any message and let
+  $\left<(vk_1, \sigma_1), \cdots, (vk_d, \sigma_d)\right>$ be any sequence of key/signature pairs provided
+  that $d \geq t$ and every $vk_i$ appears in a unique position in the sequence
+  $\VK$, where $\sigma_i$ is generated as $\sigma_i = \Sig(sk_i, m)$.
+  Let
+  $\sigma
+  \gets
+  \SigCombine\left(
+    m,
+    \VK,
+    \left<(vk_1, \sigma_1), \cdots, (vk_d, \sigma_d)\right>
+  \right)
+  %\;
+  $.
+  The scheme $\Pi$ is
+  \emph{correct} if for every such message and sequence the following hold:
+  \begin{enumerate}
+    \item $\Ver(m, vk_i, \sigma_i)$ is \emph{true} for all $i$;
+    \item $\Comprises(\mathcal{VK}, avk)$ is \emph{true};
+    \item $\VerCombined(m, avk, \sigma)$ is \emph{true}.
+  \end{enumerate}
+\end{definition}
+
+We define the security of an ATMS
+in the definition below,
+via a cryptographic game given in Algorithm~\ref{alg.tms-game}.
+
+\import{./chapters/sidechains}{algorithms/alg.tms-figure.tex}
+
+\begin{definition}[Security]
+  \label{def:ATMS-security}
+  %A \textit{$t$-threshold multisignature scheme}
+  A \textit{$t$-ATMS} scheme
+  $\Pi = (
+    \GenParam,
+    \Gen,
+    \Sig,
+    \Ver,
+    \KeyCombine,
+    \Comprises,
+    \SigCombine,
+    \VerCombined
+  )$
+  is \emph{secure} if for any PPT adversary $\mathcal{A}$ and any polynomial $p$
+  there exists some negligible function $\textsf{negl}$ such that
+  $
+  %\[
+    \Pr[ \textsf{ATMS}_{\Pi, \mathcal{A}}(\kappa, p(\kappa)) = 1]
+    < \textsf{negl}(\kappa)
+    \; .
+  %\]
+  $
+\end{definition}
+
+The quantity $q$ in the ATMS game counts how many keys the adversary is in
+control of among her chosen keys $\keyseq$ which will be used for
+aggregate-signature verification. The sequence $\keyseq$ can contain both
+adversarially-generated keys as well as some of the keys $\mathcal{VK}$
+honestly generated by the challenger. The variable $q$ counts the number of
+adversarially controlled keys in $\keyseq$. This includes those keys in
+$\keyseq$ for which the adversary has obtained a signature for the message in
+question (through the use of the oracle $\mathcal{O}^\mathsf{sig}(\cdot)$) or which the
+adversary has corrupted completely (through the use of the oracle
+$\mathcal{O}^\mathsf{cor}(\cdot)$), as well as those keys which have been generated by
+the adversary herself and therefore are not in $\mathcal{VK}$.
+
+It is straightforward to see that if
+$\Pi$
+is a secure ATMS, then
+the tuple $( \GenParam, \Gen, \Sig, \Ver )$ is a \textsf{EUF-CMA}-secure
+signature scheme.
+
+Looking ahead, note that since the $\KeyCombine$ algorithm is only invoked with
+the public keys of the participants, it can be invoked by anyone, not just the
+parties who hold the respective secret keys, as long as the public portion of
+their keys is published. Furthermore, notice that the above games allow the adversary
+to generate more public/private key pairs of their own and combine them at will.
+
+Having defined the ATMS primitive, we will now describe a sidechain
+construction that uses it. Concrete instantiations of the ATMS primitive are
+presented in Section~\ref{sec:auth}.

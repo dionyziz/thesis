@@ -19,7 +19,31 @@
 \newcommand{\uniform}{\mathcal{U}}
 
 % Algorithms
+\newcommand{\pluseq}{\mathrel{+}=}
+\newcommand{\minuseq}{\mathrel{-}=}
+\newcommand{\stareq}{\mathrel{*}=}
+\newcommand{\slasheq}{\mathrel{/}=}
+
 \def\Let#1#2{\State $#1\gets#2$}
+
+\newcommand{\CommentLine}[1]{
+  \State \(\triangleright\) \textit{#1}
+}
+\algnewcommand\algorithmicon{\textbf{upon}}
+\algblockdefx[ON]{On}{EndOn}[1]
+{\algorithmicon\ #1\ \algorithmicdo}
+{\algorithmicend\ \algorithmicon}
+
+\def\Post#1#2{\State\textbf{post} #1 \textbf{to} #2 }
+
+\newcommand{\Break}{\State\textsf{break}}
+\newcommand{\Continue}{\State\textsf{continue}}
+
+\newcommand{\rsample}{\stackrel{\mbox{\tiny $\$$}}{\leftarrow}}
+\def\Sample#1#2{\State $#1\rsample #2$}
+
+\algnewcommand\waitcommand{\textbf{wait until }}
+\def\Wait#1{\State\waitcommand #1}
 
 % Cryptography
 \newcommand{\negl}{\mathsf{negl}}

@@ -1,0 +1,93 @@
+\begin{algorithm}%[htb]
+    \caption{\label{alg.mainchain}The $\MC$ verifier.}
+    \begin{algorithmic}[1]
+        \Function{$\verifierMCtx$}{$\vec\tx$}
+            \State{$\balances \gets \text{initial stake}$;
+                   $avk \gets \text{initial aggregate key}$}
+            \State{$\seen \gets \emptyset$; $\pool \gets 0$; $\textsf{pfs\_mtrs} \gets \emptyset$; $\textsf{pfs\_used} \gets \emptyset$}
+            \For{$\tx \in \vec\tx$}
+                \If{$\type(\tx) = \sccert$}
+                    \Let{\left(
+                        m,
+                        \sigma
+                    \right)}{\tx}
+                    \If{$\lnot \VerCombined(m, avk,\sigma)$}
+                        \Continue
+                        \label{alg.mainchain.sig-failure}
+                    \EndIf
+                    \Let{\left(
+                        \textsf{txs\_root},
+                        avk'
+                    \right)}{m}
+                    \Let{avk}{avk'}
+                    \Let{
+                        \textsf{pfs\_mtrs}
+                        [\textsf{txs\_root}]
+                    }{\textsf{true}}
+                \Else
+                    \Let{\left(
+                        \txid,
+                        \llid,
+                        (\send, \sendAccount),
+                        (\rec, \recAccount),
+                        \amount,
+                        \sig
+                    \right)}{\tx}
+                    \Let{m}{\left(
+                        \txid,
+                        \llid,
+                        (\send, \sendAccount),
+                        (\rec, \recAccount),
+                        \amount
+                    \right)}
+                    \If{$\lnot \text{Ver}(m, \sendAccount, \sigma) \lor \textsf{seen}[\txid] \neq 0$}
+                        \Continue
+                        \label{alg.mainchain.asig-failure}
+                        \label{alg.mainchain.replay-failure}
+                    \EndIf
+                    \If{$\llid = \send$}
+                        \If{$\balances[\sendAccount] - \amount < 0$}
+                            \Continue
+                            \label{alg.mainchain.conservation-failure}
+                        \EndIf
+                        \State{$\balances[\sendAccount] \minuseq \amount$}
+                    \ElsIf{$\send \neq \rec$}
+                        \Let{\pi}{\tx.\pi}
+                        \Let{\left(
+                            mtr,
+                            \textsf{inclusion\_pf}
+                        \right)}{\pi}
+                        \If{$\pi \in \textsf{pfs\_used} \lor mtr \not\in \textsf{pfs\_mtrs} \lor$
+                             $\lnot \textsc{mtr-ver}(mtr, \textsf{inclusion\_pf})$}
+                            \Continue
+                            \label{alg.mainchain.incoming-reuse}
+                            \label{alg.mainchain.incoming-no-mtr}
+                        \EndIf
+                    \EndIf
+                    \If{$\llid = \rec$}
+                        \State{$\balances[\recAccount] \pluseq \amount$}
+                    \EndIf
+                    \If{$\send \neq \rec$}
+                        \If{$\llid = \send$}
+                            \State{$\pool \minuseq \amount$}
+                        \Else
+                            \State{$\pool \pluseq \amount$}
+                        \EndIf
+                    \EndIf
+                \EndIf
+                \Let{\seen}{\seen \concat \tx}
+            \EndFor
+            \Return{$\seen$}
+        \EndFunction
+
+        \Function{\textsc{verifier}$_\MC$}{$\Chainmc$}
+            \Let{\vec\tx}{\emptyset}
+            \For{$B \in \Chainmc$}
+                \For{$\tx \in B$}
+                    \Let{\vec\tx}{\vec\tx \concat \tx}
+                \EndFor
+            \EndFor
+            \Return{$\vec\tx \neq \verifierMCtx(\vec\tx)$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}

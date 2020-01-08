@@ -1,0 +1,142 @@
+\subsection{A Concrete Asset $\ada$}
+\label{sec:inst}
+
+We now present an example of a simple fungible asset with fixed supply, which we
+denote $\ada$, and describe its validity language $\adalang$.
+%or $\ADA$ or $\ValLang_{\ADA}$.
+This will be the asset (and validity language) considered in our construction
+and proof. While $\adalang$ is simple and natural, it
+allows us to exhibit the main features of our security treatment and illustrate
+how  it can be applied to more complex languages such as those capable
+of capturing smart contracts; we omit such extensions in this version.
+%for now due to lack of space.
+Note that our language is account-based, but a UTXO-based validity
+language can be considered in a similar manner.
+
+\subsubsection{Instantiating $\ValLang_{\Asset}$}
+\label{sec:inst-vallang}
+
+The validity language $\adalang$ for the asset $\ada$ considers
+two ledgers: the mainchain ledger $\Ledger_0\defeq\MC$ and the sidechain ledger
+$\Ledger_1\defeq\SC$. For this asset, every transaction $\tx\in\adatrans$ has the form
+$
+\tx=\left(
+  \txid,
+  \llid,
+  (\send, \sendAccount),
+  (\rec, \recAccount),
+  \amount,
+  \sig
+\right)
+%\; ,
+$,
+where:
+\begin{itemize}
+  \item $\txid$ is a transaction identifier that prevents replay attacks.
+    We assume that
+    $\txid$ contains sufficient information to identify $\llid$ by inspection
+    and that this is part of syntactic transaction validation.
+  \item $\llid \in \{0, 1\}$ is the ledger index where the transaction belongs.
+  \item $\send \in \{0, 1\}$ is the index of the sender ledger $\Ledger_\send$ and
+    $\sendAccount$ is an account  on this ledger,
+    this is the sender account. For simplicity, we assume that $\sendAccount$ is
+    the public key of the account.
+  \item $\rec \in \{0, 1\}$ is the index of the recipient ledger $\Ledger_\rec$ and
+    $\recAccount$ is an account (again represented by a public key) on this
+    ledger, this is the recipient account.
+    We allow either $\Ledger_\send=\Ledger_\rec$, which denotes a \emph{local
+    transaction}, or $\Ledger_\send\neq\Ledger_\rec$, which denotes a
+    \emph{remote transaction} (i.e., a cross-ledger transfer).
+\item $\amount$ is the amount to be transferred.
+\item $\sig$ is the signature of the sender, i.e. made with the private key
+      corresponding to the public key $\sendAccount$ on the plaintext
+      $(\txid, (\send, \sendAccount), (\rec, \recAccount), \amount)$.
+\end{itemize}
+The correctness of $\llid$ is enforced by the ledgers, i.e., for
+both $i\in\{0,1\}$ the set $\Trans_{\ada,\Ledger_i}$ only contains transactions
+with $\llid=i$.
+Note that although we sometimes notationally distinguish between an account and the
+public key that is associated with it, for simplicity we will assume that these
+are either identical or can always be derived from one another (this assumption is not
+essential for our construction).
+
+\import{chapters/sidechains/}{algorithms/alg.validity.tex}
+
+The membership-deciding algorithm for $\adalang$
+is presented in Algorithm~\ref{alg.validity}.
+It
+processes the sequence of transactions $(\tx_1, \tx_2, \dots,
+\tx_m)$ given to it as input in their order. Assuming transactions are
+syntactically valid, the function verifies for each transaction $\tx_i$ the
+freshness of $\txid$, validity of the signature, and availability of sufficient
+funds on the sending account. For an intra-ledger transaction (i.e., one that
+has $\send=\rec$), these are all the performed checks.
+
+More interestingly, $\adalang$ also allows for cross-ledger transfers. Such
+transfers are expressed by a pair of transactions in which $\send \neq \rec$.
+The first transaction appears in $\llid = \send$, while the second transaction
+appears in $\llid = \rec$. The two transactions are identical except for this
+change in $\llid$ (this is the only exception to the $\txid$-freshness
+requirement). Every receiving transaction has to be preceded by a matching
+sending transaction. Cross-chain transactions have to, similarly to intra-ledger
+transactions, conform to laws of balance conservation.
+
+%\paragraph{Remarks about this validity language.}
+Note that $\adalang$ does not require that every ``sending''
+cross-ledger transaction on the sender ledger is matched by a ``receiving''
+transaction on the receiving ledger. Hence, if the asset $\ada$ is sent from
+ledger $\Ledger_{\send}$ but has not yet arrived on $\Ledger_{\rec}$ then
+validity for this asset is \emph{not} violated. All the validity language
+ensures is that appending the $\mathsf{sidechain\_receive}$ transaction to the
+$\rec$ will eventually be a valid way to extend the receiving ledger, as long as
+the $\mathsf{sidechain\_send}$ transaction has been included in $\send$.
+
+\subsubsection{Instantiating $\eff{\Ledger_i}{\Ledger_j}$}
+For the simple asset $\ada$ outlined above, every cross-ledger transfer is a
+``sending'' transaction $\tx$ with
+$\Ledger_{\llid}=\Ledger_{\send}\neq\Ledger_{\rec}$ appearing in $\Ledger_\send$,
+and its effect transaction is a ``receiving'' transaction $\tx'$ with
+$\Ledger_{\llid}=\Ledger_{\rec}\neq\Ledger_{\send}$ in~$\Ledger_\rec$ that is
+otherwise identical (except for the different $\llid' = 1-\llid$).
+%and signature).
+Hence, we
+define $\eff{\Ledger_\send}{\Ledger_\rec}(\tx)=\tx'$ exactly for all these transactions
+and no other.
+
+\subsubsection{Instantiating $\merge(\cdot)$}
+It is easy to construct a canonical function $\merge(\cdot)$ once we see its inputs not only as
+ledger states (i.e., sequences of transactions) but we also exploit the
+additional structure of the blockchains carrying those ledgers.
+%We first define two natural properties that the $\merge(\cdot)$ function should
+%satisfy.
+%
+% PG: seems irrelevant here?
+%The first point requires sorting transactions within a particular ledger
+%$\LState_i$. While formally the ordering within $\LState_i$ is available to the
+%$\merge$ function, it is useful to specify that, even if it were not provided, a
+%natural $\merge(\cdot)$ would simply organize transactions according first to
+%the timestamps (i.e., slot numbers) of the blocks they are contained in and
+%second by the order of transactions within a block. The second point makes the
+%more material observation that causality must be preserved in a merge.
+%
+%Subsequently, we define a concrete way to merge ledgers in a way satisfying the
+%above conditions.
+The \textit{canonical merge} of the set of ledger states
+$\mathcal{L}$ is the lexicographically minimum topologically sound merge,
+in which transactions of ledger $\LState_i$ are compared favourably to
+transactions in $\LState_j$ if $i < j$.
+However, note that the construction we provide
+below will work for any topologically sound merge function.
+
+\bigskip
+\noindent
+One can easily observe the following statement.
+
+\begin{proposition}
+The validity language $\adalang$
+  is correct (according to Definition~\ref{def:correctness})
+with respect to the $\merge$ function
+defined above.
+\end{proposition}
+
+%\newpage

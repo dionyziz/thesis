@@ -1,0 +1,52 @@
+\Function{$\verifierSCtx$}{$\vec\tx$}
+    \Let{\balances[\MC]}{\text{Initial $\MC$ stake}}
+    \Let{\balances[\SC]}{\text{Initial $\SC$ stake}}
+    \State{$\textsf{mc\_outgoing\_tx} \gets \emptyset$;
+           $\seen \gets \emptyset$}
+    \For{$\tx \in \vec\tx$}
+      \Let{\left(
+          \txid,
+          \llid,
+          (\send, \sendAccount),
+          (\rec, \recAccount),
+          \amount,
+          \sig,
+          t
+      \right)}{\tx}
+      \Let{m}{\left(
+          \txid,
+          \llid,
+          (\send, \sendAccount),
+          (\rec, \recAccount),
+          \amount
+      \right)}
+      \If{$\lnot \text{Ver}(\sendAccount, m, \sigma) \lor \textsf{seen}[\txid] \neq 0$}
+          \Continue
+          \label{alg.sidechain.sig-failure}
+          \label{alg.sidechain.replay-failure}
+      \EndIf
+      \If{$\llid = \send$}
+          \If{$\balances[\send][\sendAccount] - \amount < 0$}
+              \Continue
+              \label{alg.sidechain.conservation-failure}
+          \EndIf
+          \If{$\llid = \MC \land \send \neq \rec$}
+              \Let{\textsf{mc\_outgoing\_tx}[\txid]}{t + 2k}
+          \EndIf
+      \EndIf
+      \If{$\llid = \rec$}
+          \If{$\send \neq \rec$}
+              \CommentLine{Effect pre-image tx immature}
+              \If{$t < \textsf{mc\_outgoing\_tx}[\txid]$}
+                  \Continue
+              \EndIf
+          \EndIf
+          \State{$\balances[\rec][\recAccount] \pluseq \amount$}
+      \EndIf
+      \If{$\llid = \send$}
+          \State{$\balances[\send][\sendAccount] \minuseq \amount$}
+      \EndIf
+      \Let{\seen}{\seen \concat \tx}
+    \EndFor
+    \Return{$\seen$}
+\EndFunction

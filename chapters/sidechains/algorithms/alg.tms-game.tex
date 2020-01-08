@@ -1,0 +1,18 @@
+\State$\mathcal{VK} \gets \epsilon; \mathcal{SK} \gets \epsilon;
+       Q^\textsf{sig} \gets \emptyset;
+       Q^\textsf{cor} \gets \emptyset$
+
+\Let{\params}{\GenParam(1^\kappa)}
+\Let{(m, \sigma, avk, \keyseq)}
+  {\mathcal{A}^{\mathcal{O}^\textsf{gen},\mathcal{O}^\textsf{sig}(\cdot,\cdot),\mathcal{O}^\textsf{cor}(\cdot)}
+    \left(
+      \params
+    \right)
+  }
+\Let{q}{0}
+\For{$vk \text{ in } \keyseq$}
+  \If{$vk \notin \mathcal{VK} \lor vk \in Q^\textsf{sig}[m] \cup Q^\textsf{cor}$}
+    \Let{q}{q + 1}
+  \EndIf
+\EndFor
+\Return$\VerCombined(m, avk, \sigma) \land \Comprises(\keyseq, avk) \land q < t$

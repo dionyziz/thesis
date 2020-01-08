@@ -1,0 +1,51 @@
+\begin{algorithm}
+  \caption{\label{alg.maintain.MC}Mainchain maintenance procedures.}
+  \smallskip
+  The algorithm is run by every stakeholder $U$ with stake on $\MC$ in every
+  epoch $j\geq\jstart$, $sk$ denotes the secret key of $U$. An analogous
+  mainchain-maintaining procedure was running also before $\jstart$ and is
+  omitted.
+  \smallskip
+  \begin{algorithmic}[1]
+    \On{$\MC.\NewSlot()$}
+      %\Comment{$\SC$-slots coincide with $\MC$-slots}
+      \Let{\slot}{\MC.\SlotIndex()}
+      \CommentLine{First slot of a new epoch}
+      \If{$\slot\mod R=1$}
+        %\State $\SwitchMCEpoch()$
+        %  \label{line:switch}
+        \Let{j}{\MC.\EpochIndex()}
+        %\Let{\SD_j}{\MC.\GetDistr(8k, \epoch_{j-1})}
+        \Let{\SD_j}{\MC.\GetDistr(j)}
+          \label{line:SD}
+        \Let{\rnd_{j}}{\MC.\GetRandomness(j)}
+      \EndIf
+      \Let{\mathcal{C}}{\text{chains received via $\Diffuse$}}
+      \CommentLine{Consensus-level validation}
+      \Let{\mathcal{C}_{\valid}}{\Filter(\mathcal{C},\MC.\ValidConsLevel)}
+      \CommentLine{Transaction-level validation}
+      \Let{\mathcal{C}_{\validtx}}{\Filter(\mathcal{C_{\valid}},\verifierMC(\cdot))}
+        \label{line:filter}
+      \CommentLine{Apply chain selection rule}
+      \Let{\ChainMC}{\MC.\PickWinningChain(\ChainMC,\mathcal{C_{\validtx}})}
+      \CommentLine{Decide slot leadership based on $\SD_j$ and $\rnd_{j}$}
+      \If{$\MC.\SlotLeader(U,j,sl,\SD_j,\rnd_{j})$}
+        \label{line:leader}
+        \Let{\prev}{H(\ChainMC[-1])}
+        \Let{\vec\tx_{\state}}{\text{transaction sequence in $\ChainMC$}}
+        \Let{\vec\tx}{\text{current transactions in mempool}}
+        \Let{\vec\tx_{\valid}}{\verifierMCtx(\vec\tx_{\state}\concat\vec\tx)[|\vec\tx_{\state}|:]}
+          \label{line:filtertx}
+        \Let{\sigma}{\Sig_{sk}(\prev,\vec\tx_{\valid})}
+        \Let{B}{(\prev,\vec\tx_{\valid},\sigma)}
+          \label{line:construct}
+        \Let{\ChainMC}{\ChainMC\concat B}
+        \State $\Diffuse(\ChainMC)$
+      \EndIf
+    \EndOn
+    %\Function{$\SwitchMCEpoch$}{ }
+    %\EndFunction
+    %\Function{$\ConstructMCBlock$}{$(\prev,\vec\tx_{\valid})$}
+    %\EndFunction
+  \end{algorithmic}
+\end{algorithm}

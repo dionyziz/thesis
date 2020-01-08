@@ -1,0 +1,57 @@
+\begin{algorithm}
+  \caption{\label{alg.deposit}Depositing from $\MC$ to $\SC$.}
+  \smallskip
+  The algorithm is run by a stakeholder $U$ in control of the secret key $sk$
+  corresponding to the account $\sendAccount$ on $\MC$.
+  \smallskip
+  \begin{algorithmic}[1]
+    \Function{\sf Send}{$\sendAccount,\recAccount,\amount$}
+      \Comment{Send $\amount$ from $\sendAccount$ on $\MC$ to $\recAccount$ on $\SC$}
+      \Sample{\txid}{\bin^{k}}
+      \Let{\sig}{\Sig_{sk}
+        \left(
+          \txid,
+          \MC,
+          (\MC, \sendAccount),
+          (\SC, \recAccount),
+          \amount
+        \right)
+      }
+      \Let{\txsend}{
+        \left(
+          \txid,
+          \MC,
+          (\MC, \sendAccount),
+          (\SC, \recAccount),
+          \amount,
+          \sig
+        \right)
+      }
+      \Post{$\txsend$}{$\MC$}
+    \EndFunction
+    \Function{\sf Receive}{$\txid,\sendAccount,\recAccount,\amount$}
+      \Wait{$\txsend\in\stateMC$}
+      \Comment{$\stateMC$ is the stable part of $\MC$}
+      \Let{\sig}{\Sig_{sk}
+        \left(
+          \txid,
+          \SC,
+          (\MC, \sendAccount),
+          (\SC, \recAccount),
+          \amount
+        \right)
+      }
+      \Let{\txrec}{
+        \left(
+          \txid,
+          \SC,
+          (\MC, \sendAccount),
+          (\SC, \recAccount),
+          \amount,
+          \sig
+        \right)
+      }
+      \Post{$\txrec$}{$\SC$}
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}

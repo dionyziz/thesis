@@ -1,0 +1,52 @@
+\begin{algorithm}[H]
+  \caption{\label{alg.init}Sidechain initialisation procedures.}
+  \smallskip
+  The algorithm is run by every stakeholder $U$ that adopted the sidechain. We
+  denote by $(vk,sk)$ its public and private keys.
+  %We assume that $U$ has a local snapshot of
+  %$\MC$ that is implicitly available to all subroutines.
+  \smallskip
+  \begin{algorithmic}[1]
+    \On{$\SidechainAdoption(\idSC)$}
+      \Let{\scstate[\idSC]}{\initializing}
+      \Let{(vk',sk')}{\Gen(\params)}
+      \Let{\sigma}{\Sig_{sk}\msg{sidechain\_support}{\id_\SC,vk,vk'}}
+      \Post
+        {$\msg{sidechain\_support}{\id_\SC,vk,vk',\sigma}$}
+        {$\MC$}
+    \EndOn
+
+    \On{$\MC.\NewEpoch()$}
+      \Let{j}{\MC.\EpochIndex()}
+      \If{$\scstate[\idSC]=\initializing$}
+        \If{$\ActFail()$}
+          \Let{\scstate[\idSC]}{\failed}
+          \Post
+            {$\mathsf{sidechain\_failure}(\id_\SC)$}
+            {$\MC$}
+          %\State $\SC.\Cleanup()$
+        \ElsIf{$\ActSuccess()$}
+          \Let{\scstate[\idSC]}{\initialized}
+          \Let{\jstart}{\ActEpoch()}
+          \State Post $\mathsf{sidechain\_success}(\id_\SC)$ to $\MC$
+        \EndIf
+      \EndIf
+      \If{$\scstate[\idSC]=\initialized
+            \land
+            j=\jstart$}
+        \Let{\rndb_{\jstart}}{H( \id_\SC, \rnd_{\jstart})}
+        \Let{\mathcal{VK}_{\jstart}}{\text{$2k$ last slot leaders of $\epoch_{\jstart}$ in $\SC$}}
+        \Let{avk^{\jstart}}{\KeyCombine(\mathcal{VK}_{\jstart})}
+        \Let{\Genesisb}
+          {\left(
+            \id_\SC,
+            \SDb_{\jstart},
+            \rndb_{\jstart},
+            \params,
+            avk^{\jstart}
+          \right)}
+        \Let{\ChainSC}{(\Genesisb)}
+      \EndIf
+    \EndOn
+  \end{algorithmic}
+\end{algorithm}
