@@ -1,0 +1,344 @@
+% \newcommand{\msg}[2]{%
+  % \ifthenelse
+    % {\isempty{#1}}
+    % {\ensuremath{(#2)}}
+    % {\ifthenelse
+      % {\isempty{#2}}
+      % {\ensuremath{(\mathsf{#1})}}
+      % {\ensuremath{(\mathsf{#1}, #2)}}
+    % }
+% }
+%
+% %----- Comments ----------------------------------------------------------------
+% \RequirePackage{totcount}
+% \RequirePackage{color}
+% \RequirePackage[colorinlistoftodos]{todonotes}
+%
+% \newtotcounter{notecount}
+% \newcommand{\notewarning}{%
+% \ifnum\totvalue{notecount}>0%
+ % \vspace{1ex}
+% \begin{center}
+ % \begin{tikzpicture}[baseline=(A.south)]
+    % \node (A) [] at (0,0){};
+    % \node [rounded corners=1pt,rectangle, draw=red, fill=red!20,text=black](B) at (0.1ex,0ex){
+        % \Large \raggedright {\bf Warning:} There are still some notes left!
+    % };
+ % \end{tikzpicture}
+% \end{center}
+ % \vspace{1ex}
+% \fi
+% }
+% \makeatletter
+% \def\myaddcontentsline#1#2#3{%
+  % \addtocontents{#1}{\protect\contentsline{#2}{#3}{Section \thesubsection\ at p. \thepage}{}}}
+% \renewcommand{\@todonotes@addElementToListOfTodos}{%
+    % \if@todonotes@colorinlistoftodos%
+        % \myaddcontentsline{tdo}{todo}{{%
+            % \colorbox{\@todonotes@currentbackgroundcolor}%
+                % {\textcolor{\@todonotes@currentbackgroundcolor}{o}}%
+            % \ \@todonotes@caption}}%
+    % \else%
+        % \myaddcontentsline{tdo}{todo}{{\@todonotes@caption}}%
+   % \fi}%
+% \newcommand*\mylistoftodos{%
+  % \begingroup
+       % \setbox\@tempboxa\hbox{Section 9.9 at p. 99}%
+       % \renewcommand*\@tocrmarg{\the\wd\@tempboxa}%
+       % \renewcommand*\@pnumwidth{\the\wd\@tempboxa}%
+       % \listoftodos%
+  % \endgroup
+% }
+% \makeatother
+% \definecolor{lightgreen}{rgb}{0.86, 0.93, 0.78}
+% \definecolor{bordergreen}{rgb}{0.55, 0.76, 0.74}
+% \definecolor{lightblue}{rgb}{0.70, 0.90, 0.99}
+% \definecolor{borderblue}{rgb}{0.01, 0.66, 0.96}
+% \definecolor{lightamber}{rgb}{1, 0.93, 0.70}
+% \definecolor{borderamber}{rgb}{1, 0.76, 0.03}
+% \definecolor{lightcolor4}{rgb}{ 0.93, 0.70, 1}
+% \definecolor{bordercolor4}{rgb}{0.76, 0.03, 1}
+%
+% % \newcommand{\note}[1]{\stepcounter{notecount}\todo[inline,bordercolor=bordergreen,linecolor=bordergreen,color=lightgreen]{ #1}{}}
+% % \newcommand{\snote}[1]{\stepcounter{notecount}\todo[bordercolor=bordergreen,linecolor=bordergreen,color=lightgreen,fancyline]{ #1}{}}
+%
+% \newcommand{\mnote}[1]{
+  % \stepcounter{notecount}
+  % \todo[
+        % inline,
+        % caption={minipage-note},
+        % bordercolor=bordergreen,
+        % linecolor=bordergreen,
+        % color=lightgreen,
+        % fancyline
+      % ]
+      % {
+        % \begin{minipage}{0.9\textwidth}
+           % #1
+        % \end{minipage}
+      % }
+      % {}
+% }
+%
+% \def\showauthnotes{1}
+% \ifthenelse{\showauthnotes=1}
+% {
+  % \newcommand{\authnote}[2]{\mnote{\textbf{#1:} #2}}
+% %\newcommand{\authnote}[2]{{ \footnotesize \bf{[#1: #2]~}}}
+% %\newcommand{\authnote}[2]{{ \tt {[#1: #2]~}}}
+% }
+%
+% \newcommand{\aggelos}[1]{\authnote{Aggelos}{#1}}
+% \newcommand{\peter}[1]{\authnote{Peter}{#1}}
+% \newcommand{\dionyziz}[1]{\authnote{Dionysis}{#1}}
+%
+% \newcommand{\TODO}[1]{
+  % \if\relax\detokenize{#1}\relax
+    % \textcolor{red}{TODO}
+  % \else
+    % \textcolor{red}{ {#1}}
+  % \fi
+% }
+%
+% %---------------------------------------------------------------------
+%
+% \newcommand{\footTODO}[1]{\footnote{\TODO{#1}}}
+%
+% \newcommand{\ignore}[1]{}
+%
+%
+%
+% % the \Bot symbol from https://tex.stackexchange.com/questions/297971/bot-like-symbol-with-two-horizontal-lines
+% \makeatletter
+% \DeclareRobustCommand{\Bot}{%
+  % \mathord{\vphantom{\bot}\mathpalette\mich@Bot\relax}%
+% }
+% \newcommand{\mich@Bot}[2]{%
+  % \ooalign{%
+    % $\m@th#1\bot$\cr
+    % \clipbox*{0pt 0pt {\width} {.5\height}}{\raisebox{.2\height}{$\m@th#1\bot$}}\cr
+  % }%
+% }
+% \makeatother
+%
+% \newcommand{\on}{\textsc{on}}
+% \newcommand{\off}{\textsc{off}}
+% \newcommand{\bin}{\{0,1\}}
+% \newcommand{\N}{\mathbb{N}}
+% \newcommand{\I}{\mathcal{I}}
+% \newcommand{\Secure}{\mathcal{S}}
+% \newcommand{\Trans}{\mathcal{T}}
+\newcommand{\tx}{\mathsf{tx}}
+% \newcommand{\txid}{\mathsf{txid}}
+% \newcommand{\llid}{\mathsf{lid}}
+% \newcommand{\type}{\mathsf{type}}
+% \newcommand{\send}{\mathsf{send}}
+% \newcommand{\txsend}{\tx_{\send}}
+% \newcommand{\txrec}{\tx_{\rec}}
+% \newcommand{\seen}{\mathsf{seen}}
+% \newcommand{\balances}{\mathsf{bal}}
+% \newcommand{\rec}{\mathsf{rec}}
+% \newcommand{\cl}{{\mathsf{cl}}}
+\newcommand{\Chain}{\mathsf{C}}
+% \newcommand{\ChainSC}{\mathsf{C_{\SC}}}
+% \newcommand{\ChainMC}{\mathsf{C_{\MC}}}
+% \newcommand{\Chainsc}{\mathsf{C_{sc}}}
+% \newcommand{\Chainmc}{\mathsf{C_{mc}}}
+\newcommand{\Ledger}{\mathbf{L}}
+\newcommand{\LState}{\mathsf{L}}
+% \newcommand{\LStateFull}{\tilde\mathsf{L}}
+\newcommand{\LView}[3]{#1^{#2}[#3]} % params: #1 - which ledger
+                                    % %         #2 - which party
+                                    % %         #2 - which time slot
+% \newcommand{\Assum}{\mathbb{A}}
+% \newcommand{\Asset}{\mathsf{A}}
+% \newcommand{\verifier}{\textsc{verifier}}
+%
+    % %%%%% unsuccessful attempts to create an Ada symbol
+    % %%%%% (http://www.fileformat.info/info/unicode/char/20b3/browsertest.htm)
+% %\newcommand{\Ada}{%
+% %  \Lambda
+% %  %%%%%%%%%%%%
+% %  %{\mathrel{\ooalign{\text{$\Lambda$}\cr=}}}
+% %  %%%%%%%%%%%%
+% %  %\renewcommand\useanchorwidth{T}
+% %  %{%
+% %  %    \stackinset{c}{0.05em}{c}{0.05em}{-}{
+% %  %    \stackinset{c}{0.05em}{c}{-0.1em}{-}{$\Lambda$}
+% %  %}
+% %  %}
+% %  %%%%%%%%%%%%
+% %  %\char8371
+% %  %\symbol{8371}
+% %  %\symbol{"20B3}
+% %}
+% %\newcommand{\Ada}{%
+% %  \topinset%
+% %    {$-$}
+% %    {\topinset{$-$}{$\Lambda$}{1.5pt}{0.3pt}}
+% %    {0.5pt}
+% %    {0.3pt}
+% %}
+%
+% %%% Bitcoin for reference
+% %\def\bitcoinA{%
+% %  \leavevmode
+% %  \vtop{\offinterlineskip %\bfseries
+% %    \setbox0=\hbox{B}%
+% %    \setbox2=\hbox to\wd0{\hfil\hskip-.03em
+% %    \vrule height .3ex width .15ex\hskip .08em
+% %    \vrule height .3ex width .15ex\hfil}
+% %    \vbox{\copy2\box0}\box2}}
+%
+% \newcommand{\Assets}{\mathsf{Assets}}
+% \newcommand{\HAssets}{\mathsf{HAssets}}
+% \newcommand{\sendAccount}{\mathsf{sAcc}}
+% \newcommand{\recAccount}{\mathsf{rAcc}}
+% \newcommand{\Account}{\mathsf{Acc}}
+% \newcommand{\amount}{v}
+% \newcommand{\sig}{\sigma}
+% \newcommand{\merge}{\mathsf{merge}}
+% \newcommand{\ValLang}{\mathbb{V}}
+% \newcommand{\HAValLang}{\mathbb{W}}
+% \newcommand{\proj}{\pi}
+% \newcommand{\noeffect}{\bot}
+% \newcommand{\unknown}{\Bot}
+\newcommand{\length}{\mathsf{length}}
+% \newcommand{\MC}{\mathbf{MC}}
+% \newcommand{\stateMC}{\mathsf{MC}}
+% \newcommand{\SC}{\mathbf{SC}}
+% \newcommand{\stateSC}{\mathsf{SC}}
+\newcommand{\SD}{\mathsf{SD}}
+% \newcommand{\SDb}{\mathsf{\overline{SD}}}
+% \newcommand{\epoch}{e}
+% \newcommand{\eps}{\varepsilon}
+% \renewcommand{\l}{\ell}
+% \newcommand{\Excluded}{\mathcal{I}}
+% \newcommand{\id}{\mathsf{id}}
+% \newcommand{\idSC}{\id_\SC}
+% \newcommand{\txw}{\mathsf{tx}_\mathsf{W}}
+% \newcommand{\pool}{\mathsf{pool}}
+% \newcommand{\dest}{\mathsf{dest}}
+% \newcommand{\com}{\mathsf{com}}
+% \newcommand{\sign}{\mathsf{sign}}
+% \newcommand{\effect}{\mathsf{effect}}
+% \newcommand{\eff}[2]{\mathsf{effect}_{#1\rightarrow #2}}
+% \newcommand{\peg}{\mathsf{peg}}
+% \newcommand{\range}{\mathsf{range}}
+% \newcommand{\concat}{\,\|\,}
+% \newcommand{\Val}{\mathsf{Val}}
+% %\renewcommand{\vec}[1]{\overrightarrow{#1}}
+% \newcommand{\txx}[1]{\tx^{(#1)}}
+% \newcommand{\stable}[1]{\hat{#1}}
+% \newcommand{\Genesis}{\mathsf{G}}
+% \newcommand{\Genesisb}{\mathsf{\overline{G}}}
+% \newcommand{\setd}[2]{\left\{ #1 \,:\, #2 \right\}}
+% \newcommand{\set}[1]{\mathcal{#1}}
+\newcommand{\slot}{sl}
+\newcommand{\DelDiff}{\mathsf{DDiffuse}}
+\newcommand{\env}{\ensuremath{\mathcal{Z}}}
+\newcommand{\adv}{\ensuremath{\mathcal{A}}}
+% \newcommand{\delayed}{\mathsf{delayed}}
+% \newcommand{\mc}{\mathcal}
+% \newcommand{\eqdef}{\triangleq}
+% \newcommand{\defeq}{\eqdef}
+%
+% \newcommand{\Init}{\textsf{Initialize}}
+% \newcommand{\AdvanceState}{\textsf{AdvanceState}}
+% \newcommand{\IssueTransaction}{\textsf{IssueTransaction}}
+% \newcommand{\AdoptLedger}{\textsf{AdoptLedger}}
+% \newcommand{\AbandonLedger}{\textsf{AbandonLedger}}
+% \newcommand{\PostTransaction}{\textsf{PostTransaction}}
+% \newcommand{\RequestState}{\textsf{RequestState}}
+\newcommand{\rnd}{\eta}
+% \newcommand{\rndb}{\bar{\eta}}
+%
+% \newcommand{\ada}{\mathfrak{A}}
+% \newcommand{\adasub}{\ada}
+%
+% \newcommand{\xsubsubsection}[1]{\ifieee \subsubsection{#1} \else \subsubsection{#1.} \fi}
+% \newcommand{\adalang}{\ValLang_{\adasub}}
+% \newcommand{\adatrans}{\Trans_{\adasub}}
+\newcommand{\cordelay}{\Lambda}
+\newcommand{\party}{P}
+%
+% % Ada symbol from Chad Nester
+% \makeatletter
+% \newcommand{\superimpose}[2]{%
+ % {\ooalign{$#1\@firstoftwo#2$\cr\hfil$#1\@secondoftwo#2$\hfil\cr}}}
+% \makeatother
+% \newcommand{\ADA}{\ensuremath{\mathpalette\superimpose{{{\Lambda}}{\raisebox{-0.01pt}{=}}}}}
+%
+% \newcommand{\params}{\mathcal{P}}
+% \newcommand{\GenParam}{\textsf{PGen}}
+% \newcommand{\Gen}{\textsf{Gen}}
+% \newcommand{\KeyCombine}{\textsf{AKey}}
+% \newcommand{\Comprises}{\textsf{ACheck}}
+% \newcommand{\Sig}{\textsf{Sig}}
+% \newcommand{\Ver}{\textsf{Ver}}
+% \newcommand{\SigCombine}{\textsf{ASig}}
+% \newcommand{\VerCombined}{\textsf{AVer}}
+%
+% \newcommand{\jstart}{j_{\mathsf{start}}}
+% \newcommand{\jadopt}{j_{\mathsf{adopt}}}
+% \newcommand{\jsend}{j_{\mathsf{send}}}
+%
+% \newcommand{\sccert}{\mathsf{sc\_cert}}
+%
+% \newcommand{\Bsig}{\Pi_{\textsf{MGS}}}
+% \newcommand{\VK}{\mathcal{VK}}
+% \newcommand{\commit}[1]{\left\langle #1 \right\rangle}
+% \newcommand{\vkh}{\widehat{vk}}
+% \newcommand{\VKh}{\widehat{\mathcal{VK}}}
+%
+% \newcommand{\ActSuccess}{\mathsf{ActivationSuccess}}
+% \newcommand{\ActFail}{\mathsf{ActivationFailure}}
+% \newcommand{\ActEpoch}{\mathsf{ActivationEpoch}}
+% \newcommand{\SidechainAdoption}{\mathsf{SidechainAdoption}}
+% \newcommand{\Cleanup}{\mathsf{Cleanup}}
+\newcommand{\NewEpoch}{\mathsf{NewEpoch}}
+\newcommand{\EpochIndex}{\mathsf{EpochIndex}}
+\newcommand{\NewSlot}{\mathsf{NewSlot}}
+\newcommand{\SlotIndex}{\mathsf{SlotIndex}}
+% \newcommand{\scstate}{\mathsf{sidechain\_state}}
+% \newcommand{\constant}[1]{\mathsf{#1}}
+% \newcommand{\initializing}{\constant{initializing}}
+% \newcommand{\initialized}{\constant{initialized}}
+% \newcommand{\failed}{\constant{failed}}
+% \newcommand{\ValidateSCChains}{\mathsf{ValidateSCChains}}
+% \newcommand{\ValidateMCChains}{\mathsf{ValidateMCChains}}
+\newcommand{\ValidConsLevel}{\mathsf{ValidateConsensusLevel}}
+% \newcommand{\Filter}{\mathsf{Filter}}
+% \newcommand{\verifierSC}{\textsc{verifier}_\SC}
+% \newcommand{\verifierMC}{\textsc{verifier}_\MC}
+% \newcommand{\verifierSCtx}{\textsc{verifytx}_\SC}
+% \newcommand{\verifierMCtx}{\textsc{verifytx}_\MC}
+\newcommand{\PickWinningChain}{\mathsf{PickWinningChain}}
+\newcommand{\GetDistr}{\mathsf{GetDistr}}
+\newcommand{\GetRandomness}{\mathsf{GetRandomness}}
+% \newcommand{\ConstructSCBlock}{\mathsf{ConstructSCBlock}}
+% \newcommand{\ConstructMCBlock}{\mathsf{ConstructMCBlock}}
+% \newcommand{\SwitchMCEpoch}{\mathsf{SwitchMCEpoch}}
+% \newcommand{\SwitchSCEpoch}{\mathsf{SwitchSCEpoch}}
+% \newcommand{\Diffuse}{\mathsf{Diffuse}}
+\newcommand{\SlotLeader}{\mathsf{SlotLeader}}
+% \newcommand{\Ouroboros}{\mathsf{Ouroboros}}
+% \newcommand{\pending}{\mathsf{pending}}
+% \newcommand{\valid}{\mathsf{valid}}
+% \newcommand{\validtx}{\mathsf{validtx}}
+% \newcommand{\prev}{\mathsf{prev}}
+% \newcommand{\state}{\mathsf{state}}
+% \newcommand{\hm}{\mathsf{hm}}
+% \newcommand{\bss}{\mathsf{bss}}
+% \newcommand{\MerkleTreeCommitment}{\mathsf{MerkleTreeCommitment}}
+% \newcommand{\keyseq}{\textsf{keys}}
+% \newcommand{\usedkeys}{\textsf{used}}
+% \newcommand{\goodkeys}{\textsf{good}}
+% \newcommand{\badkeys}{\textsf{bad}}
+% \ifieee
+  % \newenvironment{remark}{\textbf{Remark.}}{}
+% \fi
+% \newcommand{\QED}{\ifieee \else \qed \fi}
+% \newcommand{\scforge}{\textsc{sc-forge}}
+% \newcommand{\atmsforge}{\textsc{atms-forge}}
+% \newcommand{\hcol}{\textsc{hash-collision}}

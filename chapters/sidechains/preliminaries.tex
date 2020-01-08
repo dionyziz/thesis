@@ -1,0 +1,317 @@
+\section{Preliminaries}
+
+\todo{Clean up this section}
+
+%\subsection{Basic Notation}
+%We denote by $\eps$ the empty sequence, concatenation of sequences is denoted by
+%$\concat$.
+% PG: I put this to where it is first used
+
+\subsection{Our Model}
+\label{sec:model}
+
+We employ the model from~\cite{EC:DGKR18}, which is in turn based
+on~\cite{C:KRDO17} and~\cite{EC:GarKiaLeo15}.
+The formalization we use below captures both synchronous and semi-syn\-chronous
+communication; as well as both semi-adaptive and fully adaptive corruptions.
+%The reason is that, looking ahead, we will consider both the Ouroboros
+%and Ouroboros Praos protocols as the underlying blockchain for our construction;
+%and these protocols were originally analyzed (and shown to provide security) in
+%different models: Ouroboros assumes synchronous communication and semi-adaptive
+%corruptions, while Ouroboros Praos can tolerate semi-synchronous communication
+%and fully adaptive corruptions.
+
+\subsubsection{Protocol Execution}
+\label{sec:prelim-exec}
+
+We divide time into discrete units called
+\emph{slots}. %, as detailed later. % in Section~\ref{sec:comm}.
+Players are equipped with (roughly) synchronized clocks that
+indicate the current slot: we assume that any clock drift is subsumed in the
+slot length.  Each slot $\slot_r$ is indexed by an integer $r \in \{1,2,\ldots
+\}$.
+We consider a UC-style~\cite{FOCS:Canetti01} execution of a protocol~$\Pi$,
+involving an environment~$\env$, a number of
+parties~$\party_i$, functionalities that these parties can access while running
+the protocol (such as the $\DelDiff$ used for communication, described below), and
+an adversary~$\adv$. All these entities are interactive algorithms.  The
+environment controls the execution by activating parties via inputs it provides
+to them. The parties, unless corrupted, respond to such activations by following
+the protocol~$\Pi$ and invoking the available functionalities as needed.
+
+\subsubsection{(Semi-)Adaptive Corruptions}
+\label{sec:prelim-corr}
+
+The adversary  influences the protocol execution by interacting
+with the available functionalities, and by corrupting parties.
+The adversary can only corrupt a party $\party_i$ if it is given
+permission by the environment $\env$ running the protocol execution (captured as
+a special message from $\env$ to $\adv$).
+%The
+%permission is in the form of a message $(\mathsf{Corrupt}, \party_i)$ which is
+%provided to the adversary by the environment.
+Upon receiving permission from the environment, the adversary
+corrupts $\party_i$ after a certain delay of $\cordelay$ slots, where $\cordelay$ is
+a parameter of our model. In particular, if $\cordelay=0$ we talk about
+\emph{fully adaptive corruptions} and the corruption is immediate.
+The model with $\cordelay>0$ is
+referred to as allowing \emph{$\cordelay$-semi-adaptive corruptions} (as opposed to the
+\emph{static corruptions model}, where parties can only be corrupted before the
+start of the execution).
+%
+A corrupted
+party $\party_i$ will relinquish its entire state to~$\adv$;
+from this point on, the adversary will be activated in place of the
+party $\party_i$.
+
+\subsubsection{(Semi-)Synchronous Communication}
+\label{sec:prelim-comm}
+
+
+We employ the ``Delayed Diffuse'' functionality $\DelDiff_\Delta$ given in~\cite{EC:DGKR18} to
+model (semi-)synchronous communication among the parties. It allows each party
+to diffuse a message once per round, with the guarantee that it will be
+delivered to all other parties in at most $\Delta$ slots (the delay within this
+interval is under adversarial control). The adversary can also read and reorder
+all messages that are in transit, as well as inject new messages.
+We provide a detailed description of the functionality $\DelDiff_\Delta$ in
+Appendix~\ref{app:diffuse} for completeness.
+
+We refer to the setting where honest parties communicate via $\DelDiff_\Delta$
+as the \emph{$\Delta$-semi-synchronous setting} and sometimes omit $\Delta$ if
+it is clear from the context. The special case of $\Delta=0$ is referred to as
+the \emph{synchronous setting}.
+
+%% AK: the below is not needed as it is captured by DDifuse.
+%\subsubsection{Restrictions imposed on the environment}
+%
+%We assume that the execution satisfies the following conditions:
+%  (a) At each slot $\slot_j$, the environment $\env$  activates
+%  all honest parties.
+%  (b) The adversary is activated at least as the last entity in each $\slot_j$
+%  (as well as during all adversarial party activations and invocations
+%  from the ideal functionalities as prescribed).
+  %(c) If a stakeholder does not fetch in a certain slot
+  %the messages written to its incoming string from the diffuse functionality
+  %they are flushed.
+
+Clearly, the above model is by itself too strong to allow us to prove  any meaningful security
+guarantees for the executed protocol without further restrictions (as it, for
+example, does not prevent the adversary from corrupting all the participating
+parties). Therefore, in what follows, we will consider such additional
+assumptions, and will only
+provide security guarantees as long as such assumptions are satisfied.
+These assumptions will be specific to the protocol in consideration, and will be an
+explicit part of our statements.\footnote{As an example, we will be assuming that a
+majority of a certain pool of stake is controlled by uncorrupted parties.}
+%Formally, such assumptions can be captured by putting restrictions on the class
+%of admissible environments~$\env$, as done in previous
+%works~\cite{C:KRDO17,EC:DGKR18}.
+
+
+%It is easy to see that the model above confers such sweeping power on
+%the adversary that one cannot establish any significant guarantees on
+%protocols of interest.  It is thus important to restrict the
+%environment suitably (taking into account the details of the protocol) so
+%that we may be able to argue security.
+%We require that in every slot, the adversary does not control more than $50\%$
+%of the stake in the view of any honest stakeholder.
+%This transaction data, including the required signatures by each stakeholder, is obtained by the environment as specified in the protocol.
+%If this is violated, an event $\mathsf{Bad}^{\frac{1}{2}}$ becomes true for the
+%given execution.
+%When the environment spawns a new stakeholder by sending message $(\mathsf{Create},U,\chain)$ to the Key and Transaction functionality,
+%the initial local chain $\chain$ can be the chain of any honest stakeholder even in the case of ``lazy honest'' stakeholders as described in Appendix~\ref{app:lazy},
+%without requiring this stakeholder to have been online in the past slot as in~\cite{C:KRDO17}.
+%Finally,
+%we note that in all our proofs, whenever we say that a property $Q$ holds with high
+%probability over all executions,
+%we will in fact argue that $Q \lor {\sf Bad}^{\frac{1}{2}}$ holds with high probability
+%over all executions. This  captures the fact that we exclude environments and adversaries
+%that trigger ${\sf Bad}^{\frac{1}{2}}$ with non-negligible probability.
+
+
+
+\subsection{Blockchains and Ledgers}
+A \emph{blockchain} (or a \emph{chain}) (denoted e.g. $\Chain$)  is a sequence
+of blocks where each one is connected to the previous one by containing its
+hash.
+
+Blockchains (and in general, any sequences) are indexed using bracket notation.
+$\Chain[i]$ indicates the $i^{\text{th}}$ block, starting from $\Chain[0]$, the
+genesis block. $\Chain[-i]$ indicates the $i^{\text{th}}$ block from the end,
+with $\Chain[-1]$ being the tip of the blockchain. $\Chain[i:j]$ indicates a
+subsequence, or \emph{subchain} of the blockchain starting from block $i$
+(inclusive) and ending at block $j$ (exclusive). Any of these two indices can be
+negative. Omitting one of the two indexes in the range addressing takes the
+subsequence to the beginning or the end of the blockchain, respectively. Given
+blocks $A$ and $Z$ in $\Chain$, we let $\Chain\{A:Z\}$ denotes the subchain
+obtained by only keeping the blocks from $A$ (inclusive) to $Z$ (exclusive).
+Again any of these two blocks can be omitted to indicate a subchain from the
+beginning or to the end of the blockchain, respectively. In blockchain
+protocols, each honest party $\party$ maintains a currently adopted chain. We
+denote $\LView{\Chain}{\party}{t}$ the chain adopted by party $\party$ at slot~$t$.
+
+A \emph{ledger} (denoted in bold-face, e.g. $\Ledger$) is a mechanism for
+maintaining a sequence of transactions, often stored in the form of a
+blockchain.  In this paper, we slightly abuse the language by letting $\Ledger$
+(without further qualifiers) interchangeably refer to the algorithms used to
+maintain the sequence, and all the views of the participants of the state of
+these algorithms when being executed.  For example, the (existing) ledger
+Bitcoin consists of the set of all transactions that ever took place in the
+Bitcoin network, %the Bitcoin protocol,
+the current UTXO set, as well as the
+local views of all the participants.
+
+In contrast, we call a \emph{ledger state}
+%$\LState$
+a concrete sequence of transactions
+$\tx_1,\tx_2, \ldots$ stored in the \emph{stable} part of a ledger $\Ledger$, typically as viewed by a
+particular party.
+Hence, in every blockchain-based ledger $\Ledger$, every fixed
+chain $\Chain$ defines a concrete ledger state % $\LState$
+by applying  the interpretation rules given as a part of the description
+of~$\Ledger$ (for example, the ledger state is obtained from the
+blockchain by dropping the last $k$ blocks and serializing the transactions in
+the remaining blocks).
+We maintain the typographic convention that a ledger state (e.g. $\LState$) always
+belongs to the bold-face ledger of the same name (e.g. $\Ledger$).
+We denote by $\LView{\Ledger}{P}{t}$ the ledger state of a ledger $\Ledger$ as viewed by a party
+$\party$ at the beginning of a time slot $t$,
+%Finally, recall that a transaction is called \emph{stable} if it is contained in a block
+%at least $k$ blocks away from the end of the blockchain. For a blockchain
+%$\Chain$, we denote by $\stable{\Chain}$ the stable part of $\Chain$ (which
+%implicitly depends on $k$). Moreover, for a  chain $\Ledger$ we
+%denote by $\Ledger^t$ its form in some past time slot $t$.
+and by $\check{\Ledger}^P[t]$ the complete state of the ledger (at time
+$t$) including all
+pending transactions that are not stable yet.
+For two ledger states (or, more generally, any sequences), we denote by
+$\preceq$ the prefix relation.
+
+Recall the definitions of persistence and liveness of a robust public
+transaction ledger given in the most recent version of~\cite{EC:GarKiaLeo15}:
+
+\begin{description}
+  \item[Persistence.]
+    For any two honest parties $\party_1,\party_2$ and two time slots $t_1\leq t_2$,
+    it holds  $\LView{\Ledger}{\party_1}{t_1} \preceq
+    \LView{\check{\Ledger}}{\party_2}{t_2}$.
+
+  \item[Liveness.]
+    If all honest parties in the system attempt to include a  transaction
+    then, at any slot $t$ after $u$ slots (called the
+    liveness parameter), any honest party $\party$, if queried,
+    will report $\tx \in \LView{\Ledger}{\party}{t}$.
+\end{description}
+
+For a ledger $\Ledger$ that satisfies persistence at time $t$, we denote by $\LView{\Ledger}{\cup}{t}$ (resp.
+$\LView{\Ledger}{\cap}{t}$) the sequence of transactions that are seen as
+included in the ledger by \emph{at least one} (resp., \emph{all}) of the honest
+parties. Finally, $\length(\Ledger)$ denotes the length of the ledger $\Ledger$,
+i.e., the number of transactions it contains.
+
+
+\subsection{Underlying Proof-of-Stake Protocols}
+\label{sec:ouroboros}
+\label{sec:pos}
+
+For conciseness we present our construction on a generic PoS protoocol
+ based on  Ouroboros PoS \cite{C:KRDO17}. As we outline
+in Appendix~\ref{app:other}, our construction can  be easily adapted to other
+provably secure proof-of-stake protocols: Ouroboros
+Praos~\cite{EC:DGKR18}, Ouroboros Genesis~\cite{genesis}, Snow
+White~\cite{DBLP:journals/iacr/BentovPS16a}, and Algorand~\cite{algorand}.
+While a full understanding of all details of these protocols is not required to
+follow our work (and cannot be provided in this limited space), an overview of
+Ouroboros is helpful to follow the main body of the paper.  We provide this
+high-level overview here, and point an interested reader to
+Appendix~\ref{app:other} (or the original papers) for details on the other
+protocols.
+
+\subsubsection{Ouroboros}
+
+%\paragraph{Description.}
+The protocol operates (and was analyzed) in the synchronous model with
+semi-adaptive corruptions. % described in Section~\ref{sec:model}.
+%
+In each slot, each of the parties can determine whether she qualifies as a
+so-called \emph{slot leader} for this slot.  The event of a particular party
+becoming a slot leader occurs with a probability proportional to the stake
+controlled by that party and  is independent for two different slots.
+It is determined by a public, deterministic computation from the stake
+distribution and so-called \emph{epoch randomness} (we will discuss shortly
+where this randomness comes from) in such a way that for each slot, exactly one
+leader is elected.
+
+If a party is elected to act as a slot leader for the current slot, she is
+allowed to create, sign, and broadcast a block (containing transactions that
+move stake among stakeholders).  Parties participating in the protocol are
+collecting such valid blocks and always update their current state to reflect
+the longest chain they have seen so far that did not fork from their previous
+state by too many blocks into the past.
+
+Multiple slots are collected into \textit{epochs}, each of which contains
+$R\in \mathbb{N}$ slots. The security arguments in~\cite{C:KRDO17} require $R\geq 10k$
+for a security parameter $k$; we will consider $R=12k$ as additional $2k$ slots
+in each epoch will be useful for our construction.
+%(in Cardano, $R=21600$).
+Each epoch is indexed by an index $j \in \mathbb{N}$. During an epoch
+$j$, the stake distribution that is used for slot leader election corresponds to
+the distribution recorded in the ledger up to
+a particular slot of epoch $j-1$, chosen in a way that guarantees that by the
+end of epoch $j-1$, there is consensus on the chain up to this slot. (More
+concretely, this is the latest slot of epoch $j-1$ that appears in the first $4k$
+out of its total $R$ slots.)
+Additionally, the \emph{epoch randomness $\rnd_j$} for epoch $j$ is derived
+during the epoch $j-1$ via a \emph{guaranteed-output delivery coin tossing}
+protocol
+%SCRAPE~\cite{ACNS:CasDav17}
+that is executed by the epoch slot leaders,
+and is available after $10k$ slots of epoch $j-1$ have passed.
+
+In our treatment, we will refer to the relevant parts of the above-described protocol as
+follows:
+\begin{description}
+\item
+  $\GetDistr(j)$
+  returns the stake distribution $\SD_j$ to be used for epoch $j$, as recorded in the
+    chain up to slot $4k$ of epoch $j-1$;
+
+\item
+  $\GetRandomness(j)$
+  returns the randomness $\rnd_j$ for epoch $j$ as derived during epoch $j-1$;
+\item
+  $\ValidConsLevel(\Chain)$
+  checks the consensus-level validity of a given chain $\Chain$: it verifies that all block hashes
+    are correct, signatures are valid and belong to eligible slot leaders;
+\item
+  $\PickWinningChain(\Chain,\mathcal{C})$
+    applies the chain-selection rule: from a set of chains $\{\Chain\}\cup\mathcal{C}$ it
+    chooses the longest one that does not fork from the current chain $\Chain$
+    more than $k$ blocks in the past;
+\item
+  $\SlotLeader(U,j,sl,\SD_j,\rnd_{j})$
+  determines whether a party $U$ is elected a slot leader for the slot $sl$ of
+    epoch $j$, given stake distribution $\SD_j$ and randomness $\rnd_{j}$.
+\end{description}
+Moreover, the function $\EpochIndex$ (resp. $\SlotIndex$) always returns
+the index of the current epoch (resp. slot), and the event $\NewEpoch$ (resp.
+$\NewSlot$) denotes the start of a new epoch (resp. slot).
+Since we use these functions in a black-box manner, our construction can be
+readily adapted to PoS protocols with a similar structure that differ in the
+details of these procedures.
+
+%\paragraph{Security.}
+Ouroboros was shown in~\cite{C:KRDO17} to achieve
+both persistence and liveness
+%the common prefix, chain growth, and chain quality properties, proposed as
+%security desiderata for blockchain protocols in~\cite{EC:GarKiaLeo15}.
+%It is well-known that these properties imply both
+%persistence and liveness of the resulting ledger.
+%These properties are achieved by Ouroboros
+under the following assumptions:
+(1) synchronous communication;
+(2) $2R$-semi-adaptive corruptions;
+(3) majority of stake in the stake distribution for each epoch is
+always controlled by honest parties during that epoch.
+%(4)  the stake shift per epoch is limited.
