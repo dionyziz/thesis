@@ -1,0 +1,189 @@
+\section{Adaptation to Other Proof-of-Stake Blockchains}
+\label{section:other}
+
+\todo{Move this section into Proof-of-Stake chapter}
+
+Our construction can be adapted to work with other provably secure
+proof-of-stake blockchains discussed in Section~\ref{sec:pos}:
+Ouroboros Praos~\cite{EC:DGKR18},
+Ouroboros Genesis~\cite{genesis},
+Snow White~\cite{DBLP:journals/iacr/BentovPS16a}, and
+Algorand~\cite{algorand}.
+Here we assume some familiarity with the
+considered protocols and refer the interested reader to the original papers for
+details.
+%defer a more self-contained discussion of these
+%adaptations to the full version of this paper.
+
+\subsection{Ouroboros Praos and Ouroboros Genesis}
+
+These protocols~\cite{EC:DGKR18,genesis} are strongly related and differ from each
+other only in the chain-selection
+rule they use, which is irrelevant for our discussion here, hence we
+consider both of the protocols simultaneously.
+Ouroboros Praos was shown secure in the
+semi-synchronous model with fully adaptive corruptions (cf.
+Section~\ref{sec:model}) and this result extends to Ouroboros Genesis.
+Despite sharing the basic structure with Ouroboros,
+they differ in several significant points which we now outline.
+
+The slot leaders are elected differently: Namely, each party for each
+slot evaluates a verifiable random function (VRF,~\cite{PKC:DodYam05}) using
+the secret key associated with their stake, and providing as inputs to the VRF
+both the slot index and the epoch randomness. If the VRF output is below a
+certain threshold that depends on the party's stake, then the party is an
+eligible slot leader  for that slot, with the same consequences as in Ouroboros.
+%and is allowed to create, sign, and broadcast a block (containing transactions
+%that move stake among stakeholders).
+Each leader then includes into the block it creates the VRF output and a
+proof of its validity to certify her eligibility to act as slot leader.
+%
+The probability of becoming a slot leader is roughly proportional to the amount of
+stake the party controls, however now it is independent for each slot and each
+party, as it is evaluated locally by each stakeholder for herself.  This local
+nature of the leader election implies that there will inevitably be some slots
+with no, or several, slot leaders.
+%
+In each epoch $j$, the stake distribution used in Praos and Genesis
+for slot leader
+election corresponds to the distribution recorded in the ledger up to the last
+block of epoch $j-2$.  Additionally, the \emph{epoch randomness $\rnd_j$} for epoch $j$
+is derived as a hash of additional VRF-values included into blocks
+from the first two thirds of epoch $j-1$ for this purpose by the respective slot
+leaders.
+%
+Finally, the protocols use \emph{key-evolving signatures} for
+block signing, and in each slot the honest parties are mandated to update their
+private key, contributing to their resilience to adaptive corruptions.
+
+%\paragraph{Security}
+Ouroboros Praos was shown~\cite{EC:DGKR18} to achieve
+persistence and liveness under weaker assumptions than Ouroboros,
+namely:
+%\begin{enumerate}
+  %\item
+    (1) $\Delta$-semi-synchronous communication
+    (where $\Delta$ affects the security bounds
+    but is unknown to the protocol);
+  %\item
+    (2) majority of the stake is always controlled by honest parties.
+  %\item
+    %(3) the stake shift per epoch is limited.
+%\end{enumerate}
+In particular, Ouroboros Praos is secure in face of fully adaptive corruptions
+without any corruption  delay.
+Ouroboros Genesis provides the same guarantees as Praos, as well as several
+other features that will not be relevant for our present
+discusion.
+
+\noindent
+\textbf{Construction of Pegged Ledgers.}
+The main difference compared to our treatment of Ouroboros
+would be in the construction of the sidechain certificate
+(cf. Section~\ref{sec:sccert}). The need for a modification is caused by the
+private, local leader selection using VRFs in these protocols, which makes it
+impossible to identify the set of slot leaders for the suffix of an epoch at the
+beginning of this epoch, as done for Ouroboros.
+
+The sidechain certificate included in $\MC$ at the beginning of epoch $j$
+would hence contain the following, for parameters $Q$ and $T$ specified below:
+\begin{enumerate}
+\item
+the epoch index;
+\item
+a Merkle commitment to the list of withdrawals as in the case of Ouroboros;
+\item
+a Merkle commitment to the $\SC$ stake distribution $\SDb_{j}$;
+\item
+a list of $Q$ public keys;
+\item
+$Q$ inclusion proofs (with respect to $\SDb_{j-1}$ contained in the previous
+certificate) and $Q$ VRF-proofs certifying that these $Q$ keys belong
+to slot leaders of $Q$ out of the last $T$ slots in epoch $j-1$;
+\item
+$Q$ signatures from the above $Q$ public keys on the above; these can be
+replaced by a single aggregate signature to save space on $\MC$.
+\end{enumerate}
+
+The parameters $Q$ and $T$ have to be chosen in such a way that with
+overwhelming probability, there will be a chain growth of at least $Q$ blocks
+during the last $T$ slots of epoch $j-1$,
+but the adversary controls $Q$ slots in this period only
+with negligible probability (and hence at least one of the signatures will have
+to come from an honest slot leader).
+The existence of such constants for $T=\Theta(k)$ was shown in~\cite{genesis}.
+
+While the above sidechain certificate is larger (and hence takes more space on
+$\MC$) than the one we propose for Ouroboros, a switch to Ouroboros
+Praos or Genesis would also bring several advantages. First off, both
+constructions would give us security in the semi-synchronous model with fully
+adaptive corruptions (as shown in~\cite{EC:DGKR18,genesis}),
+%and discussed in Section~\ref{sec:ouroboros}),
+and the use of
+Ouroboros Genesis would allow newly joining players to bootstrap from the
+mainchain genesis block only---without the need for a trusted checkpoint---as discussed
+extensively in~\cite{genesis}.
+
+%Additionally, since the epoch randomness generation in these two protocols is
+%significantly more efficient than in Ouroboros and only involves a hash function
+%invocation, our construction could be adapted so that $\SC$ produces its own
+%epoch randomness in this way instead of reusing the mainchain randomness,
+%opening doors to a greater separation of the two chains.
+
+\subsection{Snow White}
+
+The high-level structure of Snow White execution is similar to the protocols we have
+already discussed: it contains epochs, committees that are sampled for each
+epoch based on the stake distribution recorded in the blockchain prior to that
+epoch, and randomness used for this sampling produced by hashing special nonce
+values included in previous blocks. Hence, our construction can be adapted to
+work with Snow White-based blockchains in a straightforward manner.
+
+
+\subsection{Algorand}
+
+Algorand does not aim for the so-called eventual consensus. Instead it runs a
+full Byzantine Agreement protocol for each block before moving to the next
+block, hence blocks are immediately finalized. Consider a setting with $\MC$
+and $\SC$ both running Algorand. The main difficulty to address when
+constructing pegged ledgers is the continuous  authentication of the
+sidechain certificate constructed by $\SC$-maintainers for $\MC$ (other aspects,
+such as deposits from $\MC$ to $\SC$ work analogously to what we
+described above).
+%
+As Algorand does not have epochs, and creating and processing a sidechain
+certificate for each block is overly demanding, a natural choice is to
+introduce a parameter $R$ and execute this process only once every $R$ blocks.
+Namely, every $R$ blocks, the $\SC$-maintainers produce a certificate that
+the $\MC$-maintainers insert into the mainchain. This certificate most
+importantly contains:
+\begin{enumerate}
+\item
+a Merkle commitment to the list of withdrawals in the most recent $R$-block
+    period;
+\item
+a Merkle commitment to the full, most recent stake distribution $\SDb_j$ on
+    $\SC$;
+\item
+a sufficient number of signatures from a separate committee
+%that would be elected via the
+%Algorand sortition mechanism from the previously-committed stake distribution
+%$\SDb_{j-1}$,
+certifying the above information, together with proofs justifying the membership
+of the signature's creators in the committee.
+\end{enumerate}
+This additional committee is sampled from $\SDb_{j-1}$ (the stake
+distribution committed to in the previous sidechain certificate) via Algorand's
+private sortition mechanism such that the expected size of the
+committee is large enough to ensure honest supermajority
+(required for Algorand's security) translates into a strong
+honest majority within the committee.
+Note that the sortition mechanism also allows for a succinct proof of membership
+in the committee.
+The members of the committee then
+insert their individual signatures (signing the first two items in the
+certificate above) into the $\SC$ blockchain during the period of $R$ blocks
+preceding the construction of the certificate.
+%
+All the remaining mechanics of the pegged ledgers are a direct analogy of
+our construction above.

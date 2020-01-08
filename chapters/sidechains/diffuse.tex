@@ -1,0 +1,55 @@
+\section{The Diffuse Functionality}
+\label{diffuse}
+
+\todo{Move this section to Backbone preliminaries}
+
+In the model described in Section~\ref{sec:model} we employ the
+``Delayed Diffuse'' functionality of~\cite{EC:DGKR18}, which we now describe
+in detail for completeness.
+The functionality is para\-meterized by $\Delta\in\mathbb{N}$ and
+denoted {$\DelDiff_\Delta$}. It keeps rounds, executing one round per slot.
+{$\DelDiff_\Delta$} interacts with the environment $\env$, stakeholders
+$U_1,\ldots,U_n$ and adversary $\adv$,
+%(these are detailed in Section~\ref{sec:prelim-exec})
+working as follows for each
+round:
+%\begin{enumerate}
+%\item
+  {$\DelDiff_\Delta$} maintains an incoming string for each party $\party_i$ that participates. A party,
+if activated, can fetch the contents of its incoming
+string, hence it behaves as a mailbox. Furthermore, parties can give
+an instruction to the functionality to diffuse a message. Activated parties can diffuse once per round.
+
+%\item
+  When the adversary $\adv$ is activated,
+  it can:
+  %\begin{itemize}
+    %\item
+    (a) read all
+    inboxes and all diffuse requests and deliver messages to the inboxes in any
+    order;
+    %
+    %\item
+    (b) for any message $m$ obtained via a diffuse request and any party $\party_i$,
+      $\adv$ may move $m$ into a special string $\delayed_i$ instead of the
+      inbox of $\party_i$. $\adv$~can decide this individually for each message and
+      each party;
+    %\item
+    (c) for any party $\party_i$, $\adv$ can move any message from the string
+      $\delayed_i$ to the inbox of $\party_i$.
+  %\end{itemize}
+
+    %\item
+  At the end of each round, the functionality ensures that every message
+  that was either (a) diffused in this round and not put to the string
+  $\delayed_i$  or (b) removed from the string $\delayed_i$ in this round
+  is delivered to the inbox of  party $\party_i$.
+  If a message currently present in $\delayed_i$ was
+  originally diffused $\Delta$ slots ago, the functionality
+  removes it from $\delayed_i$ and appends it to the inbox of party $\party_i$.
+
+  %\item
+    Upon receiving $(\mathsf{Create},U,\mc{C})$ from the environment, the
+    functionality spawns a new stakeholder with chain $\mc{C}$ as its initial
+    local chain (as in~\cite{C:KRDO17,EC:DGKR18}).
+%\end{enumerate}
