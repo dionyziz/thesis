@@ -1,0 +1,256 @@
+\section{Introduction}
+
+\todo{Clean up this section}
+
+Blockchain protocols and their most
+prominent application so far,  cryptocurrencies like Bitcoin~\cite{bitcoin},
+have been gaining increasing popularity and acceptance by
+a wider community.   While enjoying wide adoption,
+there  are several fundamental open questions remaining to be resolved
+that include (i)
+         Interoperability:
+           How can different blockchains interoperate and exchange
+           assets or other data?
+(ii)  Scalability:
+           How can blockchain protocols scale, especially proportionally to the number of           participating nodes?
+(iii)
+         Upgradability:
+           How can a deployed blockchain protocol codebase evolve to support a new
+           functionality, or correct an implementation problem?
+
+The main function of a blockchain protocol  is to organise \textit{application
+data} into \textit{blocks} so that a set of nodes that evolves over time can
+arrive eventually to consensus about the sequence of events that took place.
+The consensus component can be achieved in a number of ways, the most popular
+is using proof-of-work~\cite{C:DwoNao92} (cf. \cite{bitcoin,EC:GarKiaLeo15}),
+while a promising alternative is to use proof-of-stake
+(cf. \cite{algorand,C:KRDO17,EPRINT:BenPasShi16b,EC:DGKR18}).
+Application data typically
+consists of \textit{transactions} indicating some transfer of value as in the
+case of Bitcoin~\cite{bitcoin}.  The transfer of value can be conditioned on
+arbitrary predicates called \textit{smart contracts} such as, for example, in
+Ethereum~\cite{buterin,wood}.
+
+The conditions used to validate transactions %for each node of the system
+depend on local blockchain events according to the view of each node and they
+typically cannot be dependent on other blockchain sessions. Being
+able to perform operations across blockchains, for instance from a main blockchain
+such as Bitcoin to a ``sidechain'' that has some enhanced functionality, has been
+frequently considered  a fundamental technology enabler in the blockchain space.\footnote{See
+e.g., \url{https://blockstream.com/technology/} and \cite{sidechains}.  }
+
+
+Sidechains, introduced in \cite{sidechains},  are a
+way for multiple blockchains to communicate with each other and have one react
+to events in the other. Sidechains can exist in two forms. In the first case, they are simply a mechanism for two
+existing \textit{stand-alone blockchains} to communicate, in which case any of
+the two blockchains can be the sidechain of the other and they are treated as
+equals. In the second case, the
+sidechain can be a ``child'' of an existing blockchain, the \textit{mainchain},
+in that its genesis block, the first block of the blockchain, is somehow seeded
+from the parent blockchain and the child blockchain is meant to depend on the
+parent blockchain, at least during an initial bootstrapping stage.
+
+A sidechain system can choose to enable certain types of interactions between
+the participating block\-chains. The most basic interaction
+is the transfer of assets from
+one blockchain to another. In this application, the nature of the asset
+transferred is retained in that it is not transformed into a different class of
+asset (this is in contrast to a related but different concept of \emph{atomic
+swaps}).
+As such, it maintains its value and may also be transferred back.
+The ability to move assets back and
+forth between two chains is sometimes referred to as a \textit{2-way peg}. Provided
+the two chains are both secure as individual blockchains, a secure
+sidechain protocol construction allows this security to be carried on to
+cross-chain transfers.
+
+A secure sidechain system could be of a great value vis-\`a-vis all three
+of the pressing open questions in blockchain systems mentioned above. Specifically:
+
+%\noindent
+{\em Interoperability.} There are currently hundreds of
+    cryptocurrencies deployed in production. Transferring assets between
+    different chains requires transacting with intermediaries (such as exchanges). Furthermore,
+    there is no way to securely interface with another blockchain to react to
+    events occurring within it. Enabling sidechains allows
+    blockchains of different nature to communicate, including interfacing with
+    the legacy banking system which can be made available through the use of
+    a private ledger.
+
+%\noindent
+{\em   Scalability.} While sidechains were not originally proposed for
+    scalability purposes, they can be used to off-load the load of a blockchain
+    in terms of transactions processed. As long as 2-way pegs are enabled, a
+    particular sidechain can offer specialization by, e.g., industry, in order
+    to avoid requiring the mainchain to handle all the transactions occurring
+    within a particular economic sector. This provides a straightforward way to
+    ``shard'' blockchains, cf. \cite{DBLP:conf/ccs/LuuNZBGS16,SP:KJGGSF18,EPRINT:ZamMovRay18}.
+
+%\noindent
+{\em Upgradability.} A child sidechain can be created from a parent
+    mainchain as a means of exploring a new feature, e.g., in the scripting language, or
+    the consensus mechanism
+    without requiring a soft, hard, or velvet fork~\cite{nipopows,velvet}. The
+    sidechain does not need to maintain its own separate currency, as value can
+    be moved between the sidechain and the mainchain at will. If the feature of
+    the sidechain proves to be popular, the mainchain can eventually be
+    abandoned by moving all assets to the sidechain, which can become the new
+    mainchain.
+
+Given the benefits listed above for distributed ledgers, there is a pressing
+need to address the question of sidechain security and feasibility, which so far, perhaps surprisingly, has not received any proper formal treatment.
+
+\medskip
+
+\noindent
+{\bf Our contributions. }
+First, we formalize the notion of sidechains by proposing a rigorous cryptographic
+definition, the first one to the best of our knowledge.
+The definition is abstract enough to be able to capture the security for
+blockchains based on proof-of-work, proof-of-stake, and other consensus mechanisms.
+
+A critical security feature of a  sidechain system that we formalise
+is the \textit{firewall property} in
+which a catastrophic failure in one of the chains, such as a violation of its
+security assumptions, does not make the other chains vulnerable providing a
+sense of limited liability.%
+\footnote{To follow the analogy with the term of limited liability in corporate
+law, a catastrophic sidechain failure is akin to a corporation going bankrupt
+and unable to pay its debtors. In a similar fashion, a sidechain in which the
+security assumptions are violated may not be able to cover all of its debtors.
+%In fact,
+%because it can be under attack,
+We give no assurances regarding assets residing on a sidechain if its
+security assumptions are broken.
+ However, in the same way that stakeholders of a corporation are personally
+protected in case of corporate bankruptcy, the mainchain is also protected in
+case of sidechain security failures. Our security will guarantee that
+each incoming transaction from a sidechain will always have a valid
+explanation  in the sidechain ledger
+independently of whether the underlying
+security assumptions are violated or not. A simple embodiment of this rule
+is that a sidechain can return to the mainchain at most as many coins as they have been sent to the sidechain over all time.
+}
+The   firewall property formalises and generalises the concept of a blockchain \textit{firewall} which was described in high level in~\cite{sidechains}. Informally the blockchain firewall suggests
+that no more money can ever return from the sidechain than the amount that was moved
+into it. Our general firewall property  allows relying on an
+arbitrary definition of exactly how assets can correctly be moved back and forth
+between the two chains, we capture this by a so-called
+\textit{validity language}. In case of failure, the firewall
+ensures that transfers from the sidechain into the mainchain are rejected unless
+there exists a (not necessarily unique) plausible history of events on the sidechain that could, in case the
+sidechain was still secure, cause the particular transfers to take place.
+%If
+%the correctness validity language describing the valid transfers between the
+%mainchain and the sidechain consists of a simple law of conservation, then the
+%limited liability  property captures  precisely a blockchain firewall.
+
+Second, we  outline a concrete exemplary
+construction for sidechains for proof-of-stake
+blockchains. For conciseness our construction is described
+with respect to a generic PoS blockchain consistent with the  Ouroboros
+protocol~\cite{C:KRDO17} that underlies the Cardano blockchain, which is currently one of the largest
+pure PoS blockchains by market capitalisation,\footnote{See \url{https://coinmarketcap.com}. }
+nevertheless we also discuss how to modify our construction to
+operate for
+Ouroboros Praos~\cite{EC:DGKR18},
+Ouroboros Genesis~\cite{genesis},
+Snow White \cite{DBLP:journals/iacr/BentovPS16a}
+and
+Algorand \cite{algorand}.
+
+We prove our construction secure   using standard cryptographic
+assumptions. We show that our construction (i) supports safe cross-chain value
+transfers when the security assumptions of both chains are satisfied, namely
+that a majority of honest stake exists in both chains, and (ii) in case of a
+one-sided failure,  maintains the firewall property, thus
+containing the damage
+to the chains whose security conditions have been violated.
+%
+
+A critical consideration in a sidechain construction is safeguarding
+a new sidechain in its initial ``bootstrapping'' stage against a ``goldfinger'' type of attack \cite{Kroll:2013sp}. Our construction
+features a mechanism we call {\em merged-staking}
+that allows  mainchain stakeholders who have signalled
+sidechain awareness to create sidechain blocks even without moving stake
+to the sidechain. In this way, sidechain security can be maintained
+assuming honest stake majority among the entities that have signaled sidechain
+awareness that, especially in the bootstrapping stage, are expected to be
+a large superset of the set of stakeholders that maintain assets
+in the sidechain.
+%Refel the maintainers
+%of the sidechain need to monitor the blocks generated by the mainchain, but the
+%maintainers of the mainchain need not be aware of the sidechain's blocks.
+
+Our techniques can be used to facilitate various forms of 2-way peggings
+between two chains. As an illustrative example we focus on a parent-child
+mainchain-sidechain
+configuration where sidechain nodes follow also the mainchain (what we call direct observation) while mainchain nodes need to be able to receive cryptographically
+certified signals
+from the sidechain maintainers,
+taking advantage of the proof-of-stake nature of the underlying protocol. This is achieved by having
+mainchain nodes maintain sufficient information about the sidechain that allows
+them to authenticate a
+small subset of  sidechain stakeholders that is sufficient to
+reliably represent the view of a stakeholder majority on the sidechain.
+%a recent snapshot of the stakeholder distribution on
+%the sidechain (committed in the form of a Merkle-Patricia trie)
+This piece of information is updated in regular intervals to account
+for  stake shifting on the sidechain.
+Exploiting this, each withdrawal  transaction from the sidechain to the mainchain
+is signed by this  small subset of sidechain stakeholders.
+%that is sufficient to reliably represent the view of a stakeholder majority on the sidechain.
+To minimise overheads we batch this authentication information and all the withdrawal transactions from
+the sidechain in a single message that will be prepared once per ``epoch.'' We will
+refer to this signaling  as
+ {\em cross-chain certification}.
+
+In greater detail, adopting some terminology  from \cite{C:KRDO17},
+the sidechain certificate  is constructed by obtaining
+signatures  from the set of so-called \emph{slot leaders} of the last
+$\Theta(k)$ slots of the previous epoch, where $k$ is the security parameter.
+Subsequently, these signatures will be combined together with all necessary
+information to convince the mainchain nodes (that do not have access to the
+sidechain) that the sidechain certificate is valid.
+
+We abstract the notion of
+this trust transition into a new cryptographic primitive called
+\emph{ad-hoc threshold multisignatures (ATMS)}
+that we implement in three distinct ways. The first one
+simply concatenates signatures of elected slot leaders. While secure, the disadvantage of
+this implementation is that the size of the sidechain certificate is
+$\Theta(k)$ signatures.
+An improvement can be achieved by
+employing multisignatures and Merkle-tree hashing for verification key aggregation;  using this we can drop the sidechain-certificate size to
+$\Theta(r)$ signatures where $r$  slot leaders do not participate in its generation; in the optimistic case $r\ll k$ and thus this scheme can be
+a significant improvement in practice. Finally, we show that STARKs and bulletproofs~\cite{ben2017scalable,bunzbulletproofs}
+can be used to bring down the size of the certificate to be optimally succinct in the random oracle model.  We observe that in the case of an active sidechain (e.g., one that returns assets
+at least once per epoch) our construction with succinct sidechain
+certificates has optimal storage requirements in the mainchain.
+
+\noindent {\bf  Related work. }
+Sidechains were first proposed as a high level concept in~\cite{sidechains}.
+%To the best of
+%our knowledge, so far  no
+%formal definition of sidechain security exists, and existing constructions are not
+%accompanied by formal analysis.
+Notable proposed implementations of the concept are given in~\cite{drivechains,lerner}.
+In these works, no formal proof of security
+is provided and their performance is sometimes akin to maintaining the whole
+blockchain within the sidechain, limiting any potential scalability gains.
+%
+There have been several attempts to create various cross-chain transfer
+mechanisms including Polkadot~\cite{wood2016polkadot},
+Cosmos~\cite{buchman2016tendermint}, Blockstream's Liquid \cite{DBLP:journals/corr/DilleyPWPGF16} and Interledger \cite{interledger}. These constructions  differ in various aspects from our work including in that
+they focus on proof-of-work or private (Byzantine) blockchains, require
+federations, are not decentralized and --- in all cases ---
+ lack a formal security model and analysis.
+Threshold multi-signatures were considered before, e.g., \cite{DBLP:conf/eurocrypt/LiHL94},
+without the ad-hoc characteristic we consider here.
+A related primitive that has been considered as potentially useful for enabling
+proof-of-work (PoW) sidechains (rather than PoS ones) is a (non-interactive) proof of
+proof-of-work~\cite{FCW:KiaLamSto16,nipopows}; nevertheless,  these works do not give a
+formal security definition for sidechains, nor provide a complete sidechain
+construction. We reiterate that while we focus on  PoS, our definitions and model
+are fully relevant for the PoW setting as well.
