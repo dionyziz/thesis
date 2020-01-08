@@ -119,10 +119,10 @@ collisions in hash functions. This is formalized in the next definition.
   \]
 \end{definition}
 
-A weaker notion of security mandates that no adversary can reverse the function (pre-image resistance) or that no adversary can find a second value giving the same output as a given random value. The two cryptographic games and definitions are as follows.
+A weaker notion of security mandates that no adversary can reverse the function (pre-image resistance) or that no adversary can find a second value giving the same output as a given random value. The two cryptographic games and definitions are illustrated in Algorithms~\ref{alg.hash-preimage} and~\ref{alg.hash-second-preimage}.
 
-\input{./algorithms/alg.preimage.tex}
-\input{./algorithms/alg.second-preimage.tex}
+\input{./algorithms/alg.hash-preimage.tex}
+\input{./algorithms/alg.hash-second-preimage.tex}
 
 \begin{definition}[Pre-image resistance]
   A hash function $H: \{0, 1\}^* \longrightarrow \{0, 1\}^\lambda$ is called
@@ -190,7 +190,7 @@ Signature schemes must be \emph{correct}.
 \end{definition}
 
 A \emph{secure} signature scheme requires that no adversary is able to forge
-signatures. This is captured in the following game-based definition.
+signatures. This is captured in the game-based definition of Algorithm~\ref{alg.forgery}.
 
 \input{./algorithms/alg.forgery.tex}
 
