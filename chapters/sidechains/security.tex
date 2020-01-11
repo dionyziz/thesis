@@ -1,0 +1,147 @@
+\section{Security analysis}
+
+\todo{Clean up this section}
+
+We now formalize our protocol and provide a cryptographic analysis of its
+security. As NIPoPoWs security is modelled in the Bitcoin
+Backbone Protocol~\cite{EC:GarKiaLeo15}, we work in the same model (and note
+that the same mathematical model also captures Ethereum). We assume that the
+standard results of the backbone protocol are attained, namely blockchain
+\emph{persistence} and \emph{liveness}. Persistence and liveness can be proved
+to hold with overwhelming probability under the honest mining majority
+assumption. For the details of that result, consult the Bitcoin Backbone
+paper~\cite{EC:GarKiaLeo15}.
+
+We adopt the sidechains security definition from related work on proof-of-stake
+sidechains~\cite{pos-sidechains}.
+
+We will show that proving, to the maintainers of a chain $\mathcal{G}_2$, that
+an event $e$ took place in chain $\mathcal{G}_1$ without it actually happening,
+can only occur if the underlying NIPoPoWs protocol is insecure. Therefore, our
+proof strategy follows the standard form of a cryptographic computational
+reduction. In our assumptions, we will make use of the persistence and
+liveness of $\mathcal{G}_2$, but only the persistence of $\mathcal{G}_1$.
+
+\begin{theorem}
+  Assume a secure NIPoPoWs construction. Then, under the honest majority
+  assumption for both $\mathcal{G}_1$ and $\mathcal{G}_2$, for all PPT
+  adversaries $\mathcal{A}$ and for all environments $\mathcal{Z}$, the
+  proof-of-work sidechains construction between $\mathcal{G}_1$ and
+  $\mathcal{G}_2$ with contestation period $2k$ is secure, except with
+  negligible probability in $k$.
+\end{theorem}
+\begin{proof}
+  Let $\mathcal{A}$ be an arbitrary PPT adversary against the proof-of-work
+  sidechains construction and $\mathcal{Z}$ be an arbitrary environment. We will
+  construct an adversary $\mathcal{A}^*$ against NIPoPoWs and an environment
+  $\mathcal{Z}^*$ in which it will operate.
+
+  Suppose, without loss of generality, that $\mathcal{A}$ can break the security
+  of proof-of-work sidechains during a cross-chain transfer from $\mathcal{G}_1$
+  to $\mathcal{G}_2$. (Because the construction is symmetric, if the adversary
+  is not able to do that, then they will be able to break the security of a
+  cross-chain transfer from $\mathcal{G}_2$ to $\mathcal{G}_1$ and the proof
+  follows in the same manner.)
+
+  Note that $\mathcal{A}$ works in an environment with two blockchains,
+  $\mathcal{G}_1$ and $\mathcal{G}_2$, while $\mathcal{A}^*$ must work in the
+  environment of one blockchain, namely $\mathcal{G}_1$.
+
+  % TODO: Make Z* swallow the environment of Z
+  % TODO: Mention that the NIPoPoWs that we use have adaptive predicates
+  % LIV_1 -> LIV_2
+  $\mathcal{A}^*$ works as follows. First, it simulates the execution of the
+  blockchain civilization $\mathcal{G}_2$. That is, it creates a new random
+  oracle for $\mathcal{G}_2$ which is independent of its external random oracle
+  used with $\mathcal{G}_1$. For any random oracle queries of $\mathcal{A}$
+  pertaining to $\mathcal{G}_1$, $\mathcal{A}^*$ forwards the queries to its
+  external random oracle. For random oracles queries of $\mathcal{A}$ pertaining
+  to $\mathcal{G}_2$, $\mathcal{A}^*$ answers its queries with its simulated
+  and independent random oracle. Because $\mathcal{A}$ is subject to honest
+  majority limitations in both $\mathcal{G}_1$ and $\mathcal{G}_2$, it follows
+  that $\mathcal{A}^*$ will respect honest majority with regards to its external
+  random oracle. For any environment instructions requested by $\mathcal{Z}$
+  pertaining to $\mathcal{G}_1$ (namely, the creation of new parties), the
+  instructions are mirrored by $\mathcal{Z}^*$. Intructions of $\mathcal{Z}$
+  pertaining to $\mathcal{G}_2$ are simulated by $\mathcal{A}^*$. All diffusions
+  of blocks in $\mathcal{G}_1$ by $\mathcal{A}$ are also diffused by
+  $\mathcal{A}^*$, while diffusions in $\mathcal{G}_2$ by $\mathcal{A}$ are held
+  private.
+
+  $\mathcal{A}^*$ monitors the chains adopted by honest parties and for every
+  round $r$ observes the state of all honest parties. $\mathcal{A}^*$ looks for
+  a round $r$, an event $e$, a $\mathcal{G}_1$ maintainer $p_1$ and a
+  $\mathcal{G}_2$ maintainer $p_2$ for which the following properties hold:
+
+  \begin{enumerate}
+    \item $p_1$ has not included $e$ in their state
+    \item $p_2$ has included $e$ in their \textsf{finalized-events} state
+  \end{enumerate}
+
+  Because of the construction of $p_2$, \textsf{finalized-events} can contain
+  $e$ only if an issuance of \textsf{submit-event-proof} is included at least
+  $2k$ blocks deep and contains the respective NIPoPoW $\pi$ stored in
+  $\textsf{events}[e].\textsf{proof}$. $\mathcal{A}^*$ now returns the proof
+  $\pi$.
+
+  We will now analyze the probability of success of $\mathcal{A}$. Consider
+  the following (probabilistic) events:
+
+  \begin{enumerate}
+    \item $\textsc{SC-Brk}$ that $\mathcal{A}$ is successful
+    \item $\textsc{Cert-Brk}$ that $\mathcal{A}^*$ is successful
+    \item $\textsc{Per}_1$ that persistence is maintained in $\mathcal{G}_1$
+    \item $\textsc{Per}_2$ that persistence is maintained in $\mathcal{G}_2$
+    \item $\textsc{Live}_2$ that liveness is maintained in $\mathcal{G}_2$
+    \item $\textsc{BC}$ the union of $\textsc{Per}_1 \land \textsc{Per}_2 \land \textsc{Live}_2$
+  \end{enumerate}
+
+  From total probability we obtain:
+
+  \[
+  \Pr[\textsc{SC-Brk}] = \Pr[\textsc{SC-Brk}|\textsc{BC}]\Pr[\textsc{BC}]
+                       + \Pr[\textsc{SC-Brk}|\lnot \textsc{BC}]\Pr[\lnot \textsc{BC}]
+  \]
+
+  From the honest majority assumption of $\mathcal{G}_1$, we deduce that
+  $\Pr[\lnot \textsc{Per}_1]$ and $\Pr[\lnot \textsc{Live}_1]$ are negligible,
+  and similarly from the honest majority assumption of $\mathcal{G}_2$ we deduce
+  that $\Pr[\lnot \textsc{Per}_2]$ is negligible, therefore
+  $\Pr[\lnot \textsc{BC}]$ is negligible. It now suffices to show that
+  $\Pr[\textsc{SC-Brk}|\textsc{BC}]\Pr[\textsc{BC}]$ is negligible.
+
+  Suppose that $\textsc{SC-Brk}$ occurs. It follows that a (blockchain) event
+  $e$ must have been adopted by $p_2$ with some NIPoPoW $\pi$, but not by $p_1$,
+  as detailed above. Suppose now that $\textsc{BC}$ occurs.
+
+  Because of the \emph{persistence} of $\mathcal{G}_2$, when $\pi$ was burried
+  under $k$ blocks in the adopted chain of $p_2$, all honest parties in
+  $\mathcal{G}_2$ must have seen $\pi$ (this warrants the oldest $k$ of the $2k$
+  blocks in the contestation period). Because of the \emph{liveness} of
+  $\mathcal{G}_2$, at least one honest block must have been included in the last
+  $k$ blocks after $\pi$ had been received by all honest parties (this warrants
+  the latest $k$ of the $2k$ blocks in the contestation period).
+
+  Because of the \emph{persistence} of $\mathcal{G}_1$, if $e$ is not included
+  in the state of $p_1$ at round $r$, then therefore it cannot have been
+  included in the state of any $\mathcal{G}_1$ party during round $r - \eta k$.
+  It follows that an honest party will attempt and succeed in generating a
+  $\mathcal{G}_2$ block containing a contesting proof $\pi^*$ attesting to the
+  fraudulence of event $e$ by invoking
+  $\textsf{submit-contesting-proof}(\pi^*, e)$ and this block will be adopted by
+  $p_2$. As $p_2$ has finalized $e$, then therefore it must be such that
+  $\textsf{verify}^{e, \mathcal{G}}_{k,m}(\{\pi, \pi^*\})$, and therefore
+  \textsc{Cert-Brk} has occurred.
+
+  Putting the above together, we obtain that:
+
+  \[
+  \Pr[\textsc{Cert-Brk}] \geq \Pr[\textsc{SC-Brk}|\textsc{BC}]\Pr[\textsc{BC}]
+  \]
+
+  From the NIPoPoW security assumption, we have that $\Pr[\textsc{Cert-Brk}]$ is
+  negligible. Therefore, $\Pr[\textsc{SC-Brk}]$ is negligible.
+\end{proof}
+
+% TODO: prove correctness, i.e., that an honest user will never be disputed
+% successfully by an adversary

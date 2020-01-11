@@ -1,0 +1,51 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.crosschain} The smart contract skeleton that enables
+             checking cross-chain proofs about events.}
+    \begin{algorithmic}[1]
+        \Contract{\textsf{crosschain}$_{k,m,z}$}
+            \State{$\textsf{finalized-events} \gets \emptyset$;
+                   $\textsf{events} \gets \emptyset$}
+            \Internal{\sf initialize}{$\mathcal{G}_\textsf{remote}$}
+                \Let{\mathcal{G}}{\mathcal{G}_\textsf{remote}}
+            \EndInternal
+            \Payable{\sf submit-event-proof}{$\pi$, $e$}
+                \If{$\textsf{msg.value} < z$}
+                    \Comment{Ensure sufficient collateral}
+                    \State\Return{$\bot$}
+                \EndIf
+                \If{$\textsf{events}[e] = \bot \land \textsf{verify}^{e, \mathcal{G}}_{k,m}(\pi)$}
+                    \Let{\textsf{events}[e]}{\{\textsf{expire: } \textsf{block.number} + k,
+                                               \textsf{proof: } \pi,
+                                               \textsf{author: } \textsf{msg.sender}\}}
+                \EndIf
+            \EndPayable
+            \Function{\sf finalize-event}{e}
+                \If{$\textsf{events}[e] = \bot
+                     \lor \textsf{block.number} < \textsf{events}[e].\textsf{expire}$}
+                    \State\Return{$\bot$}
+                \EndIf
+                \Let{\textsf{finalized-events}}{\textsf{finalized-events} \cup \{e\}}
+                \Let{\textsf{author}}{\textsf{events}[e].\textsf{author}}
+                \Let{\textsf{events}[e]}{\bot}
+                \State\textsf{author.send}(z)
+                \Comment{Return collateral}
+            \EndFunction
+            \Function{\sf submit-contesting-proof}{$\pi^*$, $e$}
+                \If{$\textsf{events}[e] = \bot
+                     \lor \textsf{block.number} \geq \textsf{events}[e].\textsf{expire}$}
+                    \State\Return{$\bot$}
+                \EndIf
+                \If{$\lnot \textsf{verify}^{e, \mathcal{G}}_{k,m}(\textsf{events}[e].\textsf{proof}, \pi^*)$}
+                    \Comment{Original proof was fraudulent}
+                    \Let{\textsf{events}[e]}{\bot}
+                    \State\textsf{msg.sender.send}(z)
+                    \Comment{Pay collateral to contester}
+                \EndIf
+            \EndFunction
+            \Function{\sf event-exists}{e}
+                \State\Return{$e \in \textsf{finalized-events}$}
+            \EndFunction
+        \EndContract
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}

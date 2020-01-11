@@ -19,10 +19,11 @@
 \newcommand{\uniform}{\mathcal{U}}
 
 % Algorithms
-\newcommand{\pluseq}{\mathrel{+}=}
-\newcommand{\minuseq}{\mathrel{-}=}
-\newcommand{\stareq}{\mathrel{*}=}
-\newcommand{\slasheq}{\mathrel{/}=}
+\newcommand{\pluseq}{\texttt{+}=}
+\newcommand{\minuseq}{\texttt{-}=}
+\newcommand{\stareq}{\texttt{*}=}
+\newcommand{\slasheq}{\texttt{/}=}
+\newcommand{\plusplus}{\texttt{++}}
 
 \def\Let#1#2{\State $#1\gets#2$}
 
@@ -33,6 +34,18 @@
 \algblockdefx[ON]{On}{EndOn}[1]
 {\algorithmicon\ #1\ \algorithmicdo}
 {\algorithmicend\ \algorithmicon}
+
+\algblockdefx[Contract]{Contract}{EndContract}
+[1]{\textbf{contract #1}}
+[0]{\textbf{end contract}}
+
+\algblockdefx[Payable]{Payable}{EndPayable}
+[2]{\textbf{payable function #1}(#2)}
+[0]{\textbf{end function}}
+
+\algblockdefx[Internal]{Internal}{EndInternal}
+[2]{\textbf{internal function #1}(#2)}
+[0]{\textbf{end function}}
 
 \def\Post#1#2{\State\textbf{post} #1 \textbf{to} #2 }
 

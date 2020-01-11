@@ -1,0 +1,79 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.sidechain} An asset transferring contract
+             between $\mathcal{G}_1$ and $\mathcal{G}_2$}
+    \begin{algorithmic}[1]
+        \Contract{\textsf{sidechain}$_1$\text{ extends }\textsf{crosschain}$_{k,m,z}$}
+            \State{$\textsf{initialized} \gets \emph{false}$;
+                   $\textsf{ctr} \gets 0$;
+                   $\textsf{claimed-events} \gets \emptyset$}
+            \Function{\sf initialize}{$\mathcal{G}_2$, \textsf{sidechain}$_2$}
+                \If{$\lnot \textsf{initialized}$}
+                    \State\textsf{crosschain.initialize}$(\mathcal{G}_2)$
+                    \Comment{Initialize with the remote chain genesis block}
+                    \State{%
+                           $\textsf{this.sidechain}_2 \gets \textsf{sidechain}_2$;
+                           $\textsf{initialized} \gets \emph{true}$
+                    }
+                \EndIf
+            \EndFunction
+            \Payable{\sf deposit}{{\sf target}}
+                \CommentLine{Emit an event to be picked up by remote contract}
+                \State{\textsf{emit}
+                       \textsf{Deposited}$_1$(\textsf{target},
+                                              \textsf{msg.value},
+                                              \textsf{ctr}\plusplus)}
+            \EndPayable
+            \Function{\sf withdraw}{$\textsf{amount}, \textsf{target}, \textsf{ctr}$}
+                \CommentLine{Validate that event took place on remote chain}
+                \Let{e}{(
+                                \textsf{sidechain}_2,
+                                \textsf{Deposited}_2,
+                                (\textsf{amount}, \textsf{target}, \textsf{ctr}))}
+                \If{$e \in \textsf{claimed-events} \lor \lnot \textsf{event-exists}(e)$}
+                    \State\Return{$\bot$}
+                \EndIf
+                \Let{\textsf{claimed-events}}{\textsf{claimed-events} \cup \{e\}}
+                \State\textsf{target.send}(\textsf{amount})
+            \EndFunction
+        \EndContract
+        \Contract{\textsf{sidechain}$_2$\text{ extends }\textsf{crosschain}$_{k,m,z}$; \textsf{ERC20}}
+            \State\textsf{mapping}(\textsf{address} $\Rightarrow$ \textsf{int}) \textsf{balances}
+            \State{$\textsf{initialized} \gets \emph{false}$;
+                   $\textsf{ctr} \gets 0$;
+                   $\textsf{claimed-events} \gets \emptyset$}
+            \Function{\sf initialize}{$\mathcal{G}_1$, \textsf{sidechain}$_1$}
+                \If{$\lnot \textsf{initialized}$}
+                    \State\textsf{crosschain.initialize}$(\mathcal{G}_1)$
+                    \State{%
+                           $\textsf{this.sidechain}_1 \gets \textsf{sidechain}_1$;
+                           $\textsf{initialized} \gets \emph{true}$
+                    }
+                \EndIf
+            \EndFunction
+            \Function{\sf deposit}{{\sf target}, {\sf amount}}
+                \If{$\textsf{balances[msg.sender]} < \textsf{amount}$}
+                    \State\Return{$\bot$}
+                \EndIf
+                \State{$\textsf{balances[msg.sender]} \minuseq \textsf{amount}$}
+                \Comment{Charge account of sender}
+                \State{\textsf{emit}
+                       \textsf{Deposited}$_2$(\textsf{target},
+                                              \textsf{amount},
+                                              \textsf{ctr}\plusplus)}
+            \EndFunction
+            \Function{\sf withdraw}{$\textsf{amount}, \textsf{target}, \textsf{ctr}$}
+                \Let{e}{(
+                                \textsf{sidechain}_1,
+                                \textsf{Deposited}_1,
+                                (\textsf{amount}, \textsf{target}, \textsf{ctr}))}
+                \If{$e \in \textsf{claimed-events} \lor \lnot \textsf{event-exists}(e)$}
+                    \State\Return{$\bot$}
+                \EndIf
+                \Let{\textsf{claimed-events}}{\textsf{claimed-events} \cup \{e\}}
+                \State{$\textsf{balances[target]} \pluseq \textsf{amount}$}
+                \Comment{Credit target account}
+            \EndFunction
+        \EndContract
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
