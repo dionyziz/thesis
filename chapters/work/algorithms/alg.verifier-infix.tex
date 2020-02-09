@@ -1,0 +1,32 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.nipopow-verifier-infix}The \textsf{verify} algorithm
+    for the NIPoPoW infix protocol}
+    \begin{algorithmic}[1]
+        \Function{\sf ancestors}{$B, \textsf{blockById}$}
+            \If{$B = \text{Gen}$}
+                \State\Return{$\{B\}$}
+            \EndIf
+            \Let{\chain}{\emptyset}
+            \For{$\textsf{id} \in B.\textsf{interlink}$}
+                \If{$\textsf{id} \in \textsf{blockById}$}
+                    \Let{B'}{\textsf{blockById}[\textsf{id}]}
+                    \Let{\chain}{\chain \cup \textsf{ancestors}(B', \textsf{blockById})}
+                    \Comment{Collect into DAG}
+                \EndIf
+            \EndFor
+            \State\Return{$\chain \cup \{B\}$}
+        \EndFunction
+        \Function{\sf verify-infx$^D_{\ell,m,k}$}{$\mathcal{P}$}
+            \Let{\textsf{blockById}}{\emptyset}
+            \For{$(\pi, \chi) \in \mathcal{P}$}
+                \For{$B \in \pi$}
+                    \Let{\textsf{blockById}[\textsf{id}(B)]}{B}
+                \EndFor
+            \EndFor
+            \Let{\tilde\pi}{\text{best }\pi\in\mathcal{P}\text{ according to suffix verifier}}
+            \State\Return{$D(\textsf{ancestors}(\tilde\pi[-1],
+            \textsf{blockById}))$}
+        \EndFunction
+    \vskip8pt
+    \end{algorithmic}
+\end{algorithm}

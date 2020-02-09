@@ -1,0 +1,21 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.nipopow-infix-prover}The \textsf{Prove} algorithm
+    for infix proofs}
+    \begin{algorithmic}[1]
+        \Function{\sf ProveInfix$_{m,k}$}{$\chain$, $\chain'$, \textsf{height}}
+            \Let{aux}{\emptyset}
+            \Let{(\pi, \chi)}{\textsf{Prove}_{m,k}(\chain)}
+            \Comment{Start with a suffix proof}
+            \For{$B \in \chain'$}
+                \For{$E \in \pi$}
+                    \If{$\textsf{height}[E] \geq \textsf{height}[B]$}
+                        \Let{aux}{aux \cup \textsf{followDown}(E, B, \textsf{height})}
+                        \State\textbf{break}
+                    \EndIf
+                \EndFor
+            \EndFor
+            \State\Return{$(aux \cup \pi, \chi)$}
+        \EndFunction
+    \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
