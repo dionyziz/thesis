@@ -1,0 +1,21 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.nipopow-prover-patched}
+    The \emph{goodness aware} \textsf{Prove} algorithm
+    for the NIPoPoW protocol}
+    \begin{algorithmic}[1]
+        \Function{\sf Prove$^\text{good}_{m,k,\delta}$}{$\chain$}
+            \Let{B}{\chain[0]}
+            \Comment{Genesis}
+            \For{$\mu = |\chain[-k].\mathsf{interlink}|$ down to $0$}
+                \Let{\alpha}{\chain[:-k]\{B:\}\upchain^\mu}
+                \Let{\pi}{\pi \cup \alpha}
+                \If{$\textnormal{good}_{\delta, m}(\chain, \alpha, \mu)$}
+                    \Let{B}{\alpha[-m]} \label{alg.nipopow-prover-patched.good}
+                \EndIf
+            \EndFor
+            \Let{\chi}{\chain[-k:]}
+            \State\Return{$\pi\chi$}
+        \EndFunction
+    \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
