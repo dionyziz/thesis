@@ -1,0 +1,174 @@
+\section{Evaluation \& Applications}
+\label{sec:applications}
+In this section we evaluate the cost of NIPoPoWs when used in realistic blockchain applications.
+First we simulated the resources savings resulting from the use of a NIPoPoW-based
+client compared to ordinary SPV. We model the arrival of payments in each cryptocurrency as a Poisson process
+and assume that the market cap of a cryptocurrency is a proxy for usage. Currently,
+a total of 731 cryptocurrencies are listed on coin market
+directories\footnote{\url{https://coinmarketcap.com/}}. We narrow our focus to
+the 80 cryptocurrencies that have their own PoW blockchains with
+a market cap of over USD \$100,000.
+
+In Table~\ref{tbl.currencies} we show aggregate statistics about these 80
+cryptocurrencies, grouped according to the their PoW puzzle. While the entire
+chain in Bitcoin only amounts to 40 MB, taken together, the 80 cryptocurrencies
+comprise 10 GB of proofs-of-work, and generate 10 MB more each day. In
+Table~\ref{tbl.experiment} we show the resulting bandwidth costs from simulating
+a period of 60 days with $m=24, k=6$, with varying rates of payments received.
+%
+For the na\"ive SPV client, the total bandwidth cost is dominated by fetching
+the entire chain of headers, which the NIPoPoW client avoids. The marginal
+cost for na\"ive SPV depends on the number of blocks generated per day, as well
+as the transaction inclusion proofs associated with each payment. The
+NIPoPoW-based client provides the most savings when the number of transactions
+per day is smallest, reducing the necessary bandwidth per day (excluding the
+initial sync up) by 90\%.
+
+\begin{table}
+  \caption{Cost of header chains for all active PoW-based cryptocoins
+           (collected from \url{coinwarz.com})}
+  \label{tbl.currencies}
+  \small
+  \centering
+  \begin{tabular}{l@{}|l|l|l@{}}
+    {\bf Hash} & {\bf Coins} & {\bf Size today} & {\bf Growth rate}  \\
+    \hline
+    Scrypt  & 44  & 4.3 GB  & 5.5 MB / day \  \\
+    SHA-256  & 15  & 1.4 GB  & 937.0 kB / day \  \\
+    X11  & 5  & 581.1 MB  & 556.3 kB / day \  \\
+    Quark  & 3  & 647.9 MB  & 518.4 kB / day \  \\
+    CryptoNight  & 2  & 199.0 MB  & 115.2 kB / day \  \\
+    EtHash  & 2  & 588.6 MB  & 921.6 kB / day \  \\
+    Groestl  & 2  & 300.3 MB  & 184.2 kB / day \  \\
+    NeoScrypt  & 2  & 310.6 MB  & 153.6 kB / day \  \\
+    Others  & 5  & 266.2 MB  & 311.1 kB / day \  \\
+    % "Others" above is the sum of these:
+    % Equihash  & 2  & 17.7 MB  & 92.2 kB / day \  \\
+    % Keccak  & 1  & 161.1 MB  & 115.2 kB / day \  \\
+    % X13  & 1  & 30.0 MB  & 57.6 kB / day \  \\
+    % Lyra2REv2  & 1  & 57.4 MB  & 46.1 kB / day \  \\
+    \hline
+    Total  & 80   &  8.5 GB  & 9.2 MB  / day  \\
+  \end{tabular}
+\end{table}
+
+\begin{table}
+  \caption{Simulated bandwidth of multi-blockchain clients after two months (Averaged over 10 trials each)}
+  \label{tbl.experiment}
+  \small
+  \centering
+  \begin{tabular}
+    {
+      l@{\hspace{1pt}}|
+      l@{\hspace{1pt}}l@{\hspace{1pt}}|
+      l@{\hspace{1pt}}l@{\hspace{1pt}}|
+      l@{\hspace{1pt}}}
+
+      \multicolumn{1}{@{}l|}{\bf tx/} & \multicolumn{2}{c|}{\bf Naive SPV} & \multicolumn{2}{c|}{\bf NIPoPoW} \\
+      {\textbf{day}} & {\bf Total} & {\bf (Daily)} & {\bf Total} & {\bf (Daily)} & {\bf Savings} \\
+    \hline
+    100   &  5.5 GB & (5.5 MB)   & 31.7 MB & (507 kB)   & 99\% (91\%) \\
+    500   &  5.5 GB & (5.7 MB)   & 68.2 MB & (1.1 MB)     & 99\% (81\%) \\
+    1000  &  5.5 GB & (6.0 MB)   & 99.1 MB & (1.6 MB)     & 98\% (73\%) \\
+    3000  &  5.6 GB & (7.0 MB)   & 192 MB& (3.1 MB)     & 97\% (56\%) \\
+    \end{tabular}
+  \end{table}
+
+\noindent
+\textbf{Multi-blockchain wallets.}\label{sec:multichain}
+An application of our technique is an efficient multi-cryptocoin client.
+Consider a merchant who wishes to accept payments in any cryptocoin, not just
+the popular ones. The na\"ive approach would be to install an SPV client for
+each known coin. This approach would entail downloading the header chain for
+each coin, and periodically syncing up by fetching any newly generated block
+headers. An alternative would be to use an online service supporting multiple
+currencies, but this introduces reliance on a third party (e.g. Jaxx and Coinomi
+rely on third party networks).
+
+A NIPoPoW-based client would not download the entire header chain, but would
+instead only receive NIPoPoW proofs each time a payment is received. When a peer
+informs the client about a payment, they include a block index $\ell$ and
+NIPoPoW proof of transaction inclusion. The peer must then query \emph{all} of
+their connected peers, requesting any better proof for the same predicate. After
+waiting a short time period for a response, the client runs the
+\texttt{verify-infix} routine on all received proofs, and accepts the
+transaction if the output is \emph{true}. Although initially such proofs must be
+relative to genesis, the client may store the most recently-known ($k$-stable)
+blockhash for each coin such that future payments can include NIPoPoW proofs
+relative to that. Thus for popular cryptocurrencies, the NIPoPoW-based client
+downloads nearly every block header, like an ordinary SPV client; but for
+coins used infrequently, the NIPoPoW-based client can skip over most blocks.
+
+\noindent
+\textbf{Cross-chain ICOs.}
+As an example use-case of our construction, we present the case of an
+ICO in which tokens are distributed in one blockchain,
+but funds are raised in another. It works as follows:
+There are two designated blockchains, the \emph{source} and
+the \emph{destination blockchain}. The source is the blockchain
+where the fund-raising will take place, while the destination is the
+blockchain where the newly issued tokens will be distributed and subsequently
+exchanged. The destination blockchain must be smart-contract-enabled in order to
+allow for the distribution of ERC-20-style~\cite{erc20} tokens.
+In addition, the smart contracts on the destination blockchain must allow for
+programming the verification of a NIPoPoW proof by including, for example, the
+appropriate hash functions. The source blockchain must be NIPoPoW-enabled. This
+setup allows the creation of NIPoPoWs \emph{about} the source blockchain which
+will be included in the destination blockchain. For example, a source blockchain
+can be Litecoin and a destination blockchain Ethereum.
+
+In order to run the ICO, the fund-raising entity first creates a designated
+account in the source blockchain in which funds will be deposited. It then
+creates the ERC-20-style smart contract in the destination blockchain. When
+someone wishes to participate in the ICO, they transfer funds into the
+designated account on the source blockchain. Once they have made the transfer
+and it becomes confirmed, the payer generates a NIPoPoW about the transaction
+paying into the designated account. This NIPoPoW is then sent as a parameter to
+a method call on the ICO smart contract on the destination blockchain. The
+method call stores the proof and waits for a certain period of time for possible
+contestations, which can be accepted and compared using the $\leq_m$ mechanism
+previously described. If no contesting proof is presented within the
+contestation period, the prover receives their respective ICO tokens on the
+target blockchain. In order for only the rightful owner to be able to receive
+the tokens, they are required to sign the destination address on the destination
+blockchain using the private key corresponding to their source account used to
+make the payment within the source blockchain.
+
+%\subsection{Compare proofs implementation details}
+We implemented the NIPoPoW verifier algorithm as
+a Solidity smart contract\footnote{
+The source code of the smart contract is available under an open source MIT
+license at
+\url{https://github.com/dionyziz/popow/blob/master/experiment/contractNipopow.sol}
+}.
+The contract consists of two functions.
+The \texttt{sub\-mit\_ni\-po\-pow} function is used by the provers to provide their
+proof vectors. Instead of passing the block headers of the proof, the provers
+pass the hashes of the block headers and the hashes of the interlink vector. The
+reason is that the full data of the block header (especially the Merkle tree
+root) is only useful for the blocks of interest. Thus, we reduce the amount of
+data needed for the proof by a factor of 2. The rest of the parameters are used
+in the inclusion proof of the block. After confirming the validity of the proof,
+the \texttt{compare\_proofs} function is called between the current and the best
+proof. If the current proof is better then it is assigned to the best proof in
+the contract's storage.
+%The last step is to update the ancestors of the best
+%proof.
+%Regardless of whether the proof is better it may contain blocks that are
+%in the honest chain and are blocks of interest.
+The gas costs are summarized in
+Table~\ref{tbl:gascosts}. The \$USD column represents the current price of this
+much gas on Ethereum.
+%The Solidity code listing will be made available in the full online version.
+
+\begin{table}[ht]
+  \centering
+  \caption{Verifier contract functions}
+  \label{tbl:gascosts}
+  \begin{tabular}{l|l|l|ll}
+    \hline
+    Function & Data & Gas cost & \$USD \\ \hline
+    \texttt{compare\_proofs} & $\sim$8Kb & $\sim$5M & \$4 \\ \hline
+    \texttt{submit\_nipopow} & $\sim$65Kb & $\sim$40M & \$32 \\ \hline
+  \end{tabular}
+\end{table}
