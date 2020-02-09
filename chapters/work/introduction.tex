@@ -1,0 +1,155 @@
+\section{Introduction}
+
+Proof-of-work blockchain clients such as mobile wallets today are based on the
+Simplified Payment Verifications (SPV) protocol, which was described in the
+original Bitcoin paper~\cite{bitcoin}, and allows them to sychronize with the
+network by downloading only block headers and not the entire blockchain with
+transactions. However, such initial synchronization still requires receiving all
+the block headers. In this work, we study the question of whether better
+protocols exist and in particular if downloading fewer block headers is
+sufficient to securely synchronize with the rest of the blockchain network. Our
+requirement is that the system remains decentralized and that useful facts about
+the blockchain (such as the Merkle root of current account balances in
+Ethereum~\cite{wood,vitalik}) can be deduced from the downloaded data.
+
+\noindent\textbf{Our contributions.}
+We put forth a cryptographic security definition for
+Non-Interactive Proofs of Proof-of-Work protocols which describes what such a
+synchronization protocol must achieve (Section~\ref{sec:model}). We then
+construct a protocol which solves the problem and requires sending only a
+logarithmic number of blocks from the chain. We construct a protocol which can
+synchronize recent blocks, the \emph{suffix proofs} protocol
+(Section~\ref{sec:suffix}).
+We analyze the security and succinctness of
+our protocol in Section~\ref{sec:security}.
+In the Appendix, we show a simple addition to the suffix proofs protocol
+which allows synchronizing any part of the blockchain that the client may be
+interested in, the \emph{infix proofs} protocol (Section~\ref{sec:infix}).
+We give formal proofs of security and succinctness, provide
+concrete parameters for the implementation of our scheme, present applications
+beyond superlight clients including cross-chain applications, propose a mechanism with which our scheme can
+be deployed to existing cryptocurrencies without a fork, and propose
+a variable difficulty construction.
+
+%% must verify the entire chain of proofs-of-work, which grows
+%% linearly over time. On the contrary, clients based on NIPoPoWs require resources
+%% only logarithmic in the length of the blockchain.
+
+%% %
+%% Today, Bitcoin and Ethereum remain the two largest proof-of-work
+%% cryptocurrencies by market cap. However, the ecosystem has grown diverse, with
+%% dozens of viable ``altcoin'' competitors.
+%% %
+%% Given such an environment,  it becomes increasingly  important to be able to
+%% efficiently handle  multiple blockchains by the same client and reliably
+%% transfer assets between them.
+%
+%
+%
+%We envision our NIPoPoW protocol will form the basis of an
+%efficient multi-blockchain client, which could efficiently support payments
+%using hundreds of different cryptocurrencies.
+%Our protocol improves the performance of client.
+%blockchain protocols in general
+%are increasingly used as components of larger systems.
+
+% The first objective requires optimizing the ``SPV client'' described in the
+% original Bitcoin paper~\cite{bitcoin} which requires processing an amount of
+% data growing linearly with the size of the blockchain (namely, the block
+% headers).
+%
+%% Cryptocurrencies such as Bitcoin~\cite{bitcoin}\cite{bitcoinsoftware} and
+%% Ethereum~\cite{ethereum} are peer-to-peer networks that maintain a globally
+%% consistent transaction ledger, using a consensus protocol based on proof-of-work
+%% (PoW) puzzles~\cite{pow,hashcash}. Worker nodes called ``miners'' expend
+%% computational work in order to reach agreement on the state of the network.
+%% Clients on the network, such as mobile phone apps, must verify these
+%% PoWs in order to determine the correct view of the network's state, something necessary
+%% to transmit and receive payments correctly.
+
+%% In this work we introduce, analyze and instantiate a new primitive,
+%% Non-Interactive Proofs of Proof-of-Work (NIPoPoWs), which can be adapted into
+%% existing cryptocurrencies to support more efficient clients. A traditional
+%% blockchain client in order to check a certain blockchain property \anote{TODO: too abstract
+%
+% The second objective has received  significant attention in the context of
+% ``cross-chain'' applications, i.e., logical transactions that span multiple
+% separate blockchains. Simple cross-chain transactions are feasible today: the
+% most well-known is the atomic exchange~\cite{tiernolan,herlihy2018atomic}, e.g.,
+% a trade of bitcoin for ether. However, more sophisticated
+% applications~
+% \cite{interledger,DBLP:journals/corr/DilleyPWPGF16,
+%       lerner,drivechains,wood2016polkadot,buchman2016tendermint}
+% could be enabled by a more efficient proof process, which would allow the
+% blockchain of one cryptocurrency to embed a client of a separate cryptocurrency.
+% This concept, initially popularized by a proposal by Back et al.
+% ~\cite{sidechains} can be used to avoid a difficult upgrade process: a new
+% blockchain with additional features, such as experimental opcodes, can be backed
+% by deposits in the original bitcoin currency, obviating the need to transfer
+% capital to the new cryptocurrency. As one example of cross-chain interfacing, we
+% describe an initial coin offering (ICO)~\cite{ico} which distributes tokens
+% issued on one blockchain, but allows paying for them using coins in another
+% blockchain.
+
+% These examples illustrate that our solution is a key component for two important
+% pillars needed for next-generation blockchains: \emph{interoperability} and
+% \emph{scalability}. While we use bitcoin concretely as an example, any
+% proof-of-work cryptocurrency can adopt our techniques.
+
+% \noindent
+% \textbf{Our contributions.}
+% Our main technical contribution is the introduction and instantiation of a new
+% cryptographic primitive called Non-Interactive Proofs of Proof-of-Work
+% (NIPoPoWs).
+%
+% We present a formal model and a provably secure instantiation of NIPoPoWs. We
+% introduce the first formal security definitions of NIPoPoW protocols and their
+% security. Our proofs are in the Bitcoin backbone model~\cite{backbone}. Our
+% construction is the first secure Proof of Proof-of-Work (regardless of
+% interactivity), assuming honest majority. Furthermore, our solution is
+% non-interactive making it the first protocol of this kind.
+%
+% We encode events and other information that is useful to blockchain clients in
+% the form of \emph{blockchain predicates}. We describe a large class of
+% predicates that can be proven which we call \emph{infix sensitive}. This enables
+% proving statements pertaining to the blockchain such as the fact that a
+% transaction took place (for payment verification), that a smart contract method
+% ran with certain parameters, or that a payment was made into an account.
+%
+% We prove the proofs are optimistically succinct meaning that they are
+% logarithmic in size in honest conditions. We show that, in the optimistic model
+% of no adversarial mining power, succinctness can be achieved for even
+% \emph{adversarially-generated} proofs.
+%
+% We provide concrete parameterization and empirical analysis showing the savings
+% of our approach versus existing clients.
+%
+% In the Appendix, we propose a novel gradual deployment path for our scheme which
+% we term a \emph{velvet fork} and which can provide the benefits of our scheme
+% without requiring miner adoption unlike typical \emph{hard} or \emph{soft
+% forks}. This technique may be of independent interest for other protocols.
+%
+% In summary, we make the following contributions:
+% \begin{enumerate}
+%   \item We construct the first \emph{provably secure} Proofs of Proof-of-Work
+%         and give a formal definition of security. We make them
+%         \emph{non-interactive}.
+%   \item We model \emph{blockchain predicates} and show which classes of
+%         predicates can be proven using our protocol.
+%   \item We create the first decentralized protocol which is secure against all
+%         adversaries and \emph{succinct} for non-mining adversaries.
+%   \item We provide \emph{experimental data} which measure the efficiency and
+%         security of our scheme as well as concrete parameters based on these
+%         experiments.
+% \end{enumerate}
+
+\noindent
+\textbf{Previous work.} The need for succinct clients was first identified by
+Nakamoto in his original paper~\cite{bitcoin}. Predicates pertaining to events
+occurring in the blockchain have been explored in the setting of
+sidechains~\cite{sidechains}. It has
+also been implemented for simple classes of predicates such as atomic
+swaps~\cite{tiernolan,herlihy2018atomic}, which do not allow full
+synchronization. Non-succinct certificates about proof-of-\emph{stake}
+blockchains have been proposed in~\cite{gazi2019proof}, but their scheme is not
+applicable to proof-of-\emph{work}. Superblocks were first described in the Bitcoin Forum~\cite{highway} and later formalized~\cite{KLS} to describe their \emph{Proofs of Proof-of-Work} which have limited applications due to interactivity, lack of security, and inability to prove facts buried deep within the blockchain. We improve upon their work with a security definition, an interactive construction, and an attack against their scheme which works with overwhelming probability.
