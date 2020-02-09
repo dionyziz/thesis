@@ -1,0 +1,21 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.nipopow-velvet-upchain}Supplying the necessary data
+    to calculate a connected $\chain\upchain^\mu$ during a velvet fork.}
+    \begin{algorithmic}[1]
+        \Function{{\sf find} $\chain\upchain^\mu$}{$b$, realLink, blockById}
+            \Let{B}{\chain[-1]}
+            \Let{\textsf{aux}}{\{B\}}
+            \Let{\pi}{[~]}
+            \If{$\emph{level}(B) \geq \mu$}
+                \Let{\pi}{\pi B}
+            \EndIf
+            \While{$B \neq b$}
+                \Let{(B, \textsf{aux'})}{\textsf{followUp}(B, \mu, \textsf{realLink}, \textsf{blockById})}
+                \Let{\textsf{aux}}{\textsf{aux} \cup \textsf{aux'}}
+                \Let{\pi}{\pi B}
+            \EndWhile
+            \State\Return{$\pi$, aux}
+        \EndFunction
+    \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
