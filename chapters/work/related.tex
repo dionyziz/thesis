@@ -1,0 +1,37 @@
+% \textbf{Related work. }
+% Nakamoto's original Bitcoin whitepaper~\cite{bitcoin} anticipated the rising
+% costs of an evergrowing blockchain, and proposed a protocol for lightweight
+% clients, called ``Simplified Payment Verification'' (SPV). Unlike ``full nodes''
+% which process and validate the entire blockchain (including all transactions and
+% signatures), SPV clients only process the proof-of-work chain and transactions
+% directly pertaining to them. When initialized for the first time, an SPV client
+% downloads (and stores) the entire blockchain, which is thus linear in the
+% chain size $|\chain|$, and therefore grows unbounded over time, although it has
+% low constant factors, i.e. $80|\chain|$ bytes. When an SPV client receives a
+% payment, it requests a proof-of-inclusion (i.e., a Merkle tree branch proof) in
+% order to confirm that the transaction is included in one of the blocks whose
+% header is already stored by the client. Most widely used clients, especially
+% mobile wallets based on BitcoinJ, implement SPV.
+%
+% As an alternative to downloading all block headers at first startup, the SPV
+% client software could embed a hardcoded checkpoint; blocks prior to which are
+% ignored.\footnote{See \url{https://bitcoinj.github.io/speeding-up-chain-sync}}
+% Although this approach is very efficient, it introduces
+% additional trust assumptions on software maintainers.
+%
+% Kiayias et al. (KLS)~\cite{KLS} proposed a variation of the SPV protocol that
+% avoids the need to transmit the entire chain of proof-of-work. Instead, in their
+% scheme, only a sublinear-sized sample of the proofs-of-work are sent, i.e. a
+% ``proof of proof-of-work'' or PoPoW. They define security in a setting with a
+% verifier (modeling the client) and multiple provers (modeling peers in the
+% network), at least one of which is assumed to be honest. The KLS protocol is
+% interactive; the verifier may need to interact with the provers over a number of
+% rounds logarithmic in the length of the proof-of-work chain. Our protocol is
+% inspired by KLS, but improves on it in several ways. First, our protocol is
+% provably secure in contrast to that construction for which we describe a
+% concrete attack that works for a high level, albeit still below $50\%$, of
+% adversarial power. Second, our protocol is non-interactive, completing in one
+% communication round regardless of adversarial prover's behavior. Last, we also
+% provide concrete implementation recommendations including security parameter
+% values, proof size estimates in bytes, specific optimizations to reduce proof
+% size as well as smooth upgrade recommendations.
