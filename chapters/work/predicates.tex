@@ -1,0 +1,30 @@
+\subsection{Provable chain predicates}
+
+Our aim is to prove statements about the blockchain, such as ``The transaction
+$tx$ is included in the current blockchain'' without transmitting all block
+headers. We consider a general class of predicates that take on values
+\emph{true} or \emph{false}.  Since a Bitcoin-like blockchain can experience
+delays and intermittent forks, not all honest parties will be in exact agreement
+about the entire chain. However, when all honest parties are in agreement about
+the truth value of the predicate, we require that the verifier also arrives at
+the same truth value.
+
+To aid the construction of our proofs, we focus on predicates that are
+\emph{monotonic}; they start with the value \emph{false} and, as the blockchain
+grows, can change their value to \emph{true} but not back.
+
+\begin{definition}{(Monotonicity)}
+    A chain predicate $Q(\chain)$ is $\emph{monotonic}$ if for all chains
+    $\chain$ and for all blocks $B$ we have that
+    $Q(\chain) \Rightarrow Q(\chain B)$.
+\end{definition}
+
+Additionally, we require that our predicates only depend on the \emph{stable}
+portion of the blockchain, blocks that are buried under $k$ subsequent blocks.
+This ensures that the value of the predicate will not change due to a blockchain
+reorganization.
+
+\begin{definition}{(Stability)}
+    Parameterized by $k \in \mathbb{N}$, a chain predicate $Q$ is
+    $k$-\emph{stable} if its value only depends on the prefix $\chain[:-k]$.
+\end{definition}
