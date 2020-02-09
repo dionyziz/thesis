@@ -7,6 +7,7 @@ all: thesis.pdf
 thesis.pdf: $(SOURCES)
 	pdflatex -halt-on-error thesis.tex
 	bibtex thesis
+	makeindex thesis.idx
 	pdflatex -halt-on-error thesis.tex
 	pdflatex -halt-on-error thesis.tex
 
