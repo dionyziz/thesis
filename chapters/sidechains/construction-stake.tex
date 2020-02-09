@@ -320,7 +320,7 @@ the mainchain. Each stakeholder, on every new slot, collects all the candidate
 $\MC$-chains from the network (modelled via the $\Diffuse$ functionality) and
 filters them for both consensus-level validity (using $\MC.\ValidConsLevel$) and
 transaction validity (using the $\verifierMC$ predicate given in
-Algorithm~\ref{alg.mainchain}). Out of the remaining valid chains, he chooses
+Algorithms~\ref{alg.mainchain} and~\ref{alg.mainchain-tx}). Out of the remaining valid chains, he chooses
 his new state $\Chain_{\MC}$ via $\PickWinningChain$. Then the stakeholder
 evaluates whether he is an eligible leader for this slot, basing its selection
 on the stake distribution $\SD_j$ and randomness $\rnd_j$, which are determined
@@ -329,7 +329,7 @@ once per epoch
 in accordance with the Ouroboros protocol.
 If the stakeholder finds out he is a slot leader, he creates a new block $B$ by
 including all transactions currently valid with respect to $\Chain_{\MC}$
-(as per the predicate $\verifierMCtx$ given also in Algorithm~\ref{alg.mainchain}),
+(as per the predicate $\verifierMCtx$ given also in Algorithm~\ref{alg.mainchain-tx}),
 appends it to the chain $\Chain_{\MC}$ and diffuses the result\footnote{
 As in~\cite{C:KRDO17,EC:DGKR18}, we simplify our
 presentation by diffusing the complete chains,

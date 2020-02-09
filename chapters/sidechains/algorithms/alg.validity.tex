@@ -3,9 +3,8 @@
   (membership-deciding algorithm for $\adalang$).}
     \begin{algorithmic}[1]
         \Function{\sf valid-seq}{$\vec\tx$}
-            \State
-            $\textsc{balance}      \gets \text{Initial stake distribution}$;
-            $\textsf{seen}         \gets \emptyset$
+            \Let{\textsc{balance}}{\text{Initial stake distribution}}
+            \Let{\textsf{seen}}{\emptyset}
             \CommentLine{Traverse transactions in order}
             \For{$\tx \in \vec\tx$}
                 \CommentLine{Destructure $\tx$ into its constituents}
@@ -18,30 +17,30 @@
                     \sig
                 \right)}{\tx}
                 \If{$\lnot \text{valid}(\sigma)$}
-                    \Return\textsf{false}
+                    \State\Return\textsf{false}
                     \label{alg.validity.sig-failure}
                 \EndIf
                 \If{$\llid = \send$}
                     \CommentLine{Replay protection}
                     \If{$\textsf{seen}[\txid] \neq 0$}
-                        \Return\textsf{false}
+                        \State\Return\textsf{false}
                         \label{alg.validity.replay-failure}
                     \EndIf
                     \CommentLine {Law of conservation}
                     \If{$\textsc{balance}[\send][\sendAccount] - \amount < 0$}
-                        \Return\textsf{false}
+                        \State\Return\textsf{false}
                         \label{alg.validity.conservation-failure}
                     \EndIf
                 \Else
                     \CommentLine {The case $\llid=\rec\neq\send$}
                     \If{$\textsf{seen}[\txid] \neq 1$}
-                        \Return\textsf{false}
+                        \State\Return\textsf{false}
                         \label{alg.validity.prior-failure-1}
                     \EndIf
                     \CommentLine {Cross-ledger validity}
                     \Let{\tx'}{\eff{\Ledger_{(1-\llid)}}{\Ledger_{\llid}}^{-1}(\tx)}
                     \If{$\tx'$ has \emph{not} appeared before}
-                        \Return\textsf{false}
+                        \State\Return\textsf{false}
                         \label{alg.validity.prior-failure-2}
                     \EndIf
                 \EndIf
@@ -51,13 +50,13 @@
                 \EndIf
                 \CommentLine {Update receiver balance when money arrives}
                 \If{
-                  $(\textsf{seen}[\txid] = 0 \land \send = \rec) \lor$
-                  \\ $(\textsf{seen}[\txid] = 1 \land \send \neq \rec)$}
+                  $(\textsf{seen}[\txid] = 0 \land \send = \rec) \lor
+                  (\textsf{seen}[\txid] = 1 \land \send \neq \rec)$}
                     \State{$\textsc{balance}[\rec][\recAccount] \pluseq \amount$}
                 \EndIf
                 \State{$\textsf{seen}[\txid] += 1$}
             \EndFor
-            \Return\textsf{true}
+            \State\Return\textsf{true}
         \EndFunction
     \end{algorithmic}
 \end{algorithm}

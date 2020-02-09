@@ -1,5 +1,5 @@
 \begin{algorithm}%[htb]
-    \caption{\label{alg.mainchain}The $\MC$ verifier.}
+    \caption{\label{alg.mainchain-tx}The $\MC$ transaction verifier.}
     \begin{algorithmic}[1]
         \Function{$\verifierMCtx$}{$\vec\tx$}
             \State{$\balances \gets \text{initial stake}$;
@@ -15,15 +15,18 @@
                         \Continue
                         \label{alg.mainchain.sig-failure}
                     \EndIf
-                    \Let{\left(
+                    \State
+                    $
+                    \left(
                         \textsf{txs\_root},
                         avk'
-                    \right)}{m}
-                    \Let{avk}{avk'}
-                    \Let{
+                    \right) \gets m$;
+                    $avk \gets avk'$;
+                    $
                         \textsf{pfs\_mtrs}
                         [\textsf{txs\_root}]
-                    }{\textsf{true}}
+                    \gets
+                    \textsf{true}$
                 \Else
                     \Let{\left(
                         \txid,
@@ -52,15 +55,19 @@
                         \EndIf
                         \State{$\balances[\sendAccount] \minuseq \amount$}
                     \ElsIf{$\send \neq \rec$}
-                        \Let{\pi}{\tx.\pi}
-                        \Let{\left(
+                        \State
+                        $\pi \gets \tx.\pi$;
+                        $\left(
                             mtr,
                             \textsf{inclusion\_pf}
-                        \right)}{\pi}
-                        \If{$\pi \in \textsf{pfs\_used} \lor mtr \not\in \textsf{pfs\_mtrs} \lor$
-                             $\lnot \textsc{mtr-ver}(mtr, \textsf{inclusion\_pf})$}
+                        \right) \gets \pi$
+                        \If{$\pi\in\textsf{pfs\_used}$}
                             \Continue
                             \label{alg.mainchain.incoming-reuse}
+                        \EndIf
+                        \If{$mtr \not\in \textsf{pfs\_mtrs} \lor
+                             \lnot \textsc{mtr-ver}(mtr, \textsf{inclusion\_pf})$}
+                            \Continue
                             \label{alg.mainchain.incoming-no-mtr}
                         \EndIf
                     \EndIf
@@ -77,9 +84,14 @@
                 \EndIf
                 \Let{\seen}{\seen \concat \tx}
             \EndFor
-            \Return{$\seen$}
+            \State\Return{$\seen$}
         \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
+\begin{algorithm}%[htb]
+    \caption{\label{alg.mainchain}The $\MC$ chain verifier.}
+    \begin{algorithmic}[1]
         \Function{\textsc{verifier}$_\MC$}{$\Chainmc$}
             \Let{\vec\tx}{\emptyset}
             \For{$B \in \Chainmc$}
@@ -87,7 +99,7 @@
                     \Let{\vec\tx}{\vec\tx \concat \tx}
                 \EndFor
             \EndFor
-            \Return{$\vec\tx \neq \verifierMCtx(\vec\tx)$}
+            \State\Return{$\vec\tx \neq \verifierMCtx(\vec\tx)$}
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
