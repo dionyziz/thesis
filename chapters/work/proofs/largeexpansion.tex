@@ -1,0 +1,14 @@
+\begin{proof}
+    Because each block of level $\mu - 1$ was generated as a query to the random
+    oracle, it constitutes an independent Bernoulli trial and the number of
+    blocks in level $\mu$, namely $\pi\upchain^\mu$, is a Binomial distribution
+    with parameters $(4m, 1/2)$. Observing that $E[\chain'\upchain^\mu] = 2m$ and
+    applying a Chernoff bound, we get
+    $\Pr[|\chain'\upchain^\mu| \leq m]
+    = \Pr[|\chain'\upchain^\mu| \leq (1 - \frac{1}{2})2m]
+    \leq \exp(-\frac{(1/2)^2}{2} 2m)$ which is negligible in
+    $m$.
+
+    % \dznote{Invoke typicality and get rid of all probabilities here. You
+    % will need to define ``honest typicality'' and multiquality both ways.}
+\end{proof}
