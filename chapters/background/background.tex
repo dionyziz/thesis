@@ -221,6 +221,26 @@ signatures. This is captured in the game-based definition of Algorithm~\ref{alg.
 \subsection{Bitcoin Script}
 \subsection{Solidity}
 
+\section{Mathematical Background}
+\subsection{The Chernoff Bound}
+
+The following well-known theorem is due to
+Rubin~\cite{chernoff1952measure,chernoff2014career}. It will help us derive
+negligible bounds for probabilities of bad events.
+
+\begin{theorem}[Chernoff Bounds]
+  Let $\{X_i: i \in [n]\}$ be mutually independent Boolean random variables
+  such that for all $i \in [n]$ it holds that $\Pr[X_i = 1] = p$. Let
+  $X = \sum_{i = 1}^n X_i$ and $\mu = \Ex[X] = pn$. Then, for all
+  $\delta \in (0, 1]$ it holds that:
+
+  \[
+    \Pr[X \leq (1 - \delta)\mu] \leq \exp(-\frac{\delta^2\mu}{2})
+    \text{ and }
+    \Pr[X \geq (1 + \delta)\mu] \leq \exp(-\frac{\delta^2\mu}{3})
+  \]
+\end{theorem}
+
 \section{Model}
 \subsection{The Random Oracle}
 % Random Oracles as machines and as random functions
