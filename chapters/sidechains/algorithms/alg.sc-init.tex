@@ -10,9 +10,9 @@
     \On{$\SidechainAdoption(\idSC)$}
       \Let{\scstate[\idSC]}{\initializing}
       \Let{(vk',sk')}{\Gen(\params)}
-      \Let{\sigma}{\Sig_{sk}\msg{sidechain\_support}{\id_\SC,vk,vk'}}
+      \Let{\sigma}{\Sig_{sk}(\mathsf{sidechain\_support}(\id_\SC,vk,vk'))}
       \Post
-        {$\msg{sidechain\_support}{\id_\SC,vk,vk',\sigma}$}
+        {$\mathsf{sidechain\_support}(\id_\SC,vk,vk',\sigma)$}
         {$\MC$}
     \EndOn
 
