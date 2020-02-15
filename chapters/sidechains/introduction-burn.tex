@@ -1,0 +1,69 @@
+\section{Introduction}\label{section:introduction}
+Since the dawn of history, humans have entertained the defiant thought of money
+burning, sometimes literally, for purposes ranging from artistic effect~\cite{kfoundation} to
+protest~\cite{armchair}, or to prevent it from falling into the hands of pirates~\cite{laertiuslives,ciceroinventione}.
+People did not shy away from the practice in the era of cryptocurrencies.
+Acts of money burning immediately followed the inception of Bitcoin~\cite{bitcoin} in 2009,
+with the first recorded instance of intentional cryptocurrency destruction
+taking place on August 2010~\cite{interesting-address}, a short three months after the first real-world
+transaction involving cryptocurrency in May 2010~\cite{SP:BMCNKF15}. For the first time, however,
+cryptocurrencies exhibit the unique ability for money burning to be provable
+retroactively in a so-called \emph{proof-of-burn}.
+
+First proposed by Iain
+Stewart in 2012~\cite{stewart}, proof-of-burn constitutes a mechanism for the
+destruction of cryptocurrency irrevocably and provably.
+The ability to create convincing proofs changed the practice of money burning
+from a fringe act to a rational and potentially useful endeavour. It has since
+been discovered that metadata of the user's choice can be uniquely ascribed to
+an act of burning, allowing each burn to become tailored to a particular
+purpose. Such protocols have been used as a consensus mechanism similar to
+proof-of-stake (Slimcoin~\cite{slimcoin}), as a mechanism for establishing
+identity (OpenBazaar~\cite{openbazaarreputationpledges,zindros2016trust}), and for notarization (Carbon
+dating~\cite{clark2012commitcoin} and
+OpenTimestamps~\cite{todd2016opentimestamps}). A particularly apt use case is
+the destruction of one type of cryptocurrency to create another. In one
+prolific case, users destroyed more than $2{,}130.87$ BTC ($\$1.7$M at the
+time, $\$21.6$M in today's prices) for the bootstrapping of the
+Counterparty cryptocurrency~\cite{counterparty}.
+
+While its adoption is undeniable, there has not been a formal treatment for
+proof-of-burn. This is the gap this work aims to fill.
+
+\noindent
+\textbf{Our contributions.}
+A summary of our contributions is as follows:
+\begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=(\roman*)]
+    \item \textbf{Primitive definition.} Our definitional contribution introduces proof-of-burn as a cryptographic primitive for the first time. We
+    define it as a protocol which consists of two algorithms, a burn address \emph{generator} and a burn address \emph{verifier}. We put forth the foundational properties which make for secure burn protocols, namely \emph{unspendability}, \emph{binding}, and \emph{uncensorability}.   One of the critical  features of our formalization is that a tag has to be bound cryptographically with any proof-of-burn operation.
+    \item \textbf{Novel construction.} We propose a novel and simple construction which is flexible and can be adapted for use in existing cryptocurrencies, as long as they use public key hashes for address generation. To our knowledge, all popular cryptocurrencies are
+    compatible with our scheme. We prove our construction secure in the Random Oracle model~\cite{CCS:BelRog93}.
+    \item \textbf{Bootstrapping mechanism.} We propose a cryptocurrency proof-of-burn bootstrapping mechanism which does not require miners to connect to external blockchain networks. Our mechanism in principle allows burning from any proof-of-work-based cryptocurrency.
+    \item \textbf{Experimental results.} We provide a compehensively tested production grade implementation of the bootstrapping mechanism in Ethereum
+    written in Solidity, which we release as open source software. Our implementation can be used to consume proofs of burn of a source blockchain
+    within a target blockchain. We provide experimental measurements for the cost of burn verification and find that, in current Ethereum prices,
+    burn verification costs $\$0.28$ per transaction.
+    This allows coins burned on one blockchain to be consumed on another for the purposes of, for example, ERC-20 tokens creation~\cite{erc20}.
+\end{enumerate}
+
+\noindent
+\textbf{Workflow.}
+A user who wishes to burn her coins generates an address which we call a \emph{burn address}.
+This address encodes some user-chosen metadata called the \emph{tag}. She then proceeds to send any amount of cryptocurrency to the burn address. After burning her cryptocurrency, she proves to any interested party that she irrevocably destroyed the cryptocurrency in question.
+
+\noindent
+\textbf{Properties.}
+We define the following properties for a proof-of-burn protocol:
+\begin{itemize}
+    \item \textbf{Unspendability.} No one can spend the burned cryptocurrency.
+    \item \textbf{Binding.} The burn commits only to a single tag.
+    \item \textbf{Uncensorability.} Miners who do not agree with the scheme cannot censor burn transactions.
+\end{itemize}
+
+Finally, we consider the \emph{usability} of a proof-of-burn protocol important: whether a user is able to create a burn transaction using her regular cryptocurrency wallet.
+
+\noindent
+\textbf{Notation.} We use $\uniform(S)$ to denote the uniform distribution
+obtained by sampling any item of the finite set $S$ with probability $\frac{1}{|S|}$.
+We denote the support of a distribution $\mathcal{D}$ by $[\mathcal{D}]$. We also use $[n]$ to denote the set of integers from $1$ to $n$.
+We denote the empty string by $\epsilon$ and string concatenation by $\conc$.
