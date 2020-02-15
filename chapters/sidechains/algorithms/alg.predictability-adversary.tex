@@ -1,0 +1,34 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.predictability-adversary}
+    The predictor $\mathcal{A}^*$
+    of the distribution $X$
+    which makes use of a distinguisher $\mathcal{A}$ between
+    $X$ and $U(\{0,1\}^\kappa)$.}
+    \begin{algorithmic}[1]
+        \Let{i}{0}
+        \Let{Q}{\emptyset}
+        \Comment{Record of all random oracle queries}
+        \Function{$H'_H$}{$x$}
+            \Let{i}{i + 1}
+            \Let{Q[i]}{H(x)}
+            \State\Return$Q[i]$
+        \EndFunction
+        \Function{$\mathcal{A}^*_{X,\mathcal{A}}$}{$1^\kappa$}
+            \State{$b \stackrel{\$}{\leftarrow} \{0,1\}$}
+            \If{$b = 0$}
+                \Let{z}{X}
+                \State$j \stackrel{\$}{\gets} [r]$
+            \Else
+                \Let{z}{U(\{0,1\}^\kappa)}
+            \EndIf
+
+            \Let{b^*}{\mathcal{A}^{H'}(z)}
+            \If{$b = 1 \lor j > i$}
+                \State\Return{\textsc{failure}}
+            \EndIf
+            \State\Return{Q[j]}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

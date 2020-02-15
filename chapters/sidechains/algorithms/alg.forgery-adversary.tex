@@ -1,0 +1,13 @@
+\begin{figure}
+\begin{algorithm}[H]
+    \caption{\label{alg.forgery-adversary}
+    The existential forgery $\mathcal{A}$
+    which tries to guess the secret key through sampling.}
+    \begin{algorithmic}[1]
+        \Function{$\mathcal{A}_{S}$}{$1^\kappa, pk$}
+            \Let{(pk, sk)}{\Gen(1^\kappa)}
+            \State\Return{$(\epsilon, \Sig(sk, \epsilon))$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

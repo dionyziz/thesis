@@ -1,0 +1,14 @@
+\begin{figure}
+\begin{algorithm}[H]
+    \caption{\label{alg.dist-game} The challenger for computational indistinguishability.}
+    \begin{algorithmic}[1]
+        \Function{\distattack$_{\mathcal{A},D_0,D_1}$}{$\kappa$}
+            \State{$b \stackrel{\$}{\leftarrow} \{0,1\}$}
+            \Let{z}{D_b}
+
+            \Let{b^*}{\mathcal{A}(z, 1^\kappa)}
+            \State\Return{$(b = b^*)$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

@@ -1,0 +1,237 @@
+\section{Full proofs}\label{sec:proofs}
+
+In this section, we give the full proofs of our claims.
+Appendix~\ref{sec:proofs:comp-ind} proves some facts about
+computationally indistinguishable distributions. In
+Appendix~\ref{sec:proofs:unpred-dist}, we introduce unpredictable distributions
+and show that public keys are unpredictable. In Appendix~\ref{sec:proofs:ro},
+we prove some facts about the statistical properties of random oracles,
+including Lemma~\ref{lem.perturbation} from which the unspendability of our
+scheme follows and Lemma~\ref{lem:ro-unpredictability} from which the
+uncensorability of our scheme follows.
+
+\subsection{Computational indistinguishability}\label{sec:proofs:comp-ind}
+
+\import{./}{./chapters/sidechains/algorithms/alg.dist-game.tex}
+
+We review the definition of computational indistinguishability between two
+distributions $X$ and $Y$. Define the cryptographic game illustrated in
+Algorithm~\ref{alg.dist-game}.
+Computational indistinguishability mandates that no adversary can win the game,
+except with negligible probability.
+
+\begin{definition}[Computational indistinguishability]
+  Two distribution ensembles $\{X_\kappa\}_{\kappa\in\mathbb{N}}$ and $\{Y_\kappa\}_{\kappa\in\mathbb{N}}$ are
+  \emph{computationally indistinguishable}
+  if for every probabilistic polynomial-time adversary $\mathcal{A}$,
+  there exists a negligible function $\negl$ such that
+  $\Pr[\distattack_{\mathcal{A},X,Y}(\kappa) = \true] < \negl$.
+\end{definition}
+
+It is clear that applying an efficiently computable function to
+indistinguishable distributions preserves indistinguishability.
+
+\import{./}{chapters/sidechains/algorithms/alg.pres-distinguisher.tex}
+
+\begin{lemma}[Indistinguishability preservation]\label{lem:ind-pres}
+  Given two
+  computationally indistinguishable distribution ensembles
+  $\{X_\kappa\}_{\kappa\in\mathbb{N}}$ and $\{Y_\kappa\}_{\kappa\in\mathbb{N}}$,
+  let
+  $\{f_\kappa\}_{\kappa\in\mathbb{N}}$,
+  be an efficiently computable family of functions $X_\kappa \longrightarrow Y_\kappa$.
+  Then the distribution ensembles
+  $X' = \{f_\kappa(X_\kappa)\}_{\kappa\in\mathbb{N}}$
+  and
+  $Y' = \{f_\kappa(Y_\kappa)\}_{\kappa\in\mathbb{N}}$
+  are computationally indistinguishable.
+\end{lemma}
+\begin{proof}
+  Let $\mathcal{A}$ be a probabilistic polynomial-time distinguisher
+  between $X'$ and $Y'$. Consider the probabilistic polynomial-time distinguisher $\mathcal{A}^*$ between $X$ and $Y$ illustrated in Algorithm~\ref{alg.pres-distinguisher}. Then
+  $\Pr[\distattack_{\mathcal{A}^*}(\kappa) = \true] =
+   \Pr[\distattack_{\mathcal{A}}(\kappa) = \true]$.
+  As $\Pr[\distattack_{\mathcal{A}^*}(\kappa) = \true] \leq \frac{1}{2} + \negl$, therefore $\Pr[\distattack_{\mathcal{A}}(\kappa) = \true] \leq \frac{1}{2} + \negl$.
+\end{proof}
+
+\subsection{Unpredictable distributions}\label{sec:proofs:unpred-dist}
+
+We call a distribution ensemble \emph{unpredictable} if no
+polynomial-time adversary can guess its output. The cryptographic
+predictability game is illustrated in Algorithm~\ref{alg.predict-game} and the
+security definition is given below.
+
+\import{.}{./chapters/sidechains/algorithms/alg.predict-game.tex}
+
+\begin{definition}[Unpredictable distribution]
+  A distribution ensemble $\{X_{\kappa}\}_{\kappa\in\mathbb{N}}$ is
+  \emph{unpredictable} if for all probabilistic polynomial-time adversaries
+  $\mathcal{A}$ there is a negligible function $\negl$ such that
+  \[\Pr[\predict_{\mathcal{A},X}(\kappa) = \true] < \negl\,.\]
+\end{definition}
+
+We observe that, if each element of a distribution appears with negligible
+probability, then the distribution must be unpredictable.
+
+\begin{lemma}[Negligible unpredictability]\label{lem:negl-unpred}
+  Consider a distribution ensemble $\{X_{\kappa}\}_{\kappa\in\mathbb{N}}$ and
+  a negligible function $\negl$. If
+  \[\max_{x \in [X_\kappa]}\Pr_{x^* \gets X_\kappa}[x^* = x] \leq \negl\,,\]
+  then $X$ is unpredictable.
+\end{lemma}
+\begin{proof}
+  Consider a probabilistic polynomial-time adversary $\mathcal{A}$ which
+  predicts $X_\kappa$. The adversary is not given any input beyond $1^\kappa$,
+  hence the distribution of its output is independent from the choice of the
+  challenger. Therefore
+
+  \begin{align*}
+  \Pr[\predict_{\mathcal{A},X}(\kappa) = \true] &=
+  \sum_{x' \in [X]}\Pr_{x \gets X}[\mathcal{A}(\kappa) = x'\land x = x'] =\\
+  \sum_{x' \in [X]}\Pr[\mathcal{A}(\kappa) = x']\Pr_{x \gets X}[x = x']
+  &\leq \negl\sum_{x' \in [X]}\Pr[\mathcal{A}(\kappa) = x']
+  \leq \negl
+  \,.
+  \end{align*}
+\end{proof}
+
+Finally, we observe that public keys generated from secure signature schemes must
+be unpredictable.
+
+\import{./}{chapters/sidechains/algorithms/alg.forgery-adversary.tex}
+
+\restateLemPkUnpredictability*
+\begin{proof}
+  Let
+  $p = \max_{\widehat{pk} \in [X_\kappa]}\Pr_{pk \gets X_\kappa}[pk = \widehat{pk}]$.
+  Consider the existential forgery adversary $\mathcal{A}$ illustrated in
+  Algorithm~\ref{alg.forgery-adversary} which works as
+  follows. It receives $pk$ as its input from the challenger, but ignores it
+  and generates a new key pair $(pk', sk') \gets \textsf{Gen}(1^\kappa)$.
+  Since the
+  two invocations of $\textsf{Gen}$ are independent,
+  \begin{align*}
+    \Pr[pk = pk'] \geq \max_{\widehat{pk} \in [X_\kappa]}\Pr[pk = \widehat{pk} \land pk' = \widehat{pk}]\\
+  = \max_{\widehat{pk} \in [X_\kappa]}\Pr[pk = \widehat{pk}]\Pr[pk' = \widehat{pk}]\\
+  = \max_{\widehat{pk} \in [X_\kappa]}\left(\Pr[pk = \widehat{pk}]\right)^2
+  = p^2
+  \,.
+  \end{align*}
+
+  The adversary checks
+  whether $pk = pk'$. If not, it aborts. Otherwise, it uses $sk'$ to sign the
+  message $m = \epsilon$ and returns the forgery $\sigma = \textsf{Sig}(sk, m)$.
+  From the correctness of the signature scheme, if $pk = pk'$, then
+  $\textsf{Ver}(pk, \textsf{Sig}(sk, m)) = \true$ and the adversary is
+  successful. Since the signature scheme is secure,
+  $\Pr[\textsf{Sig-forge}^{cma}_{\mathcal{A},S}] = \negl$.
+  But $\Pr[pk = pk'] \leq \Pr[\textsf{Sig-forge}^{cma}_{\mathcal{A},S}]$ and
+  therefore $p \leq \sqrt{\Pr[pk = pk']} \leq \negl$. Applying
+  Lemma~\ref{lem:negl-unpred}, we deduce that the distribution ensemble $X_\kappa$ is
+  unpredictable.
+\end{proof}
+
+\subsection{Random Oracle properties}\label{sec:proofs:ro}
+
+In this section, we state some statistical properties of the Random
+Oracle, which are useful for the proofs of our main results.
+
+\restateLemPerturbation*
+\begin{proof}
+  Let \textsc{Match} denote the event that there exist $1 \leq i \neq j \leq p(\kappa)$ such that $s_i = F(s_j)$.
+  Let $\textsc{Match}_{i, j}$ denote the event that $s_i = F(s_j)$. Apply a union bound to obtain
+  $
+    \Pr[\bigcup_{i \neq j}\textsc{Match}_{i, j}] \leq \sum_{i \neq j} \Pr[\textsc{Match}_{i, j}]
+  $.
+  But $\Pr[\textsc{Match}_{i, j}] = 2^{-p(\kappa)}$ and therefore
+  $\Pr[\textsc{Match}] \leq \sum_{i \neq j} 2^{-p(\kappa)} \leq p^2(\kappa) 2^{-p(\kappa)}$.
+\end{proof}
+
+\import{.}{./chapters/sidechains/algorithms/alg.predictability-adversary.tex}
+
+\restateLemRoUnpredictability*
+\begin{proof}
+  Let $\mathcal{A}$ be an arbitrary polynomial distinguisher between
+  $X$ and $\uniform(\{0, 1\}^\kappa)$.
+  We construct an adversary $\mathcal{A}^*$
+  against $\predict_{\mathcal{T}}$.
+  Let $r$ denote the (polynomial)
+  maximum number of random oracle queries of $\mathcal{A}$.
+  The adversary $\mathcal{A}^*$ is illustrated in
+  Algorithm~\ref{alg.predictability-adversary} and works as follows.
+  Initially, it chooses a random bit $b \stackrel{\$}{\gets} \{0, 1\}$ and
+  sets $Z = X$ if $b = 0$, otherwise
+  sets $Z = \uniform(\{0,1\}^\kappa)$.
+  It samples $z \gets Z$.
+  If $b = 0$, then $z$ is chosen by applying $\GenAddr$ which involves
+  calling the random oracle $H$ with some input $pk$.
+  It then chooses one of $\mathcal{A}$'s queries $j \stackrel{\$}{\gets} [r]$
+  uniformly at random. Finally, it outputs the input received by the random
+  oracle during the $j^\text{th}$ query of $\mathcal{A}$.
+
+  We will consider two cases. Either $\mathcal{A}$ makes a random oracle query
+  containing $pk$, or it does not. We will argue that, if $\mathcal{A}$ makes
+  a random oracle query containing $pk$ with non-negligible probability, then
+  $\mathcal{A}^*$ will be successful with non-negligible probability. However,
+  we will argue that, if $\mathcal{A}$ does not make the particular random
+  oracle query, it will be unable to distinguish $X$ from $\uniform(\{0,1\}^\kappa)$.
+
+  Let $\query$ denote the event that $b = 0$ and $\mathcal{A}$ asks a random
+  oracle query with input $pk$.
+  Let $x$ denote the random variable sampled by the challenger in the
+  predictability game of $\mathcal{A}^*$.
+  Let $\extqry$ denote the event that $b = 0$ and $\mathcal{A}$ asks a
+  random oracle query with input equal to $x$. Observe that, since the input to
+  $\mathcal{A}$ does not depend on $x$, we have that
+  $\Pr[\extqry] = \Pr[\query]$. As $j$ is chosen independently of the execution
+  of $\mathcal{A}$, conditioned on $\extqry$ the probability that
+  $\mathcal{A}^*$ is able to correctly guess which query caused $\extqry$ will
+  be $\frac{1}{r}$. Therefore we obtain that
+  $\Pr[\predict_{\mathcal{A}^*,\mathcal{T}}(\kappa) = \true]
+   = \frac{1}{r}\Pr[\extqry]
+   = \frac{1}{r}\Pr[\query]$.
+  As
+  $\Pr[\predict_{\mathcal{A}^*,\mathcal{T}}(\kappa) = \true] \leq \negl$
+  and $r$
+  is polynomial in $\kappa$, we deduce that $\Pr[\query] \leq \negl$.
+
+  Consider the computational
+  indistinguishability game depicted in
+  Algorithm~\ref{alg.dist-game} in which the distinguisher gives a guess $b^*$
+  attempting to identify the origin $b$ of its input.
+  If $b = 0$, then the distinguisher $\mathcal{A}$ receives a truly random input
+  $pkh = H(pk)$.
+  If the distinguisher does not query the random oracle
+  with input $pk$, the input of the distinguisher is truly random
+  and therefore $\Pr[b^* = 0|b = 0|\lnot \query] = \Pr[b^* = 0|b = 1]$.
+
+  Consider the case where $b = 0$ and apply total probability to obtain
+  \begin{align*}
+    &\Pr[b^* = 0|b = 0] =\\
+    &\Pr[b^* = 0|\query]\Pr[\query] +
+      \Pr[b^* = 0|b = 0|\lnot \query]\Pr[\lnot \query]\\
+    \leq &\Pr[b^* = 0|\query]\Pr[\query] +
+      \Pr[b^* = 0|b = 0|\lnot \query]\\
+    \leq &\Pr[\query] + \Pr[b^* = 0|b = 0|\lnot \query]
+  \end{align*}
+
+  Then
+  $
+    \Pr[\distattack_{\mathcal{A},X,\uniform(\{0,1\}^\kappa)} = \true]
+    =
+    \Pr[b = b^*]
+  $ is the probability of success of the distinguisher.
+  Applying total probability we obtain
+
+  \begin{align*}
+    \Pr[b = b^*] &= \Pr[b = b^*|b = 0]\Pr[b = 0] + \Pr[b = b^*|b = 1]\Pr[b = 1]\\
+                 &= \frac{1}{2}(\Pr[b^* = 0|b = 0] + \Pr[b^* = 1|b = 1])\\
+                 &\leq \frac{1}{2}(\Pr[\query] + \Pr[b^* = 0|b = 0|\lnot \query]
+                 + \Pr[b^* = 1|b = 1])\\
+                 &= \frac{1}{2}(\Pr[\query] + \Pr[b^* = 0|b = 1]
+                 + \Pr[b^* = 1|b = 1])\\
+                 &= \frac{1}{2}(\Pr[\query] + \Pr[b^* = 0|b = 1]
+                 + (1 - \Pr[b^* = 0|b = 1]))\\
+                 &= \frac{1}{2}(1 + \Pr[\query]) \leq \frac{1}{2} + \negl
+  \end{align*}
+\end{proof}
