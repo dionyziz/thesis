@@ -1,0 +1,23 @@
+\section{Empirical Results}
+In order to evaluate our consumption mechanisms, we implement the federated consumption mechanism in Solidity. We provide a concrete implementation of the \textsf{burn-verifier} contract described in Algorithm~\ref{alg.burn-verifier}. We implement the \textsf{crosschain} parent contract from~\cite{pow-sidechains}. We verify transaction data by making use of the open source bitcoin-spv library~\cite{bitcoin-spv-library}. Finally, the federation mechanism for verifying block connection is employed. The members of the federation can vote on their computed checkpoints using the \textsf{vote} function.
+
+We release our implementation as open source software under the MIT license\footnote{\url{https://github.com/decrypto-org/burn-paper/tree/master/experiment}}.
+The implementation is production-ready and fully tested with 100\% code coverage.
+
+At the time of writing we obtain the median gas price of $6.9$ gwei and the price of Ethereum in US Dollars at $\$170.07$. The cost of gas in USD is calculated by the formula $gas * 1.173483 * 10^{-6}$ rounded to two decimal places.
+
+\begin{center}
+    \begin{tabular}{ |c|r|c| }
+     \hline
+     Method                         & Gas cost   & Equivalent in USD \\
+     \hline
+     \textsf{vote}                  & 50103 gas  & $\$0.06$ \\
+     \hline
+     \textsf{submit-event-proof}    & 157932 gas & $\$0.19$ \\
+     \textsf{claim}                 & 78267 gas  & $\$0.09$ \\
+     Total claim cost               & 262817 gas & $\$0.28$ \\
+     \hline
+    \end{tabular}
+\end{center}
+
+For the end user to prove an event and claim her burn, the cost is thus $\$0.28$. Comparatively, for a Bitcoin transaction to be included in the next block at the time of writing a user has to spend $\$0.77$.
