@@ -1,0 +1,17 @@
+\begin{figure}
+\begin{algorithm}[H]
+    \caption{\label{alg.bitcoin-real} The Bitcoin blockchain address protocol, including the engineering details of checksums and practical hash implementation.}
+    \begin{algorithmic}[1]
+        \Function{$\GenAddr$}{\-}
+            \Let{(pk, sk)}{\Gen()}
+            \Let{pkh}{\RIPEMD(\SHA(\texttt{0x04} \conc pk)}
+            \Let{\addr}{\texttt{0x00} \conc pkh'}
+            \Comment{Magic byte indicating \emph{mainnet}}
+            \Let{\checksum}{\SHA(\SHA(\addr))[:4]}
+            \Comment{Keep the first 4 bytes}
+            \State\Return{\baseencode($\addr \conc \checksum$)}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

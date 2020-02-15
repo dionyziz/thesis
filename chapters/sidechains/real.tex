@@ -1,0 +1,18 @@
+\section{Deployment to Bitcoin}\label{sec.real}
+\import{./}{chapters/sidechains/algorithms/alg.bitcoin-real.tex}
+
+The scheme described above works for a generic P2PKH cryptocurrency and can be adapted to any cryptocurrency. We illustrate its suitability by giving a precise construction for Bitcoin, taking into account the engineering details that are behind the generation of a Bitcoin P2PKH address. A comparable approach can be used to generate Ethereum addresses or others.
+
+The way Bitcoin generates P2PKH addresses is illustrated in Algorithm~\ref{alg.bitcoin-real}. Here, $\Gen$ generates an elliptic curve public key (of fixed key size $\kappa = 256$). After the elliptic curve public key is generated, it is marked by a magic number and subsequently hashed by the so-called $\BTCHASH$ algorithm, which consists of evaluating $\RIPEMD$ on the $\SHA$ of the public key. The resulting hash is additionally prefixed by a magic number indicating that the execution is taking place on the main net (and not the test net), and the final address, together with a checksum, are encoded using $\baseencode$ to obtain the final address.
+
+Our burn algorithm follows the same structure for address generation, ensuring that the magic numbers and checksums validate correctly. In this construction, the hash function which is modelled as a random oracle is the $\BTCHASH$ algorithm. The algorithm is illustrated in Algorithm~\ref{alg.construction-real} and works as follows.
+Given a tag $t$, the user derives a $160$-byte
+hash $th = \RIPEMD(\SHA(t))$ which looks like a public key hash.
+The least significant bit of
+$th$ is then flipped to achieve unspendability. This produces the $20$-byte
+\emph{perturbated hash} $th'$. The perturbated hash
+is then prefixed with \texttt{0x00} to designate that we're working on the Bitcoin mainnet as usual. The checksum is calculated and appended
+to it, and the result is
+$\baseencode$ encoded into a Bitcoin address which correctly validates.
+
+\import{./}{chapters/sidechains/algorithms/alg.construction-real.tex}

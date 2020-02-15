@@ -1,0 +1,18 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.construction-real} The key perturbation algorithm which generates a provable proof-of-burn address which validates under Bitcoin.}
+    \begin{algorithmic}[1]
+        \Function{$\GenBurnAddr$}{$t$}
+            \Let{th}{\RIPEMD(\SHA(t))}
+            \Let{th'}{th \xor \texttt{0x01}}
+            \Comment{Key perturbation}
+            \Let{\addr}{\texttt{0x00} \conc th'}
+            \Comment{Magic byte indicating \emph{mainnet}}
+            \Let{\checksum}{\SHA(\SHA(\addr))[:4]}
+            \Comment{Keep the first 4 bytes}
+            \State\Return{\baseencode($\addr \conc \checksum$)}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
