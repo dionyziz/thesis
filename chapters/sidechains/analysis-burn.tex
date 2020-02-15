@@ -1,0 +1,136 @@
+\section{Analysis}\label{sec:analysis}
+
+We now move on to the analysis of our scheme. As the scheme is deterministic,
+its correctness is straightforward to show.
+
+\begin{theorem}[Correctness]
+  The proof-of-burn protocol $\Pi$ of Section~\ref{sec:construction} is \emph{correct}.
+\end{theorem}
+\begin{proof}
+  Based on Algorithm~\ref{alg.construction-ro}, $\BurnVerify(1^\kappa, t, \GenBurnAddr(1^\kappa, t)) = \textsf{true}$ if and only if $\GenBurnAddr(1^\kappa, t) = \GenBurnAddr(1^\kappa, t)$, which always holds as $\GenBurnAddr$ is deterministic.
+\end{proof}
+
+We now state a simple lemma pertaining to the distribution of Random Oracle
+outputs.
+
+\begin{restatable}[Perturbation]{lem}{restateLemPerturbation}
+  \label{lem.perturbation}
+  Let $p(\kappa)$ be a polynomial and
+  $F: \{0,1\}^\kappa \longrightarrow \{0,1\}^\kappa$ be a permutation.
+  Consider the process which samples $p(\kappa)$ strings $s_1, s_2, \dots, s_{p(\kappa)}$ uniformly at random from the set $\{0, 1\}^\kappa$. The probability that there exists $i \neq j$ such that $s_i = F(s_j)$ is negligible in $\kappa$.
+\end{restatable}
+
+We will now apply the above lemma to show that our scheme is unspenable.
+
+\begin{theorem}[Unspendability]
+  If $H$ is a \emph{Random Oracle}, then the protocol $\Pi$ of Section~\ref{sec:construction} is \emph{unspendable}.
+\end{theorem}
+\begin{proof}
+  Let $\mathcal{A}$ be an arbitrary probabilistic polynomial time $\spendattack$ adversary.
+  $\mathcal{A}$ makes at most a polynomial number of queries $p(\kappa)$ to the Random Oracle.
+  Let $\textsc{Match}$ denote the event
+  that there exist $i \neq j$ with $s_i = F(s_j)$ where $F(s) = s \xor 1$.
+
+  If the adversary is successful then it has presented $t, pk, pkh$ such that $H(pk) = pkh$ and $H(t) \xor 1 = pkh$.
+  Observe that $\spendattack_{\mathcal{A}, \Pi}(\kappa) = \true \Rightarrow \textsc{Match}$.
+  Therefore $\Pr[\spendattack_{\mathcal{A}, \Pi}(\kappa)] \leq Pr[\textsc{Match}]$. Apply Lemma~\ref{lem.perturbation} on $F$
+  to obtain
+  $\Pr[\spendattack_{\mathcal{A}, \Pi}(\kappa)] \leq \negl$.
+\end{proof}
+
+We note that the security of the signature scheme is not needed to prove unspendability. Were the signature scheme of the underlying cryptocurrency ever found to be \emph{forgeable}, the coins burned through our scheme would remain unspendable. We additionally remark that the
+choice of the permutation $F(x) = x \xor 1$ is arbitrary. Any one-to-one
+function beyond the identity function would work equally well.
+
+\noindent
+\textbf{Preventing proof-of-burn.}
+It is possible for a cryptocurrency to prevent proof-of-burn by requiring every address to be accompanied by a proof of possession~\cite{EPRINT:RisYil07}. To the best of our knowledge, no cryptocurrency features this.
+
+Next, our binding theorem only requires that the hash function used is collision
+resistant and is in the standard model.
+
+\import{./}{chapters/sidechains/algorithms/alg.collision-adversary.tex}
+
+\begin{theorem}[Binding]
+  If $H$ is a \emph{collision resistant} hash function then the protocol of Section~\ref{sec:construction} is \emph{binding}.
+\end{theorem}
+\begin{proof}
+  Let $\mathcal{A}$ be an arbitrary adversary against $\Pi$.
+  We will construct the Collision Resistance adversary $\mathcal{A}^*$ against $H$.
+
+  The collision resistance adversary, illustrated in Algorithm~\ref{alg.collision-adversary}, calls $\mathcal{A}$ and obtains two outputs, $t$ and $t'$. If $\mathcal{A}$ is successful then $t \neq t'$ and $H(t) \xor 1 = H(t') \xor 1$. Therefore $H(t) = H(t')$.
+
+  We thus conclude that $\mathcal{A^*}$ is successful in the $\collisionattack$ game if and only if $\mathcal{A}$ is successful in the $\bindattack$ game.
+
+  \[
+    \Pr[\bindattack_{\mathcal{A},\Pi}(\kappa) = \true]
+    =
+    \Pr[\collisionattack_{\mathcal{A}^*,H}(\kappa) = \true]
+  \]
+
+  From the collision resistance of $H$ it follows that $\Pr[\collisionattack_{\mathcal{A}^*,H} = \true] < \negl$. Therefore,
+  $\Pr[\bindattack_{\mathcal{A},\Pi} = \true] < \negl$, so
+  the protocol $\Pi$ is binding.
+\end{proof}
+
+We now posit that no adversary can predict the public key of a secure signature scheme, except with negligible probability. We call a distribution \emph{unpredictable} if no
+probabilistic polynomial-time adversary can predict its sampling. We give
+the formal definition, with some of its statistical properties, in
+Appendix~\ref{sec:proofs:unpred-dist}.
+
+\begin{restatable}[Public key unpredictability]{lem}{restateLemPkUnpredictability}
+  \label{lem:pk-unpredictability}
+  Let $S = (\textsf{Gen}, \textsf{Sig}, \textsf{Ver})$ be a secure signature scheme.
+  Then the distribution ensemble
+  $X_\kappa = \{(sk, pk) \gets \textsf{Gen}(1^\kappa); pk\}$ is
+  unpredictable.
+\end{restatable}
+
+The following lemma shows that the output of the random oracle is
+indistinguishable from random if the input is unpredictable
+(for the complete proofs see Appendix~\ref{sec:proofs:ro}).
+For reference, the
+definition of computational indistinguishability is included in
+Appendix~\ref{sec:proofs:comp-ind}.
+
+\begin{restatable}[Random Oracle unpredictability]{lem}{restateLemRoUnpredictability}
+  \label{lem:ro-unpredictability}
+  Let $\mathcal{T}$ be an unpredictable distribution ensemble and $H$ be a
+  Random Oracle.
+  The distribution ensemble $X = \{t \gets \mathcal{T}; H(t)\}$ is indistinguishable from
+  the uniform distribution ensemble $\uniform(\{0,1\}^\kappa)$.
+\end{restatable}
+
+\begin{theorem}[Uncensorability]
+  Let $S = (\Gen, \Sig, \Ver)$ be a \emph{secure signature scheme},
+  $H$ be a \emph{Random Oracle},
+  and $\mathcal{T}$ be an unpredictable tag distribution.
+  Then the protocol of Section~\ref{sec:construction} instantiated with
+  $H, S, \mathcal{T}$ is \emph{uncensorable}.
+\end{theorem}
+\begin{proof}
+  Let $X$ be the distribution ensemble of public keys generated using $\GenAddr$
+  and $Y$ that of keys generated using $\GenBurnAddr$.
+
+  From Lemma~\ref{lem:pk-unpredictability} the distribution of
+  public keys generated from $S$ is unpredictable. The
+  function $\GenAddr$ samples a public key from $S$ and applies the
+  random oracle $H$ to it. Applying
+  Lemma~\ref{lem:ro-unpredictability}, we obtain that
+  $X \cind \uniform(\{0, 1\}^\kappa)$.
+
+  The function $H'(x) = H(x) \xor 1$ is a random oracle (despite not
+  being independent from the random oracle $H$).
+  Since $\mathcal{T}$ is unpredictable, and
+  applying Lemma~\ref{lem:ro-unpredictability} with random oracle $H'$, we
+  obtain that $Y \cind \uniform(\{0, 1\}^\kappa)$.
+
+  By transitivity, $X$ and $Y$ are computationally indistinguishable.
+\end{proof}
+
+From the above, we conclude that the tags used during the burn process must be
+unpredictable. If the tag is chosen to contain a randomly generated public key
+from a secure signature scheme, or its hash,
+Lemmas~\ref{lem:pk-unpredictability}~and~\ref{lem:ro-unpredictability} show that
+sufficient entropy exists to ensure uncensorability. Our cross-chain application
+makes use of this fact.
