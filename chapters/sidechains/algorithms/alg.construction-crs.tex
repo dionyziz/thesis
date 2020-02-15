@@ -1,0 +1,17 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.construction-crs} Our proof-of-burn protocol for P2PK
+    using a Common Random String $h$ representing
+    a group element in which DLOG is difficult and parameterized by
+    a collision resistant hash function $H$.}
+    \begin{algorithmic}[1]
+        \Function{$\GenBurnAddr_H$}{$1^\kappa, t$}
+            \State\Return{$h g^{H(t)}$}
+        \EndFunction
+        \Function{$\BurnVerify_H$}{$1^\kappa, t, th$}
+            \State\Return{$(\GenBurnAddr(1^\kappa, t) = th)$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

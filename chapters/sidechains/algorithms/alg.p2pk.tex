@@ -1,0 +1,16 @@
+\begin{figure}
+\begin{algorithm}[H]
+    \caption{\label{alg.p2pk} The blockchain address P2PK algorithm,
+    parameterized by a signature scheme $S = (\Gen, \Sig, \Ver)$.}
+    \begin{algorithmic}[1]
+        \Function{$\GenAddr_S$}{$1^\kappa$}
+            \Let{(pk, sk)}{\Gen(1^\kappa)}
+            \State\Return{(pk, sk)}
+        \EndFunction
+        \Function{$\SpendVerify_S$}{$m, \sigma, pk$}
+            \State\Return{$\Ver(m, \sigma', pk)$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
