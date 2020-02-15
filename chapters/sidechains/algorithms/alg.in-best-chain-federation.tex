@@ -1,0 +1,24 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.in-best-chain-federation} A \textsf{in-best-chain} implementation which verifies that a block $b$ is included in the best source chain using the federation mechanism. $\mathcal{M}$ denotes the latest MMR approved by the federation majority.}
+    \begin{algorithmic}[1]
+        \Let{\textsf{votes}}{\emptyset}
+        \Let{\textsf{best-idx}}{0}
+        \Let{\mathcal{M}}{\epsilon}
+        \Function{{\sf vote}$_\textsf{fed}$}{$m, \sigma, pk$}
+            \If{$pk \in \textsc{fed} \land \Ver(m, \sigma, pk)$}
+                \Comment{Check that $pk$ is a valid federation member}
+                \Let{(\mathcal{M}^*, \textsf{idx})}{m}
+                \Let{\textsf{votes}[m]}{\textsf{votes}[m] \cup \{pk\}}
+                \If{$|\textsf{votes}[m]| \geq \lfloor\frac{|\textsc{fed}|}{2}\rfloor+1 \land \textsf{idx} > \textsf{best-idx}$}
+                    \Let{\mathcal{M}}{\mathcal{M}^*}
+                    \Comment{Update accepted MMR}
+                    \Let{\textsf{best-idx}}{\textsf{idx}}
+                \EndIf
+            \EndIf
+        \EndFunction
+        \Function{{\sf in-best-chain}$_\mathcal{M}$}{$b, \blockConnection$}
+            \State\Return{$\VerMT(\mathcal{M}, b, \blockConnection)$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}

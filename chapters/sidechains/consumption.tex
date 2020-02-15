@@ -1,0 +1,63 @@
+\section{Consumption}
+
+Over the last 5 years there has been an explosion of new cryptocurrencies. Unfortunately, it is hard for a new cryptocurrency to gain traction. Without traction, no market depth ensues and a cryptocurrency has difficulty getting listed in exchanges. But without being listed in exchanges, a cryptocurrency cannot gain traction.
+
+This chicken-and-egg situation presents the need for a solution that circumvents exchanges and allows users to acquire the cryptocurrency directly. We propose utilizing proof-of-burn to allow users to obtain capital on a new cryptocurrency by burning a legacy cryptocurrency. We call the legacy one the \emph{source} and the new one the \emph{target cryptocurrency}, and their blockchains the \emph{source} and \emph{target blockchain} respectively. The target blockchain may support burning from multiple source blockchains.
+
+\noindent
+\textbf{Workflow.}
+A user who wishes to acquire a target cryptocurrency first forms a burn address valid in the source blockchain which encodes her receiving address on the target blockchain by using it as a tag. She then sends an amount of source cryptocurrency to that address. She submits a proof of this burn to a smart contract~\cite{buterin} on the target blockchain, where it is verified and she is credited an equivalent amount of target cryptocurrency on her receiving address. Proof-of-burn verification happens in either a centralized manner which is lighter on computation, or in a decentralized manner using Non-Interactive Proofs of Proof-of-Work (NIPoPoWs)~\cite{FCW:KiaLamSto16,nipopows,superblocks,gtklocker}.
+
+Target blockchain miners need not be connected to every other source blockchain network. We call this property \emph{miner-isolation} and we propose methods to achieve it.
+
+We now describe how a smart contract on the target blockchain can verify a burn took place on the source blockchain. Note how this puts a constraint on the target blockchain to have smart contract capabilities. However there is no such constraint for the source blockchain.
+
+In accordance to the terminology laid out in~\cite{pow-sidechains}, we call the user the \emph{prover} and the smart contract the \emph{verifier}. The prover wishes to convince the verifier that an event occurred on the source blockchain. We define an event as a simple value transfer described by a transaction id \textsf{txid}, a receiving address \textsf{addr} and an amount \textsf{amount}. Simple value transfers are supported by all cryptocurrencies, allowing a verifier to process burns from a wide range of source blockchains. Note that this event type does not yet distinguish between burn and non-burn addresses.
+
+For a verifier to be convinced that an event occurred on a source blockchain, they ensure its transaction is contained in a stable block in the best source chain. Specifically, the following data are supplied to the smart contract as a proof:
+
+\begin{itemize}
+  \item $\tx$: The transaction which contains the burn on the source blockchain.
+  \item $b$: The block header for the block which contains $\tx$.
+  \item $\txInclusion$: An inclusion proof showing $\mathsf{tx} \in b$.
+  \item $\blockConnection$: A proof that $b$ is contained in the best (i.e., most proof-of-work) source blockchain and is stable.
+\end{itemize}
+
+We assume the source blockchain provides a function \verifytx(\textsf{addr}, \textsf{amount}, $b$, \textsf{tx}, $\txInclusion$) which can be written in the smart contract language of the target blockchain and verifies the validity of a source blockchain transaction. It takes a source blockchain address \textsf{addr}, an amount of source cryptocurrency \textsf{amount}, a block $b$, a transaction \textsf{tx} and a proof $\txInclusion$ for the inclusion of \textsf{tx} in $b$. It returns $\true$ if \textsf{tx} contains a transfer of \textsf{amount} to \textsf{addr} and the proof $\txInclusion$ is valid for $b$.
+
+The proof $\txInclusion$ is usually a Merkle Tree inclusion proof. More concretely, in Bitcoin, each block header contains a commitment to the set of transaction ids in the block in the form of a Merkle Tree root. Ethereum stores a similar commitment in its header --- the root of a Merkle--Patricia Trie~\cite{wood2014ethereum}.
+
+For verifying that a provided block $b$ belongs to the best source blockchain and is stable, we assume the existence of a function $\textsf{in-best-chain}(b)$. We explore how it can be implemented in the ``Verifying block connection'' paragraph below.
+
+\noindent
+\textbf{Bootstraping mechanism.}
+Being able to verify events, we can grant target cryptocurrency to users who burn source cryptocurrency. After burning on the source blockchain, the user calls the \textsf{claim} function with the aforementioned event and a proof for it. This function ensures that the event provided is valid and has not been claimed before (i.e. no one has been granted target cryptocurrency for this specific event in the past), that it corresponds to the transaction $\tx$ and that the block $b$ is stable, belongs to the best source chain and contains $\tx$. Then, after verifying by invoking $\BurnVerify$ that the receiving address of the event is a burn address where the tag is the function caller's address, it releases the amount of coins burned in the form of an ERC-20 token. We present the contract \textsf{burn-verifier} with this capability in Algorithm~\ref{alg.burn-verifier}.
+
+\import{./}{chapters/sidechains/algorithms/alg.burn-verifier.tex}
+
+In the interest of keeping this implementation generic we assume that the user receives a token in return for his burn. However, instead of minting a token, the target cryptocurrency could allow the burn verifier contract to mint native cryptocurrency for any user who successfully claims an event. This would allow the target cryptocurrency to be bootstrapped entirely though burning as desired.
+
+\noindent
+\textbf{Verifying block connection.}
+We now shift our attention to the problem of verifying a block belongs in the best source chain. We provide multiple ways of implementing the aforementioned \textsf{in-best-chain} method.
+
+\noindent
+\textbf{Direct observation.}
+Miners connect to the source blockchain network and have access to the best source chain. A miner can thus evaluate if a block is included in that chain and is stable. This mechanism does not provide miner-isolation. It is adopted by Counterparty.
+
+\noindent
+\textbf{NIPoPoWs.}
+Verifying block connection can be achieved through NIPoPoWs, as in~\cite{pow-sidechains}.
+We remark that with this setup a block connection proof may be considered valid provisionally, but there needs to be a period in which the proof can be disputed for the smart contract to be certain for the validity of the proof. Specifically, when a user performs a claim, they have to put down some collateral. If they have provided a valid NIPoPoW, a contestation period begins. Within that period a challenger can dispute the provided proof which -- provided that the dispute is successful -- would turn the result of \textsf{in-best-chain} to $\false$, abort the claim and grant the challenger the user's collateral. If the contestation period ends with the proof undisputed, then \textsf{in-best-chain} evaluates to $\true$, the collateral gets returned to the user and the claim is performed successfully.
+
+\noindent
+\textbf{Federation.}
+A simpler approach is to allow a federation of $n$ nodes monitoring the source chain to vote for their view of the best source chain.
+
+\import{./}{chapters/sidechains/algorithms/alg.in-best-chain-federation.tex}
+
+The best source chain is expressed as the root $\mathcal{M}$ of a Merkle Tree containing the chain's stable blocks as leaves. Each federation node connects to both blockchain networks, calculates $\mathcal{M}$ and submits their vote for it every time a new source chain block is found. When a majority of $\lfloor\frac{n}{2}\rfloor + 1$ nodes agrees on the same $\mathcal{M}$, it is considered valid.
+
+Having a valid $\mathcal{M}$, a verifier verifies a Merkle Tree inclusion proof $\blockConnection$ for $b \in \mathcal{M}$ and is certain the block provided is part of the best source chain and is stable. This approach is illustrated in Algorithm~\ref{alg.in-best-chain-federation}.
+
+The more suitable Merkle Mountain Range~\cite{flyclient} data structure can be used to store $\mathcal{M}$ in place of regular Merkle Trees, as they constitute a more efficient append-only structure.

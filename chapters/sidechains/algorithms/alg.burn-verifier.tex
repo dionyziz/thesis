@@ -1,0 +1,20 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.burn-verifier} A contract for verifying burns from the source chain. This smart contract runs within the target blockchain.}
+    \begin{algorithmic}[1]
+        \Contract{\textsf{burn-verifier}\text{ extends }\textsf{crosschain}; \textsf{ERC20}}
+            \State\textsf{mapping}(\textsf{address} $\Rightarrow$ \textsf{uint256}) \textsf{balances}
+            \State{$\textsf{claimed-events} \gets \emptyset$}
+            \Function{\sf claim}{$e, b, \txInclusion$}
+                \Let{\textsf{block-ok}}{\textsf{in-best-chain}(b)}
+                \Let{\textsf{tx-ok}}{\textsf{verify-tx}(e.\textsf{addr}, e.\textsf{amount}, b, e.\tx, \txInclusion)}
+                \Let{\textsf{event-ok}}{e \notin \textsf{claimed-events}}
+                \If{$\textsf{block-ok} \land \textsf{tx-ok} \land \textsf{event-ok} \land
+                    \BurnVerify(\textsf{msg.sender}, e.\textsf{addr})$}
+                    \Let{\textsf{claimed-events}}{\textsf{claimed-events} \cup \{e\}}
+                    \State{$\textsf{balances[msg.sender]} \pluseq e.\textsf{amount}$}
+                \EndIf
+            \EndFunction
+        \EndContract
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
