@@ -103,7 +103,7 @@ code to support it (e.g. by installing a pluggable module into their client
 software). In the following this is referred to as ``adopting the sidechain''
 and captured by the predicate $\SidechainAdoption$.
 The adoption is  announced at the mainchain by a special transaction
-detailed below.  Each sidechain is identified by a unique identifier $\id_\SC$.
+detailed below.  Each sidechain is identified by a unique identifier $\id_\Sidechain$.
 %The identifier is a simple string,
 %which must be chosen to be unique for that particular sidechain,
 %. For example,
@@ -233,7 +233,7 @@ Algorithm~\ref{alg.init}).
     First, every stakeholder $U_i$ of $\MC$ (holding a key pair $(vk,sk)$) that supports the sidechain
     posts a special transaction
     $
-    \mathsf{sidechain\_support}(\id_\SC,vk,vk')
+    \mathsf{sidechain\_support}(\id_\Sidechain,vk,vk')
     $,
     signed by $sk$
     into the mainchain. Here $vk'$ is a public key from an ATMS key pair
@@ -250,9 +250,9 @@ Algorithm~\ref{alg.init}).
     $
     \Genesisb
     =(
-      \id_\SC,
+      \id_\Sidechain,
       \SDb_{\jstart},
-      \rndb_{\jstart}\defeq H( \id_\SC, \rnd_{\jstart}),
+      \rndb_{\jstart}\defeq H( \id_\Sidechain, \rnd_{\jstart}),
       \params,
       avk^{\jstart}
     )
@@ -282,11 +282,11 @@ Algorithm~\ref{alg.init}).
   %\item
     The stakeholders that adopted $\SC$ post into $\MC$
     %in the first block of epoch $\epoch_j$
-    a transaction $\mathsf{sidechain\_success}(\id_\SC)$ to
+    a transaction $\mathsf{sidechain\_success}(\id_\Sidechain)$ to
     signify that $\SC$ has been initialized.
     If the sidechain creation expires, then, after the first block of the next
     epoch after expiration occurs, the stakeholders of $\MC$ that supported
-    $\SC$ post the transaction $\mathsf{sidechain\_failure}(\id_\SC)$ to $\MC$.
+    $\SC$ post the transaction $\mathsf{sidechain\_failure}(\id_\Sidechain)$ to $\MC$.
     We assume that both predicates $\ActSuccess$ and $\ActFail$ can be evaluated
     based on the state of $\MC$ only, and hence spurious success/failure
     transactions will be considered invalid.
@@ -390,7 +390,7 @@ distribution used for epoch $j$ reflects the stake distribution of $\SC$-aware
 stake in the past, namely by slot $4k$ of epoch $j-1$, just as in $\MC$.
 %The randomness $\rndb_{j}$ for each epoch $j$
 %is derived deterministically from the mainchain randomness for the same
-%epoch $\rnd_j$, concretely $\rndb_{j}\defeq H(\id_\SC, \rnd_{j})$.
+%epoch $\rnd_j$, concretely $\rndb_{j}\defeq H(\id_\Sidechain, \rnd_{j})$.
 %This is done for efficiency reasons as the randomness in Ouroboros is
 %derived via a relatively costly coin-tossing protocol, and its reuse on the
 %sidechain does not harm security.

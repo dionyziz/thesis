@@ -10,9 +10,9 @@
     \On{$\SidechainAdoption(\idSC)$}
       \Let{\scstate[\idSC]}{\initializing}
       \Let{(vk',sk')}{\Gen(\params)}
-      \Let{\sigma}{\Sig_{sk}(\mathsf{sidechain\_support}(\id_\SC,vk,vk'))}
+      \Let{\sigma}{\Sig_{sk}(\mathsf{sidechain\_support}(\id_\Sidechain,vk,vk'))}
       \Post
-        {$\mathsf{sidechain\_support}(\id_\SC,vk,vk',\sigma)$}
+        {$\mathsf{sidechain\_support}(\id_\Sidechain,vk,vk',\sigma)$}
         {$\MC$}
     \EndOn
 
@@ -22,24 +22,24 @@
         \If{$\ActFail()$}
           \Let{\scstate[\idSC]}{\failed}
           \Post
-            {$\mathsf{sidechain\_failure}(\id_\SC)$}
+            {$\mathsf{sidechain\_failure}(\id_\Sidechain)$}
             {$\MC$}
           %\State $\SC.\Cleanup()$
         \ElsIf{$\ActSuccess()$}
           \Let{\scstate[\idSC]}{\initialized}
           \Let{\jstart}{\ActEpoch()}
-          \State Post $\mathsf{sidechain\_success}(\id_\SC)$ to $\MC$
+          \State Post $\mathsf{sidechain\_success}(\id_\Sidechain)$ to $\MC$
         \EndIf
       \EndIf
       \If{$\scstate[\idSC]=\initialized
             \land
             j=\jstart$}
-        \Let{\rndb_{\jstart}}{H( \id_\SC, \rnd_{\jstart})}
+        \Let{\rndb_{\jstart}}{H( \id_\Sidechain, \rnd_{\jstart})}
         \Let{\mathcal{VK}_{\jstart}}{\text{$2k$ last slot leaders of $\epoch_{\jstart}$ in $\SC$}}
         \Let{avk^{\jstart}}{\KeyCombine(\mathcal{VK}_{\jstart})}
         \Let{\Genesisb}
           {\left(
-            \id_\SC,
+            \id_\Sidechain,
             \SDb_{\jstart},
             \rndb_{\jstart},
             \params,

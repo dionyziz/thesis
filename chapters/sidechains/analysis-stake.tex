@@ -23,9 +23,9 @@ for some fixed $\epsilon>0$.
 % PG: we never use this epsilon again.
 
 The assumption $\Assum_\MC$ we consider for $\MC$
-is precisely $\Assum_\MC[t]\defeq\Assum_{\hm}(\MC)[t]$, while the assumption $\Assum_\SC$ for $\SC$ is
-$\Assum_\SC[t]\defeq\Assum_\MC[t]\land\Assum_{\hm}(\SC)[t]$. The reason that
-$\Assum_\SC[t]\Rightarrow\Assum_\MC[t]$ is that $\SC$ uses merged staking and hence
+is precisely $\Assum_\MC[t]\defeq\Assum_{\hm}(\MC)[t]$, while the assumption $\Assum_\Sidechain$ for $\SC$ is
+$\Assum_\Sidechain[t]\defeq\Assum_\MC[t]\land\Assum_{\hm}(\SC)[t]$. The reason that
+$\Assum_\Sidechain[t]\Rightarrow\Assum_\MC[t]$ is that $\SC$ uses merged staking and hence
 cannot provide any security guarantees if the stake records on $\MC$ get
 corrupted. It is worth noting that it is possible to program $\SC$ to wean off
 $\MC$ and switch to independent staking; in such case the assumption for $\SC$
@@ -66,11 +66,11 @@ security as required by Definition~\ref{def:security}.
 To show that the firewall property holds, we
 perform a case analysis, looking at
 the two cases of interest: when both $\MC$ and
-$\SC$ are secure (i.e., when $\Assum_\MC\land\Assum_\SC$ holds), and when only $\MC$ is secure while the security assumption of
+$\SC$ are secure (i.e., when $\Assum_\MC\land\Assum_\Sidechain$ holds), and when only $\MC$ is secure while the security assumption of
 $\SC$ has been violated.
 As discussed above, the case where $\SC$ is secure and
 the security of $\MC$ has been violated cannot occur per definition of
-$\Assum_\MC$ and $\Assum_\SC$, and so examining this
+$\Assum_\MC$ and $\Assum_\Sidechain$, and so examining this
 case is not necessary.
 
 First, we examine the case where both $\MC$ and $\SC$ are secure, but only
@@ -108,8 +108,8 @@ standalone Ouroboros blockchain in~\cite{C:KRDO17}.
 
 \begin{lemma}[Persistence and Liveness]\label{lem:perslive}
   Consider the construction of Section~\ref{sec:construction} with
-  the assumptions $\Assum_\SC, \Assum_\MC$. For all slots $t$, if
-  $\Assum_\SC[t]$ (resp. $\Assum_\MC[t]$) holds, then $\SC$ (resp. $\MC$)
+  the assumptions $\Assum_\Sidechain, \Assum_\MC$. For all slots $t$, if
+  $\Assum_\Sidechain[t]$ (resp. $\Assum_\MC[t]$) holds, then $\SC$ (resp. $\MC$)
   satisfies persistence and liveness up to slot $t$ with overwhelming probability in $k$.
 \end{lemma}
 
@@ -181,7 +181,7 @@ a certain situation, it must be an $\MC$-receiving transaction.
   $$
     \LState =
     \merge\left(
-        \{\LState_\MC^{\cup}[t], \LState_\SC^{\cup}[t]\}
+        \{\LState_\MC^{\cup}[t], \LState_\Sidechain^{\cup}[t]\}
     \right)
     \not\in
     \adalang
@@ -217,10 +217,10 @@ a certain situation, it must be an $\MC$-receiving transaction.
   Due to persistence and the definition of $\LState_{\MC}^{\cup}[t]$ and
   $\LState_{\SC}^{\cup}[t]$, there exists an $\MC$ maintainer $\party_\MC$ and
   an $\SC$
-  maintainer $\party_\SC$, such that
+  maintainer $\party_\Sidechain$, such that
   $\LState_{\MC}^{\party_\MC}[t] = \LState_{\MC}^{\cup}[t]$
   and
-  $\LState_{\SC}^{\party_\SC}[t] = \LState_{\SC}^{\cup}[t]$,
+  $\LState_{\SC}^{\party_\Sidechain}[t] = \LState_{\SC}^{\cup}[t]$,
   respectively.
   Due to the \emph{partitioning property} of $\merge$, $\tx$ will be in
   $\LState_{\llid(\tx)}^{\party_{\llid(\tx)}}[t]$.
@@ -247,19 +247,19 @@ a certain situation, it must be an $\MC$-receiving transaction.
 
   \textbf{Case 2: } $\llid(\tx) = \SC$.
   Let $\Chainmc$ and $\Chainsc$ be the $\MC$ and respectively $\SC$ chain
-  adopted by $\party_\SC$ at slot~$t$ (and recall that $\party_\SC$ maintains
+  adopted by $\party_\Sidechain$ at slot~$t$ (and recall that $\party_\Sidechain$ maintains
   both chains). Let $\Chainmc'$ be the chain adopted by
   $\party_\MC$ at slot $t$. As before,
-  $\textsc{annotatetx}_\SC(\Chainmc,\Chainsc)$ must be a fixpoint of
-  $\textsc{verifytx}_\SC$ (as $\textsc{verifytx}_\SC$ checks for a fixpoint).
+  $\textsc{annotatetx}_\Sidechain(\Chainmc,\Chainsc)$ must be a fixpoint of
+  $\textsc{verifytx}_\Sidechain$ (as $\textsc{verifytx}_\Sidechain$ checks for a fixpoint).
   As in the previous case, $\tx$ cannot violate (a), (b), (c) and in this case
   nor (d), as this would constitute a fixpoint violation. Hence $\tx$ is an
   effect transaction and we will examine whether $\tx$ constitutes a violation
   of~(e).
 
   Let $\tx^{-1} \defeq \eff{\MC}{\SC}^{-1}(\tx)$. Since $\tx$ is accepted
-  by $\textsc{verifytx}_\SC$ on input
-  $\textsc{annotatetx}_\SC(\Chainmc,\Chainsc)$, we deduce that
+  by $\textsc{verifytx}_\Sidechain$ on input
+  $\textsc{annotatetx}_\Sidechain(\Chainmc,\Chainsc)$, we deduce that
   there exists some block $B \in \Chainmc[:-k]$
   with $\tx^{-1} \in B$. But $\Chainmc'[:-k]$
   is the longest stable chain among
@@ -269,14 +269,14 @@ a certain situation, it must be an $\MC$-receiving transaction.
   Hence, $\tx^{-1} \in \Ledger^{\party_\MC}_\MC[t]$.
   Due to the \emph{partioning property} of $\merge$, $\tx^{-1}$ must appear in
   the output of $\merge\left(
-      \{\LState_\MC^{\party_\MC}[t], \LState_\SC^{\party_\SC}[t]\}
+      \{\LState_\MC^{\party_\MC}[t], \LState_\Sidechain^{\party_\Sidechain}[t]\}
   \right)$.
   Due to the
   \emph{topological soundness} of $\merge$, $\tx^{-1}$ must appear
   \emph{before} $\tx$
   in
   $\merge\left(
-      \{\LState_\MC^{\party_\MC}[t], \LState_\SC^{\party_\SC}[t]\}
+      \{\LState_\MC^{\party_\MC}[t], \LState_\Sidechain^{\party_\Sidechain}[t]\}
   \right)$. Hence, it cannot be the case that (e) is violated, as the pre-image
   transaction exists.
 \end{proof}
@@ -517,7 +517,7 @@ construction satisfies the firewall property.
   For all PPT adversaries $\mathcal{A}$, the construction of
   Section~\ref{sec:construction} with a secure ATMS and a collision-resistant
   hash function satisfies the firewall property with respect to assumptions
-  $\Assum_\MC, \Assum_\SC$ with overwhelming probability in $k$.
+  $\Assum_\MC, \Assum_\Sidechain$ with overwhelming probability in $k$.
 \end{lemma}
 \begin{proof}
   Let $\mathcal{A}$ be an arbitrary PPT adversary against the firewall property,
@@ -558,12 +558,12 @@ construction satisfies the firewall property.
   $\mathcal{O}^\textsf{cor}$.
 
   For every time slot $t$ of the execution, $\mathcal{A}_1$ inspects all pairs
-  $(\party_\MC, \party_\SC)$ of honest parties such that $\party_\MC$ is a $\MC$
-  maintainer and $\party_\SC$ is a $\SC$ maintainer such that
+  $(\party_\MC, \party_\Sidechain)$ of honest parties such that $\party_\MC$ is a $\MC$
+  maintainer and $\party_\Sidechain$ is a $\SC$ maintainer such that
   $\LState_\MC^{\party_\MC}[t] = \LState_\MC^\cup[t]$ and
-  $\LState_\SC^{\party_\SC}[t] = \LState_\SC^\cup[t]$ (if such parties exist).
+  $\LState_\Sidechain^{\party_\Sidechain}[t] = \LState_\Sidechain^\cup[t]$ (if such parties exist).
   Let $\LState_1 = \LState_\MC^{\party_\MC}[t]$ and
-  $\LState_2 = \LState_\SC^{\party_\SC}[t]$.
+  $\LState_2 = \LState_\Sidechain^{\party_\Sidechain}[t]$.
   The adversary obtains the stable portion of the
   honestly adopted chain, namely $\Chain_1 = \LView{\Chain}{\party_\MC}{t}[:-k]$ and the
   transactions included in $\Chain_1$, namely $\LState'_1$ (note that
@@ -573,7 +573,7 @@ construction satisfies the firewall property.
   Note that both the evaluation of $\merge$ on arbitrary states and the
   verification of inclusion in $\adalang$ are efficiently computable and hence
   $\mathcal{A}_1$ can execute them. If $\mathcal{A}_1$ is not able to find such
-  a time slot $t$ and parties $\party_\MC, \party_\SC$, it returns \textsc{failure}
+  a time slot $t$ and parties $\party_\MC, \party_\Sidechain$, it returns \textsc{failure}
   (in the latter part of this proof, we will argue that all $\mathcal{A}_1$
   failures occur with negligible probability conditioned on the event that
   $\mathcal{A}$ is successful, unless $\mathcal{A}_2$ is successful).
@@ -598,10 +598,10 @@ construction satisfies the firewall property.
   $\mathcal{A}_1$ extracts the epoch $\epoch_j$ in
   which $\sccert_j$ was confirmed in $\Chain_1$ (and note that we must have $j >
   0$). $\mathcal{A}_1$ collects the public keys elected for the last $2k$ slots
-  of epoch $\epoch_{j-1}$ according to the view of $\party_\SC$
+  of epoch $\epoch_{j-1}$ according to the view of $\party_\Sidechain$
   into a set $\keyseq_{j-1}$ and similarly for $\keyseq_j$. $\mathcal{A}_1$
   collects the pending cross-chain transactions of $\epoch_{j-1}$ according to
-  the view of $\party_\SC$ into $\pending'_j$, and creates the respective
+  the view of $\party_\Sidechain$ into $\pending'_j$, and creates the respective
   Merkle-tree commitment $\commit{\pending'_j}$.
   $\mathcal{A}_1$
   checks whether the following \emph{certificate violation} condition holds:
@@ -618,7 +618,7 @@ construction satisfies the firewall property.
     \right)
   \end{equation}
   where $avk^{j-1}$ is extracted from $\sccert_{j-1}$ according to the view of
-  $\party_\SC$, unless $j = 1$ in which case $avk^0$ is known.
+  $\party_\Sidechain$, unless $j = 1$ in which case $avk^0$ is known.
   If the condition~(\ref{eq:cert-violation}) holds for no $j$ then
   $\mathcal{A}_1$ returns \textsc{failure}, otherwise it denotes by $j^*$ the
   minimum $j$ for which~(\ref{eq:cert-violation}) holds and outputs the tuple
@@ -639,23 +639,23 @@ construction satisfies the firewall property.
   private key to $\mathcal{A}$.
 
   For every time slot $t$ of the execution, $\mathcal{A}_2$ inspects all pairs
-  of honest parties such that $\party_\MC$ is a $\MC$ maintainer and $\party_\SC$ is
+  of honest parties such that $\party_\MC$ is a $\MC$ maintainer and $\party_\Sidechain$ is
   a $\SC$ maintainer such that
   $\LState_\MC^{\party_\MC}[t] = \LState_\MC^\cup[t]$ and
-  $\LState_\SC^{\party_\SC}[t] = \LState_\SC^\cup[t]$
+  $\LState_\Sidechain^{\party_\Sidechain}[t] = \LState_\Sidechain^\cup[t]$
   and obtains the variables $\LState_1, \LState_2, \Chain_1,
   \LState'_1$ as before. $\mathcal{A}_2$ examines whether $\LState =
   \merge(\LState_1, \LState_2) \not\in\adalang$, to deduce whether $\mathcal{A}$
   has succeeded. If $\mathcal{A}_2$ is not able to find such a time slot $t$ and
-  parties $\party_\MC, \party_\SC$, it returns \textsc{failure}. Let $\tx$ be as in
+  parties $\party_\MC, \party_\Sidechain$, it returns \textsc{failure}. Let $\tx$ be as in
   $\mathcal{A}_1$. If $\send(\tx) \neq \SC$ or $\llid(\tx) \neq \MC$, then
   $\mathcal{A}_2$ returns \textsc{failure}. Then $\tx$ references a certain
   certificate transaction $\sccert_j = (j,\langle\pending_j\rangle, avk^j,\sigma_j)$ and
   uses a Merkle tree proof $\pi$ which proves the inclusion of $\tx$ in
   $\pending_j$. If $\sccert_j \not\in \LState'_1$,
   then $\mathcal{A}_2$ returns
-  \textsc{failure}. When $\sccert_j$ was accepted by $\party_\SC$, $\pending_j$
-  included a set of transactions $\vec\tx$ in the view of $\party_\SC$. If $\tx
+  \textsc{failure}. When $\sccert_j$ was accepted by $\party_\Sidechain$, $\pending_j$
+  included a set of transactions $\vec\tx$ in the view of $\party_\Sidechain$. If $\tx
   \in \vec\tx$, then $\mathcal{A}_2$ returns \textsc{failure}. Otherwise, the
   Merkle tree $\langle\pending_j\rangle$ was constructed from $\vec\tx$, but a
   proof-of-inclusion $\pi$ for $\tx \not\in \vec\tx$ was created. From this
@@ -724,15 +724,15 @@ construction satisfies the firewall property.
   $\textsc{sc-forge}[t] \Rightarrow \textsc{atms-forge} \lor \textsc{hash-collision}$.
 
   \noindent
-  Because persistence holds in both $\MC$ and $\SC$, we know that there exist two parties $\party_\MC, \party_\SC$
+  Because persistence holds in both $\MC$ and $\SC$, we know that there exist two parties $\party_\MC, \party_\Sidechain$
   such that at slot $t$ we have that $\Ledger_\MC^{\party_\MC}[t] =
-  \Ledger_\MC^{\cup}[t]$ and $\Ledger_\SC^{\party_\SC}[t] =
-  \Ledger_\SC^{\cup}[t]$,
+  \Ledger_\MC^{\cup}[t]$ and $\Ledger_\Sidechain^{\party_\Sidechain}[t] =
+  \Ledger_\Sidechain^{\cup}[t]$,
   respectively. Therefore $\scforge[t]$ implies
   $$
     \merge(\{
       \Ledger_\MC^{\party_\MC}[t],
-      \Ledger_\SC^{\party_\SC}[t]
+      \Ledger_\Sidechain^{\party_\Sidechain}[t]
     \}) \not\in \adalang
   \; .
   $$
@@ -828,7 +828,7 @@ construction satisfies the firewall property.
   %has occurred.
   $\Secure_t \neq \{\MC,\SC\}$.
   If $\MC\not\in\Secure_t$ then, since
-  $\Assum_\MC[t] \Rightarrow \Assum_\SC[t]$, we have $\Secure_t = \emptyset$ and
+  $\Assum_\MC[t] \Rightarrow \Assum_\Sidechain[t]$, we have $\Secure_t = \emptyset$ and
   $\lnot \textsc{sc-forge}[t]$, as $\epsilon \in \adalang$ by the
   \emph{base property}.
   %It remains to show that
@@ -873,7 +873,7 @@ construction satisfies the firewall property.
   hash function is \textit{pegging secure} with liveness parameter
   $u=2k$
   with respect to
-  assumptions $\Assum_\MC$ and $\Assum_\SC$ defined above,
+  assumptions $\Assum_\MC$ and $\Assum_\Sidechain$ defined above,
   and $\merge$, $\effect$ and
   $\adalang$ defined in Section~\ref{sec:inst}.
 \end{theorem}
