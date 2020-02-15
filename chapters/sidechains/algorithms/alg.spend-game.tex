@@ -1,0 +1,11 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.spend-game} The challenger for the burn protocol game-based security.}
+    \begin{algorithmic}[1]
+        \Function{\spendattack$_{\mathcal{A},\Pi}$}{$\kappa$}
+            \Let{(t, m, \sigma, pk)}{\mathcal{A}(1^\kappa)}
+            \State\Return{$(\BurnVerify(1^\kappa, t, pk) \land \SpendVerify(m, \sigma, pk))$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
