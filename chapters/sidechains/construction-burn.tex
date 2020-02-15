@@ -1,0 +1,13 @@
+\section{Construction}\label{sec:construction}
+We now present our construction for an uncensorable proof-of-burn protocol. To generate a burn address, the tag $t$ is hashed and a perturbation is performed on the hash by toggling the last bit.
+Verifying a burn address $\burnAddr$ encodes a certain tag $t$ is achieved by invoking $\GenBurnAddr$ with tag $t$ and checking whether the result matches $\burnAddr$. If it matches, the $\burnAddr$ correctly encodes $t$. Our construction is illustrated in Algorithm~\ref{alg.construction-ro}.
+
+\import{./}{chapters/sidechains/algorithms/alg.construction-ro.tex}
+
+We outline the blockchain address protocol for Bitcoin Pay to Public Key Hash (P2PKH)~\cite{bitcoin-dev-guide}, with respect to which we prove our construction secure and uncensorable in Section~\ref{sec:analysis}. It is parametrized by a secure signature scheme $S$ and a hash function $H$ (for completeness, we give a construction which includes the concrete hash
+functions and checksums of Bitcoin in Appendix~\ref{sec.real}).
+$\GenAddr$ uses $S$ to generate a keypair and hashes the public key to generate the public key hash. A tuple consisting of the public key hash and the secret key is returned.
+$\SpendVerify$ takes a spending transaction $m$, a scriptSig $\sigma$ and a public key hash $pkh$. The scriptSig should contain the public key $pk$ corresponding to $pkh$ such that $H(pk) = pkh$ and a valid signature $\sigma'$ for the spending transaction $m$~\cite{bitcoin-dev-guide}. If these conditions are met, the function returns $\true$, otherwise it returns $\false$.
+The blockchain address protocol is illustrated in Algorithm~\ref{alg.p2pkh}.
+
+\import{./}{chapters/sidechains/algorithms/alg.p2pkh.tex}

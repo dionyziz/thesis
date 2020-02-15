@@ -1,0 +1,18 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.p2pkh} The Bitcoin P2PKH algorithm,
+    parameterized by a signature scheme $S = (\Gen, \Sig, \Ver)$.}
+    \begin{algorithmic}[1]
+        \Function{$\GenAddr_{S, H}$}{$1^\kappa$}
+            \Let{(pk, sk)}{\Gen(1^\kappa)}
+            \Let{pkh}{H(pk)}
+            \State\Return{(pkh, sk)}
+        \EndFunction
+        \Function{$\SpendVerify_{S, H}$}{$m, \sigma, pkh$}
+            \Let{(pk, \sigma')}{\sigma}
+            \State\Return{$(H(pk) = pkh \land \Ver(m, \sigma', pk))$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
