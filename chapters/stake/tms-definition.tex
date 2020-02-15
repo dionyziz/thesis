@@ -1,4 +1,4 @@
-\subsection{Ad-Hoc Threshold Multisignatures}
+\section{Ad-Hoc Threshold Multisignatures}
 \label{sec:ats}
 
 We  introduce a new  primitive, \textit{ad-hoc threshold
@@ -112,7 +112,7 @@ We define the security of an ATMS
 in the definition below,
 via a cryptographic game given in Algorithm~\ref{alg.tms-game}.
 
-\import{./chapters/sidechains}{algorithms/alg.tms-figure.tex}
+\import{./}{./chapters/stake/algorithms/alg.tms-figure.tex}
 
 \begin{definition}[Security]
   \label{def:ATMS-security}
@@ -163,6 +163,5 @@ parties who hold the respective secret keys, as long as the public portion of
 their keys is published. Furthermore, notice that the above games allow the adversary
 to generate more public/private key pairs of their own and combine them at will.
 
-Having defined the ATMS primitive, we will now describe a sidechain
-construction that uses it. Concrete instantiations of the ATMS primitive are
-presented in Section~\ref{sec:auth}.
+Concrete instantiations of the ATMS primitive are
+presented in the next sections.
