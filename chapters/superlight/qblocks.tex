@@ -1,0 +1,516 @@
+\section{Analysis \& $Q$-suppression attacks}
+
+% $Q$-blockS <<<
+We define a $Q$-block as a block satisfying a predicate $Q$ on its hash.
+Note that this evaluation does not depend on any particular execution.
+
+\begin{definition}[block property, $Q$-block]
+	A \emph{block property} is a predicate $Q$ defined on a hash output
+	$h \in \{0, 1\}^\kappa$.
+	Given a block property $Q$, a valid block with hash $h$ is called
+	a $Q$-block if $Q(h)$ is true.
+\end{definition}
+
+The block properties we are interested in will be evaluated in actual
+executions as $Q(H(\left<ctr, s, x\right>))$ for particular blocks. As
+such, we will be interested in properties which are polynomially
+computable given $h$ as the input.
+
+%>>>
+
+% RANDOM VARIABLES <<<
+\paragraph{Definitions of random variables.}
+
+We will call a query of a party \emph{successful} if it submits a triple
+$(ctr,s,x)$ such that $H(ctr,s,x)\le T$.
+Consider a block property $Q$. Let $\xi_Q=\Pr[Q(h)|h\le T]$, when $h$ is
+uniformly distributed over the range of the hash function.
+For each round $i$, query $j\in[q]$, and $k\in[t]$ (the $k$-th party
+controlled by the adversary), we define Boolean random
+variables $X_Q(i),Y_Q(i)$ and $Z_Q(i,j,k)$ as follows.
+If at round $i$ an honest party obtains a $Q$-block, then $X_Q(i)=1$,
+otherwise $X_Q(i)=0$.
+If at round $i$ exactly one honest party obtains a $Q$-block, then
+$Y_Q(i)=1$, otherwise $Y_Q(i)=0$.
+Regarding the adversary, if at round $i$, the $j$-th query of the $k$-th
+corrupted party obtains a $Q$-block, then $Z_Q(i,j,k)=1$, otherwise
+$Z_Q(i,j,k)=0$.
+Define also $Z_Q(i)=\sum_{k=1}^t\sum_{j=1}^qZ_Q(i,j,k)$.
+For a set of rounds $S$, let $X_Q(S)=\sum_{r\in S}X_Q(r)$ and similarly
+define $Y_Q(S)$ and $Z_Q(S)$.
+We drop the subscript from all variables $X,Y,Z$, when the $Q$-block is
+simply the property of being a valid block.
+Further, if $X(i)=1$, we call $i$ a \emph{successful round} and if
+$Y(i)=1$, a \emph{uniquely successful round}.
+%>>>
+
+% BOUNDS ON EXPECTATIONS <<<
+As in \cite{EC:GarKiaLeo15}, the probability $f$ that at least one honest party
+computes a solution at given round is an important parameter.
+Writing $p=T/2^\kappa$ for the probability of success of a single query, we
+have
+\[
+	(1-f){pq(n-t)}\le f=\E[X(i)]=1-(1-p)^{q(n-t)}\le pq(n-t)
+.\]
+The following bounds relate the expectations of the random variables defined
+above to $f$, for all $i$ and block properties $Q$.
+\begin{gather*}
+	\xi_Q f\le\E[X_Q(i)]\le\frac{\xi_Q f}{1-f},\quad
+		\xi_Q f(1-f)<\E[Y_Q(i)],\\
+	\E[Z_Q(i)]\le\frac{\xi_Q f}{1-f}\cdot\frac t{n-t}
+.\end{gather*}
+The derivations of these inequalities follow \cite{GKL15NEW}.
+%>>>
+
+\paragraph{Typical executions.} %<<<
+We now define our typical set of executions. This follows \cite{GKL15NEW}, but
+extended to include block properties.
+Informally, this set consists of
+those executions with polynomially many rounds and with the property that all
+the random variables of interest over sufficiently many (at least
+$\lambda=\Omega(\kappa)$) consecutive rounds do not deviate too much from
+their expectation.
+To this end, recall the following terms from \cite{GKL15NEW}. An
+\emph{insertion} occurs when, given a chain $\chain$ with two consecutive
+blocks $B$ and $B'$, a block $B^*$ created after $B'$ is such that $B,B^*,B'$
+form three consecutive blocks of a valid chain. A \emph{copy} occurs if the
+same block exists in two different positions. A \emph{prediction} occurs when
+a block extends one which was computed at a later round.
+
+\begin{definition}[Typical execution]\label{def:typical}
+	For a real $\eps\in(f,\frac14)$, integer $\lambda$, and
+	a collection of polynomially many block properties $\mathcal{Q}$, we say an
+	execution is $\mathcal{Q}$-\emph{typical} (or simply typical), if the following
+	hold.
+	\begin{itemize}
+		\item
+			For any $Q\in\mathcal{Q}$ and any set $S$ of at least $\lambda/\xi_Q$
+			consecutive rounds we have
+			\begin{align}
+				(1-\eps)\E[X_Q(S)]<~&X_Q(S)<(1+\eps)\E[X_Q(S)],
+				\\(1-\eps)\E[Y_Q(S)]<~&Y_Q(S),
+				\\&Z_Q(S)<\E[Z_Q(S)]+\eps\E[Y_Q(S)].
+			\end{align}
+		%\item
+		%	For any $\D,i\in[L]$ and $Q\in\mathcal{Q}$, if
+		%	$\sum_{j\ge i}A_\D(j)Z_Q(j)\ge k$, then
+		%	\begin{equation}
+		%		\sum_{j\ge i}A_\D(j)Z_Q(j)\le(1+\eps)\xi_Q\sum_{j\ge i}A_\D(j)
+		%	.\end{equation}
+		\item
+			No insertions, no copies, and no predictions occurred.
+	\end{itemize}
+\end{definition}%>>>
+
+\begin{theorem}\label{theorem:alltypical}%<<<
+	If $t<(1-\delta)(n-t)$ with $\delta>3\eps+3f$,
+	an execution is typical with probability $1-e^{-\Omega(\eps^2f\lambda)}$.
+\end{theorem}
+\begin{proof}
+	The proof uses standard Chernoff bounds, along the lines of \cite{GKL15NEW}.
+	We just note that the variables $X_Q(i)$ (and similarly $Y_Q(i)$ and
+	$Z_Q(i,j,k))$ are independent Bernoulli trials for each $Q$ and successful
+	with probability $\Theta(\xi_Qf)$. In addition, a union bound is applied
+	over all $Q$.
+\end{proof}%>>>
+
+\begin{lemma}\label{lemma:typical}%<<<
+	Assume $t<(1-\delta)(n-t)$ with $\delta>3\eps+3f$ and a $\mathcal{Q}$-typical
+	execution.
+	Then, the following hold for any $Q\in\mathcal{Q}$ and any set $S$ of at least
+	$\lambda/\xi_Q$ consecutive rounds.
+	\begin{itemize}
+	\item[(a)]
+		$(1-\eps)\xi_Qf|S|<X_Q(S)<(1+\eps)\cdot\frac{\xi_Qf}{1-f}\cdot|S|$.
+	\item[(b)]
+			$(1-\frac\delta3)\xi_Qf|S|<(1-\eps)\xi_Qf(1-f)|S|<Y_Q(S)$.
+	\item[(c)]
+		$Z_Q(S)<(\frac t{n-t}\cdot\frac1{1-f}+\eps)\cdot\xi_Qf|S|
+			\le(1-\frac{2\delta}3)\xi_Qf|S|$.
+	%\item[(d)]
+	%	$Z_Q(S)
+	%		<(1+\frac\delta2)\cdot\frac t{n-t}\cdot X_Q(S)+\frac{\eps f}{1-f}\cdot|S|
+	%		%<(1+\frac\delta2)\cdot\frac t{n-t}\cdot X(S)+\eps f|S|
+	%		<(1-\frac\delta3)X(S)$.
+	\item[(e)] $Z_Q(S)<Y_Q(S)$.
+	\end{itemize}
+\end{lemma}
+\begin{proof}
+	This follows with straightforward calculations from the properties of
+	a typical execution, the bounds (given in the introduction of this section)
+	on the expectations of the involved random variables, and the assumed bounds
+	on $t/n,\delta,\eps$ and $f$. (See also \cite{GKL15NEW}.)
+\end{proof}
+%>>>
+
+We now establish an upper bound in the number of
+$Q$-blocks an adversary can suppress, regardless of what attack method she
+follows.
+
+% PAIRING LEMMA <<<
+Uniquely successful rounds have the following important property, which was
+implicit in the proof of the Common-Prefix Lemma in \cite{EC:GarKiaLeo15} and was made
+explicit in \cite{GKL15NEW}.
+\begin{lemma}[Pairing]\label{lemma:pairing}
+	For any $i$ and any pair of distinct blocks $\chain[i]$ and
+	$\chain'[i]$, if $\chain[i]$ was computed by an honest party in a uniquely
+	successful round, then $\chain'[i]$ was computed by the adversary.
+\end{lemma}
+\begin{proof}
+	Let $r$ be the uniquely successful round that $\chain[i]$ was computed.
+	No honest party would extend $\chain'[i-1]$ at a round later than $r$, since
+	every honest party would have a chain of length at least $i$.
+	Similarly, if an honest party computed $\chain'[i]$ at some round
+	earlier than $r$, then no honest party would have extended $\chain[i-1]$ at
+	round $r$.
+	Finally, $\chain'[i]$ cannot have been computed by an honest party at round
+	$r$, since $r$ was a uniquely successful round.
+\end{proof}
+%>>>
+
+% INTERVAL-COVER LEMMA <<<
+\begin{lemma}[Suppression]\label{lemma:balanced}
+	If $r$ is a uniquely successful round and the corresponding block
+	does not belong to the chain of an honest party at a later round,
+	then there is a set of consecutive rounds $S$ such that
+	$r\in S$ and $Y(S)\le Z(S)$.
+\end{lemma}
+\begin{proof}
+	Let $\chain$ be the chain of the honest party that was successful at round
+	$r$ and $u$ the depth of the corresponding block.
+	Let $r'$ be the first round after $r$ in which an honest party has a chain
+	$\chain'$ which does not contain block $\chain[u]$. Let $\chain'[u']$ the
+	last block of $\chain'$ at round $r'$.
+	Let $\chain[u^*]=\chain'[u^*]$ be the last honest block on the common prefix
+	of $\chain$ and $\chain'$, and let $r^*$ be its timestamp.
+	We claim that the set $S=\{i:r^*<i<r'\}$ satisfies the requirements of the
+	statement.
+	Clearly, $r\in S$. Let us verify that $Y(S)\le Z(S)$.
+	Indeed, if $\chain^*[v]$ is any block computed during a uniquely successful
+	round $i\in S$, it must hold $u^*<v\le u'$. The first inequality is because
+	the party computing $\chain^*[v]$ knows of $\chain[u^*]$ (it was announced
+	at round $r^*$ and received by round $i>r^*$) and would not mine on
+	a shorter chain.
+	The second inequality holds because $v>u'$ contradicts an honest party
+	having a chain of length $u'$ at round $r'>i$ (since $\chain^*[v]$ was
+	received by round $r'$).
+	The inequality then follows by Lemma~\ref{lemma:pairing}, since it is always
+	possible to find a block distinct from $\chain^*[v]$ on $\chain$ or
+	$\chain'$ (we may use $\chain'$, unless $\chain^*[v]$ is on $\chain'$, in
+	which case---due to the minimality of $r'$---we have $v<u$ and we can use
+	$\chain$).
+\end{proof}
+
+An observation that follows from the above lemma and its proof is that if
+the adversary manages to suppress a $Q$-block from the chain of an honest party
+and this $Q$-block was computed in a uniquely successful round,
+then we can associate with it an adversarial block.
+In particular, if $r$ is a uniquely successful round and the corresponding
+block does not belong to the chain of an honest party at a later round, then
+there is an \emph{associated} adversarial block of the same height that was
+adopted by an honest party.
+% >>>
+
+% MAIN LEMMA <<<
+We now state and prove our Unsuppressibility Lemma. Informally, the lemma says that if the
+number of blocks the adversary obtained in a set of consecutive rounds is $z$
+and the number of the uniquely successful blocks the honest parties obtained
+in the same set of rounds is $y$, then there exist $y-2z$ blocks that will
+always belong to the chain of every honest party.
+It follows that if the power of the adversary is bounded below 1/3 of the
+total power, then with overwhelming probability there will be a nonzero number of such
+blocks.
+
+An important note with respect to the Unsuppressibility Lemma is the following.
+Fix all the randomness the random oracle requires for a given execution.
+This determines the successful queries of every party and therefore determines
+the parameters $y$ and $z$ above. The observation is that even if these
+random coins are revealed to the adversary at the beginning of the execution,
+one can determine about $y-2z$ blocks which once computed---and no matter the
+adversary's strategy---will always belong to the chain of every honest party.
+
+\begin{lemma}[Unsuppressibility]\label{lem:unsuppressibility}
+	In a typical execution,
+	every set of consecutive rounds $U$ has a subset\/ $S$ of uniquely
+	successful rounds, such that
+	\begin{itemize}
+		\item
+			$|S|\ge Y(U)-2Z(U)-2\lambda f(\frac t{n-t}\cdot\frac1{1-f}+\eps)$ and
+		\item
+			after the last round in $S$ the blocks corresponding to\/ $S$ belong to
+			the chain of every honest party.
+	\end{itemize}
+\end{lemma}
+\begin{proof}
+	Let $U'$ be the set of consecutive rounds that contains $U$ and also the
+	$\lambda$ rounds that come before and after $U$.
+	By Lemma~\ref{lemma:balanced}, we may take $S$ to contain all those uniquely
+	successful rounds $r\in U$ such that for any set of consecutive rounds
+	$S' \subseteq U'$ containing $r$, $Y(S')>Z(S')$. Note that, in a typical execution,
+	no such $S'$ may contain elements outside $U'$.
+	Letting $y=Y(U)$ and $z=Z(U)$, we
+	need to show $y-|S|\le2z+2(1-\frac{2\delta}{3})\lambda f$.
+
+	Let us focus on the uniquely successful rounds not in $S$.
+	%; call this set of rounds $\bar S$.
+	Consider a collection $\mathcal{T}$ of sets of consecutive rounds with the
+	following properties.
+	\begin{itemize}
+		\item
+			For all $T\in\mathcal{T}$, $Y(T)\le Z(T)$.
+		\item
+			For each $r\in U\setminus S$, there is a $T\in\mathcal{T}$ that contains $r$.
+		\item
+			$|\mathcal{T}|$ is minimum among all collections with the above properties.
+	\end{itemize}
+	We now observe that the minimality condition on $\mathcal{T}$ implies that no round
+	$r$ with $Z_r>0$ belongs to more than two sets of $\mathcal{T}$. If that was the
+	case, then there would be three sets $T_1,T_2,T_3$ in $\mathcal{T}$ with
+	$T_1\cap T_2\cap T_3\neq\emptyset$. But then, we could keep the two sets
+	with the leftmost and rightmost endpoints, contradicting the minimality of
+	$\mathcal{T}$. Furthermore, no round in $U'\setminus U$ belongs to more than one set
+	of $\mathcal{T}$. Thus,
+	\[
+		y-|S|=\sum_{i\in U\setminus S}Y_i
+			\le\sum_{T\in\mathcal{T}}Y(T)
+			\le\sum_{T\in\mathcal{T}}Z(T)
+			\le2z+Z(U'\setminus U)
+			%\le2z+\frac{2\lambda f}{1-f}\Bigl(\frac t{n-t}+\eps\Bigr)
+			%\le2z+2(1-\frc{2\delta}3)\lambda f
+	.\]
+	The third inequality holds because every round in which the adversary
+	was successful is counted at most twice inside $U$ and at most once outside
+	$U$ (by the discussion above the inequalities). Finally,
+	using $|U'\setminus U|\le2\lambda$ and Lemma~\ref{lemma:typical}(c) we
+	obtain the stated bound.
+\end{proof}
+
+%\nikos{Sketch strategy and argument of optimality.}
+
+%\nikos{Do we want a formal statement about optimality?}
+
+The proof of this lemma seems to be quite generous to the adversary on two
+accounts. First, it reveals to the adversary all coin flips in the beginning
+of the execution. Second, it gives the adversary two choices for each one of
+his blocks, and assumes that he will be able to choose among these as he sees
+fit. Nevertheless, we conjecture that the bound $y-2z$ cannot be substantially
+increased in the case the property is rare.
+
+%\nikos{Requiring $t<(\frac12-\delta)(n-t)$ and $2f+2\eps\le\delta$ gives that
+%for any set $S$ of consecutive rounds in a typical execution
+%$
+%	Y(S)-2Z(S)>\delta(1-\eps)(1-f)f|S|>\frac\delta2\cdot f|S|
+%.$}
+%>>>
+
+% COROLLARIES<<<
+%\nikos{The next two don't contain the error term. Need to be fixed if we want
+%them.}
+%
+%\begin{corollary}
+%	Let\/ $S$ be the set of rounds of an execution. If\/ $Y(S)>3Z(S)$, then
+%	there are more than\/ $\frac13\cdot Y(S)$ honest blocks in the chain of
+%	every honest party.
+%\end{corollary}
+%\begin{proof}
+%	By Lemma~\ref{lemma:balanced}, the chain of every honest party has at least
+%	$Y(S)-2Z(S)>Y(S)-\frac23\cdot Z(S)\ge\frac13\cdot Y(S)$ honest blocks.
+%\end{proof}
+%\begin{corollary}
+%	Assuming\/ $t<(\frac14-\delta)n$ and a typical execution, any honest chain
+%	has more honest $Q$-blocks than the total number of adversarial ones.
+%\end{corollary}
+%\begin{proof}
+%	Let $Y$ denote the total number of uniquely successful rounds in the
+%	execution and $Z$ the total number of adversarial blocks computed.
+%	In a typical execution, $Y>3Z$. By the corollary, there are more than $Z$
+%	honest blocks in the chain of every honest party.
+%\end{proof}
+%>>>
+
+We can now prove that an adversary with less 1/3 of the total mining power
+cannot create a chain with more $Q$-blocks than an honest chain. Such a task
+would require on the same time to suppress many $Q$-blocks from the honest
+chain and to obtain many of them for the adversarial chain.
+
+\begin{lemma}[$Q$-block Common-Prefix]\label{lemma:qblockcommonprefix}
+	Assume $t<(\frac13-\delta)n$ with $\delta>3\eps+3f$ and a $\mathcal{Q}$-typical
+	execution.
+	Consider a round at which a chain $\chain$ is adopted by an honest party and
+	suppose there exist another chain $\chain'$ such that
+	$\chain'\setminus(\chain'\cap\chain)$ has at least $22\lambda\xi_Qf$ $Q$-blocks
+	Then, with overwhelming probability, $\chain$ has more $Q$-blocks than $\chain'$.
+\end{lemma}
+\begin{proof}
+	Assume an execution in which the assumptions of the lemma hold.
+	Let $r^*$ be the round on which the last honest block on
+	$\chain^*=\chain\cap\chain'$ was computed (if no such block exists let
+	$r^*=0$) and define the set of rounds $S=\{i:r^*<i\le r\}$.
+	%Let also $B$ denote the first block of $\chain'\setminus\chain^*$.
+	%Let $r'>r^*$ be the round on which the $k$th block on
+	%$\chain'\setminus(\chain'\cap\chain)$ was computed and define the set of
+	%rounds $S=\{i:r'\le i\le r\}$.
+	We will study the execution during the rounds in $S$.
+	To that end, let $W'$ denote the set of adversarial queries
+	on $\chain'\setminus\chain^*$ at some round at least $\lambda$ greater from
+	$r^*$. Denote by $W$ the rest of the adversarial queries in $S$.
+
+	We first observe that no query in $W'$ could have suppressed
+	a $Q$-block on $\chain$.
+	As in the proof of Lemma~\ref{lemma:balanced}, in such a case there would
+	exist a set of consecutive rounds $|S^*|\ge\lambda$ such that $Y(S^*)\le
+	Z(S^*)$.
+	This contradicts the last item of Lemma~\ref{lemma:typical}.
+
+	From this observation and the Main Lemma, there are at least
+	$Y(S)-2Z(W)-2\lambda f(\frac t{n-t}\cdot\frac1{1-f}+\eps)$
+	blocks that the adversary cannot
+	suppress.
+	Each of these is a $Q$-block independently with probability $\xi_Q$.
+	Under our assumptions,
+	$2(\frac t{n-t}\cdot\frac1{1-f}+\eps)<\frac{1-\delta}{1-\eps}$.
+	We conclude that, with overwhelming probability, there are at least
+	\[
+		(1-\eps)\xi_Q\cdot\bigl[Y(S)-2Z(W)\bigr]-(1-\eps)\lambda\xi_Qf
+	\]
+	$Q$-blocks on $\chain\setminus\chain^*$.
+
+	On the other hand, the number of $Q$-blocks on $\chain'\setminus\chain^*$ is
+	at most the $Q$-blocks from the $W'$ queries plus the $Q$-blocks
+	from the initial $\lambda$ rounds.
+	The latter can be shown to be at most $3\lambda\xi_Qf$.
+	For the former, using Lemma~\ref{lemma:negbin} (with
+	$F_j=1$ when $j\in W'$ and $M_j=1$ when it resulted in a $Q$-block) and
+	Lemma~\ref{lemma:typical}, in a typical execution, are at most
+	$(1+\eps)\xi_QZ(W')$. Thus, there at most
+	\[
+		(1+\eps)\xi_Qp|W'|+3\lambda\xi_Qf
+	.\]
+	$Q$-blocks on $\chain'\setminus\chain^*$.
+	Since these are at least $22\lambda\xi_Qf$, it can be shown that
+	the difference between the last two displayed expressions is at least
+	$(1-\eps)\xi_Q\cdot[Y(S)-2Z(S)]$. This is positive in a typical execution
+	in which the power of the adversary is bounded below $\frac13-\delta$ the
+	total power.
+\end{proof}
+
+We are now ready to prove the construction of Section~\ref{sec.mining13} secure
+and succinct.
+
+\begin{theorem}
+	For every $\frac{1}{3}$-bounded PPT adversary $\mathcal{A}$,
+	in a typical execution,
+	given two valid proofs $\Pi$ and $\Pi'$, the
+	verifier accepts the one that corresponds to the longer chain.
+	% \dionyziz{The \emph{longer chain} is not well-defined at this point. What does
+	% it mean to \emph{correspond}? The theorem must be made more precise.}
+\end{theorem}
+\begin{proof}
+	Assume $\chain$ belongs to an honest prover and is longer than $\chain'$. We
+	need to show that $\Pi$ will be the proof accepted by the verifier.
+
+	Let us consider first the case that a $\mu$ as above exists.
+	When $\mu=0$, the verifier determines the longer chain and always
+	(correctly) accepts the corresponding proof.
+	%
+	Let us now focus on the case $0<\mu\le\ell$.
+	Note that, since $\mathcal{D}[\mu-1]\cap\mathcal{D}'[\mu-1]=\emptyset$, not both
+	superchains can have less than $m$ blocks after their common block. In such
+	a case, the adversary has failed to include all the last $m$ blocks of
+	$\mathcal{D}'[\mu]$ in $\mathcal{D}'[\mu-1]$ and his proof is invalid.
+	If only the adversary has less than $m$ blocks after the common block, then
+	clearly $\Pi$ is accepted. Otherwise, the $Q$-block Common-Prefix Lemma
+	implies that (again) $\Pi$ is accepted.
+
+	Next, consider the case that no such $\mu$ exists.
+	Clearly, $\ell\ne\ell'$ (otherwise $\mathcal{D}[\ell]\cap\mathcal{D}'[\ell']$ would
+	contain the genesis block) and we need to argue that $\ell>\ell'$.
+	Assume---towards a contradiction---that $\ell<\ell'$ and consider the
+	statement of the $Q$-block Common-Prefix Lemma instantiated with blocks of
+	level $\ell+1$ as the $Q$-blocks.
+	Together with $\ell<\ell'$, it implies that $\chain'$ has less than $m$
+	$Q$-blocks after the common block with $\chain$ (since $\chain$ has less
+	$Q$-blocks than $\chain'$ in total, it must also have less on its fork).
+	But then, both $\chain$ and $\chain'$ have less than $m$ $Q$-blocks after
+	their common block. Assuming $\mathcal{D}[\ell]\cap\mathcal{D}'[\ell]=\emptyset$, the
+	validity of the adversary's proof is contradicted.
+\end{proof}
+
+\begin{theorem}[Succinctness]
+	In a typical execution with $t < (\frac{1}{3} - \delta)n$ with
+	$3\epsilon + 3f < \delta < \frac{1}{3}$ and letting $m = \lambda$,
+	an honest miner's state is in $O(m^2\log(r))$ at round $r$.
+\end{theorem}
+\begin{proof}
+	As $t < (\frac{1}{3} - \delta)n$ with
+	$3\epsilon + 3f < \delta < \frac{1}{3}$, therefore
+	$c = \E[Y] - 2\E[Z] - 2\lambda f(\frac{t}{n-t}\frac{1}{1-f} + \epsilon)$ will be
+	a positive constant and for sets of consecutive rounds $U$ with
+	$|U| \geq \lambda$,
+	we will have
+	$Y(U) - 2Z(U) - 2\lambda f(\frac{t}{n-t}\frac{1}{1-f} + \epsilon) > (1 - \epsilon)c|U|$.
+
+	Consider a state $\Pi$ generated by an honest prover and suppose for
+	contradiction that $|\Pi| \in \omega(m\log(r))$, where $r$ indicates the
+	current round number. From the security of the
+	scheme, this state will correspond to some underlying chain $\chain$ such that
+	$\Pi$ is the compression of $\chain$. Consider the variables
+	$(\mathcal{D}, \chi) = \textsf{Dissolve}_{m,k}(\chain)$. As $|\chi| = k$ is
+	constant, therefore $|\bigcup_{d \in \mathcal{D}} d| \in \omega(m\log(r))$.
+  Let $\ell = |\mathcal{D}|$.	It holds that $\ell \in O(\log(|\chain|))$.
+  Consequently, $\sum_{d \in \mathcal{D}} |d| \in \omega(m\log(r))$. Therefore
+  there must exist some $\mu$ such that $|\mathcal{D}[\mu]| \in \Omega(\lambda^2)$.
+	Consider the maximum such $\mu$.
+
+	We distinguish two cases.
+
+	Case 1: $\mu = \ell$. Then consider $\mathcal{D}[\ell]$.
+	Let $u_0$ denote the round during which $\mathcal{D}[\ell][0]$ was generated
+	and $u_1$ denote the round during which $\mathcal{D}[\ell][-1]$ was generated
+	and consider the set $U$ of consecutive rounds from $u_0$ to $u_1$. As
+	$\mathcal{D}[\ell]$ forms a chain, we have that
+	$|U| \geq |\mathcal{D}[\ell]| > \lambda$. Applying the Main Lemma, we obtain
+	that at least $|S| \geq c|U| = c|\mathcal{D}[\ell]| \in \Omega(\lambda)$
+	rounds of $U$ must have been uniquely successful and belong to the chain of
+	every honest party. Therefore $|\mathcal{D}[\ell]\upchain^{\ell+1}| \geq (1 - \epsilon)\frac{|S|}{2}$. By the definition of $\ell$ this is impossible.
+
+	Case 2: $0 \leq \mu < \ell$. By maximality of $\mu$, we have
+	$|\mathcal{D}[\mu + 1]| \in O(\lambda)$, but
+	$|\mathcal{D}[\mu]| \in \Omega(\lambda^2)$.
+	By the definition of
+	$\mathcal{D}[\mu] = \chain[{:}-k]\upchain^\mu[-2m{:}] \cup
+	\chain[{:}-k]\upchain^\mu\{\chain[{:}-k]\upchain^{\mu+1}[-m]{:}\}$, clearly
+	$|\chain[{:}-k]\upchain^\mu[-2m{:}]| = 2m$ so necessarily
+	$\chain[{:}-k]\upchain^\mu\{\mathcal{D}[\mu+1][-m]{:}\} \in \Omega(\lambda^2)$. Therefore there exist blocks $A$ and $B$
+	in $\mathcal{D}[\mu+1]$ and $\mathcal{D}[\mu]$ such that
+	$|\mathcal{D}[\mu + 1]\{A{:}Z\}| = 1$, but
+	$|\mathcal{D}[\mu]\{A{:}Z\} \in \omega(\lambda)$. Similarly to case
+	1, consider the rounds $u_0$ and $u_1$ during which blocks $A$ and $Z$ were
+	generated respectively and the set of consecutive rounds $U$ from $u_0$ to
+	$u_1$ with $|U| \in \omega(\lambda)$. Using the Main Lemma, there
+	must exist a set of uniquely successful rounds $|S| \geq c|U|$ whose blocks
+	have been adopted by all honest parties and of which at
+	least $(1 - \epsilon)\frac{|S|}{2} \geq 0$ will be of level $\mu + 1$.
+	Therefore there must exist a block between $A$ and $Z$ in
+	$\mathcal{D}[\mu + 1]$.
+
+	Both cases are contradictions.
+\end{proof}
+
+The previous theorem allows us to make miners reject incoming state that is too
+large (more than polylogarithmic) without processing them fully.
+
+\noindent
+\textbf{Remark.} One important difference between our scheme and the existing
+blockchain protocols is that full nodes are able to verify the whole state
+evolution of the system from Genesis. This allows them to recover in case of
+temporary dishonest majority~\cite{avarikioti2019bitcoin}, while our system is
+not able to do so. However, this treatment is beyond the Bitcoin backbone model.
+
+We note here that our analysis critically relies on the honest majority
+assumption. The reason why \emph{validity} holds for our verifiers is that, once
+they receive a chain $\chain$ which is the longest, they inductively know that
+$\chain[-k]$ must contain valid state $S$. Then, since they have all the last
+$k$ blocks, they can validate the transition function $\delta$ on the
+transactions included in the last $k$ blocks before further mining on top of
+them.
