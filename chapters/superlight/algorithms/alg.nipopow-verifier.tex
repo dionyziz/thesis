@@ -1,0 +1,28 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.nipopow-verifier}The state comparison algorithm.}
+
+    \begin{algorithmic}[1]
+        \Function{{\sf maxvalid}$_{m,k}$}{$\Pi, \Pi'$}
+            \If{$\Pi' \text { is not a chain}
+                \lor |\Pi'| = 0 \lor \Pi'[0] \neq \mathcal{G}$}
+                \State\Return{$\Pi$}
+            \EndIf
+            \Let{(\chi, \ell, \mathcal{D})}{\textsf{Dissolve}_{m,k}(\Pi)}
+            \Let{(\chi', \ell', \mathcal{D'})}{\textsf{Dissolve}_{m,k}(\Pi')}
+            \Let{M}{\{\mu \in \mathbb{N}: \mathcal{D}[\mu]\cap\mathcal{D}'[\mu]\ne\emptyset\}}
+            \If{$M = \emptyset$}
+              \If{$\ell' > \ell$}
+                \State\Return{$\Pi'$}
+              \EndIf
+              \State\Return{$\Pi$}
+            \EndIf
+            \Let{\mu}{\min{M}}
+            \Let{b}{(\mathcal{D}[\mu] \cap \mathcal{D}'[\mu])[-1]}
+            \If{$|\mathcal{D}'[\mu]\{b{:}\}| > |\mathcal{D}[\mu]\{b:\}|$}
+              \State\Return{$\Pi'$}
+            \EndIf
+            \State\Return{$\Pi$}
+        \EndFunction
+    \vskip2pt
+    \end{algorithmic}
+\end{algorithm}

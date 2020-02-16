@@ -1,0 +1,31 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.compress}Chain compression algorithm for
+    transitioning a full miner to a logspace miner. Given a full chain, it
+    compresses it into logspace state.}
+    \begin{algorithmic}[1]
+        \Function{\sf Dissolve$_{m,k}$}{$\chain$}
+            \Let{\chain^*}{\chain[{:}-k]}
+            \Let{\mathcal{D}}{\emptyset}
+            \If{$|\chain^*| \geq 2m$}
+                \Let{\ell}{\max\{\mu: |\chain^*\upchain^\mu| \geq 2m\}}
+                \Let{\mathcal{D}[\ell]}{\chain^*\upchain^\ell}
+                \For{$\mu \gets \ell - 1$ down to $0$}
+                    \Let{\mathcal{D}[\mu]}
+                      {\chain^*\upchain^\mu[-2m{:}]
+                      \cup
+                      \chain^*\upchain^\mu\{\chain^*\upchain^{\mu+1}[-m]{:}\}}
+                \EndFor
+            \Else
+                \Let{\mathcal{D}[0]}{\chain^*}
+            \EndIf
+            \Let{\chi}{\chain[-k{:}]}
+            \State\Return{$(\mathcal{D}, \ell, \chi)$}
+        \EndFunction
+        \Function{\sf Compress$_{m,k}$}{$\chain$}
+            \Let{(\mathcal{D}, \ell, \chi)}{\textsf{Dissolve}_{m,k}(\chain)}
+            \Let{\pi}{\bigcup_{\mu = 0}^\ell \mathcal{D}[\mu]}
+            \State\Return{$\pi\chi$}
+        \EndFunction
+    \vskip2pt
+    \end{algorithmic}
+\end{algorithm}

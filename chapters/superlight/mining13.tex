@@ -1,0 +1,161 @@
+\section{Logspace mining against 1/3}\label{sec.mining13}
+
+We propose a blockchain mining scheme in which \emph{superlight} miners maintain
+only polylogarithmic consensus state. Contrary to full node miners in existing
+blockchain systems, our miners do not need to store the whole blockchain.
+Additionally, contrary to SPV miners in existing blockchain systems, our miners
+do not even need to store all the block \emph{headers}, which grow linearly in
+time. Our miners only need to maintain a state which grows
+poly\emph{logarithmically} in time, and, hence, require exponentially less space
+than existing miners.
+
+While full nodes are compatible with our proposal, we propose the elimination of
+full nodes and full miners altogether. Our scheme achieves the same security as
+the existing full mining protocol provided the adversary is limited to $1/3$
+mining power. In later sections, we extend our scheme to work in the case of
+adversaries with up to $1/2$ mining power.
+
+Our core insight is that a large portion of blocks in the blockchain can be
+omitted from storage and communication without harm to security. Additionally,
+once these blocks are omitted, they will never again be needed. As such, they
+can be garbage collected and pruned from the blockchain, and hence do not need
+to be stored by any miner, in memory or in hard drives, and they never need to
+be sent on the network. The remaining blocks that need to be kept in the state
+form a set of blocks $\Pi$ and are exponentially fewer than the original chain
+$\chain$. Of course it will hold that $\Pi \subseteq \chain$. Given that the
+pointers described in Section~\ref{sec.interlink} are introduced to every block,
+we will ensure that the remaining blocks $\Pi$ that are stored in the state
+still form a chain, meaning that they can be placed in chronological order and
+every block $\Pi[i]$ will include a pointer to its immediately preceding block
+$\Pi[i - 1]$, for $i \gets 1$ to $|\Pi| - 1$. The state $\Pi$ is hence a
+\emph{compressed} version of the full chain $\chain$. The state $\Pi$ contains
+the genesis block $\mathcal{G}$, the last $k$ blocks of $\chain$, and some
+(polylogarithmic in count) intermediate blocks that are necessary for the
+security of the protocol.
+
+\noindent
+\textbf{Application-layer state.}
+Our protocol is concerned with storage space regarding \emph{consensus-layer}
+state. However, blockchain protocols typically require some storage of
+\emph{application-layer} state as well. We do not attempt to optimize these data
+structures, as they differ from application to application. Two examples of the
+application-layer state are (1) the current UTXO set in Bitcoin, and
+(2) the association between accounts and balances as well as the state of all
+smart contracts in Ethereum. Our protocol requires that such application-layer
+state is included in every block in the manner already done in Ethereum (note
+that Bitcoin does not currently place the UTXO in every block and would thus
+need further changes to adopt our proposal). We will design a protocol which
+will omit large sections of the blockchain from the storage of miners and from
+begin communicated on the network, but it is necessary that application state can be
+reconstructed given that a miner holds a block which they deem trustworthy. The
+problem of compressing the application-layer state is orthogonal to the
+consensus-layer compression which we perform here.
+
+The protocol works as follows. First, if we want to upgrade an existing
+protocol, then existing full miners transition to logspace miners by compressing
+their chains. For chains that wish to deploy our protocol from genesis, the
+chain containing only genesis is already a compressed state, and so no
+compression needs to be applied. As the protocol is executed, each miner
+maintains in its local state a compressed chain $\Pi$, whose tip $\Pi[-1]$
+matches the tip a full node would see, i.e., $\chain[-1]$. The miner then mines
+on top of $\Pi[-1]$. If successful, the miner produces a new state $\Pi'$, which
+he then broadcasts to the rest of the miners. When a miner receives a new state
+$\Pi'$ from the network, he compares it against its local state $\Pi$. If the
+received state corresponds to more proof-of-work than the compressed chain kept
+in the miner's local state, then the miner adopts the new state $\Pi'$. Note
+that this requires the miner to be able to \emph{compare} states to determine
+which one corresponds to the most proof-of-work.
+
+The application-layer inclusion of transactions or other application data works
+as usual. The miner has a known application-layer state for the tip of his
+compressed chain $\Pi[-1]$ and any incoming network transactions are applied on
+top of it so that they can be organized into a mempool and placed into newly
+mined blocks.
+
+\import{./}{chapters/superlight/algorithms/alg.compress.tex}
+
+\paragraph{Chain compression.}
+We first describe the algorithm with which an existing full node can transition
+to become a logspace node. This algorithm takes a chain of a full node $\chain$
+and returns the compressed chain state $\Pi$ to be adopted by a logspace
+miner.
+
+Consider a chain $\chain$ and let $\ell$ be the greatest positive integer such
+that $|\chain[{:}-k]\upchain^\ell| \geq 2m$.
+Consider the $\ell+1$ superchains
+$\mathcal{D}[0],\mathcal{D}[1],\dots,\mathcal{D}[\ell]$, satisfying the following.
+\begin{itemize}
+	\item
+		Set
+		$\mathcal{D}[\ell] = \chain[{:}-k]\upchain^\ell$
+	\item
+		For each $0\le\mu<\ell$, set
+		\[
+		\mathcal{D}[\mu] = \chain[{:}-k]\upchain^\mu[-2m{:}] \cup
+		\chain[{:}-k]\upchain^\mu\{\chain[{:}-k]\upchain^{\mu+1}[-m]{:}\}
+		\]
+\end{itemize}
+
+Here, each of the elements of $\mathcal{D}$ is a superchain of a certain level
+$\mu$.
+Observe that $|\mathcal{D}[\ell]| \geq 2m$ and $\mathcal{D}[\mu+1][-m:] \subseteq
+\mathcal{D}[\mu]$. If $|\chain[{:}-k]| \geq 2m$, then set $\pi = \bigcup_{\mu=0}^\ell
+\mathcal{D}[\mu]$ and note that this forms a chain. Otherwise, set $\pi =
+\chain[{:}-k]$. We highlight that $\mathcal{G} \in \pi$. Finally, we set $\chi =
+\chain[-k{:}]$ and include it \emph{verbatim} in the state, forming the final chain
+$\pi\chi$ to be broadcast. The algorithm for this construction is illustrated in
+Algorithm~\ref{alg.compress}.
+
+\import{./}{chapters/superlight/algorithms/alg.nipopow-verifier.tex}
+
+\paragraph{State comparison.}
+When the miner receives a state $\Pi'$ of another miner, it first verifies that it forms a chain,
+i.e. for all $i \gets 1$ to $|\Pi'| - 1$ we have that $\Pi'[i]$ includes a pointer to
+$\Pi'[i - 1]$ and each of $\Pi'[i]$ is a valid block header with valid
+proof-of-work. It then
+checks that $\Pi'[0] = \mathcal{G}$. Next, it parses this into $\pi'\chi'$ by
+taking $\pi' = \Pi'[{:}-k]$ and $\chi' = \Pi'[-k{:}]$. Subsequently, it
+parses $\pi'$ into $\mathcal{D}'$ by inspecting the level of
+each block in $\pi'$. More concretely, it sets
+$\ell' = \max\{\mu: |\pi'\upchain^\mu| \geq 2m\}$ and then
+sets $\mathcal{D}'[\ell'] = \pi'\upchain^{\ell'}$, then for each $\mu \gets \ell' - 1$ down
+to $0$ it sets
+$\mathcal{D}'[\mu] = \pi'\upchain^\mu[-2m{:}]
+          \cup \pi'\upchain^\mu\{\pi'\upchain^{\mu+1}[-m]{:}\}$.
+
+If such parsing is impossible or the blocks cannot be
+linked or the proof
+does not begin with the Genesis block $\mathcal{G}$, the
+receiving miner rejects the proof.
+Given the local state $\Pi$ parsed into $(\mathcal{D}[0],\dots,\mathcal{D}[\ell])$ and a state
+$\Pi'$ parsed into $(\mathcal{D}'[0],\dots,\mathcal{D}'[\ell'])$ incoming from the network, the receiving miner finds the
+least $\mu$ such that $\mathcal{D}[\mu]\cap\mathcal{D}'[\mu]\ne\emptyset$.
+\begin{itemize}
+	\item
+		If such $\mu$ exists, let $b = (\mathcal{D}[\mu] \cap \mathcal{D}'[\mu])[-1]$. Then
+		$\Pi'$ becomes adopted if $|\mathcal{D}[\mu]\{b{:}\}| \leq |\mathcal{D}'[\mu]\{b:\}|$.
+		Otherwise $\Pi$ remains the local state.
+	\item
+		If no such $\mu$ exists, $\Pi'$ is adopted if $|\ell| < |\ell'|$. Otherwise,
+		$\Pi$ remains the local state.
+\end{itemize}
+
+\paragraph{State evolution.}
+A logspace miner who has adopted a logarithmic state $\Pi$ mines on top of it
+by extending block $\Pi[-1]$ and including the blocks $\Pi\upchain^\mu\!\![-1]$ for
+each $\mu \in \mathbb{N}$ in their interlink set. We observe that the interlink set of a
+full miner is identical to that of a logspace miner. If the logspace miner discovers
+a new block $B$, it evolves its state by computing
+$\Pi' = \textsf{Compress}_{m,k}(\Pi B)$ and broadcasts this to the network. The
+rest of the miners then compare this against their local state and adopt it if
+it is deemed to contain more proof-of-work. We observe that this state evolution
+matches the state that a full node would arrive at if they were to compress
+their newly discovered chain. More concretely, consider a logspace state $\Pi$
+with an underlying chain $\chain$ and a block $B$ mined on top of $\Pi$. Then
+it will hold that
+$\textsf{Compress}_{m,k}(\chain B) = \textsf{Compress}_{m,k}(\Pi B)$. This
+observation allows the new state to be computed \emph{online} from the previous
+state without holding the whole chain.
+
+% \dionyziz{Remark in the analysis section that we do not withstand temporary
+% dishonest majority}
