@@ -1,0 +1,43 @@
+\begin{figure}
+\begin{algorithm}[H]
+    \caption{\label{alg.trapdoor-ro} The Trapdoor Random Oracle functionality
+             RO$_\Xi$
+             parameterized by security parameters $\kappa, \lambda$ and a
+             distribution ensemble $(\Xi)_\kappa$.}
+    \begin{algorithmic}[1]
+        \Let{T_f}{\emptyset}
+        \Let{T_p}{\emptyset}
+        \Function{\textsc{query-f}}{$sw$}
+            \If{$\nexists pw: (pw, sw) \in T_f$}
+                \State{$pw \xleftarrow{\$} \{0, 1\}^\lambda$}
+                \Let{T_f}{T_f \cup \{(pw, sw)\}}
+            \EndIf
+            \Let{pw}{\text{the } pw \text{ such that } (pw, sw) \in T_f}
+            \State\Return{$pw$}
+        \EndFunction
+        \Function{\textsc{query-p}}{$x$}
+            \If{$\nexists (y, \xi): (x, y, \xi) \in T_p$}
+                \State{$y \xleftarrow{\$} \{0, 1\}^\kappa$}
+                \State{$\xi \gets \Xi$}
+                \Let{T_p}{T_p \cup \{(x, y, \xi)\}}
+            \EndIf
+            \Let{(y, \xi)}{\text{the } (y, \xi) \text{ such that } (x, y, \xi) \in T_p}
+            \State\Return{$y$}
+        \EndFunction
+        \Function{\textsc{query-s}}{$x, sw$}
+            \State{parse $x$ into $x'pw$}
+            \If{parsing failed}
+                \State\Return{$\bot$}
+            \EndIf
+            \If{$\textsc{query-f}(sw) \neq pw$}
+                \CommentLine{Ensure $sw$ is the correct trapdoor}
+                \State\Return{$\bot$}
+            \EndIf
+            \State{\textsc{query-p}(x)}
+            \Let{(y, \xi)}{\text{the } (y, \xi) \text{ such that } (x, y, \xi) \in T_p}
+            \State\Return{$\xi$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

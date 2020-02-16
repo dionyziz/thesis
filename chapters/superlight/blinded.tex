@@ -1,0 +1,43 @@
+\section{Blinded mining}
+
+The protocol presented in Section~\ref{sec.mining13} is secure against
+$\frac{1}{3}$-bounded adversaries. We note that the reason why an adversary with more
+mining power is able to attack the scheme is because they are able to see which
+blocks are $Q$-blocks so that they can selectively supress them. This motivates
+us to design a protocol in which the $Q$-blockness of a block is not known to
+the adversary until the block has been stabilized by being buried under $k$
+subsequent blocks and can no longer be supressed. Therefore, we wish to keep
+the superblock status secret for a duration of $k$ blocks.
+
+We modify the honest protocol to work as follows. The \textsf{pow} function
+works as usual and accepts as input the usual parameters $x$ (the transaction
+data) and $s$ (the reference to the previous block) and finds a $ctr$ such that
+$H(ctr || x || s) \leq T$. The honest party broadcasts $x$ and $s$, but keeps
+$ctr$ private. It then generates a commitment $s' = \textsc{Com}(H(ctr || x ||
+s))$ which commits to the block hash $H(ctr || x || s)$. Next, it generates a
+zero knowledge proof $\pi$ proving the following statement: I know an $ctr$ such
+that $s'$ commits to $H(ctr || x || s)$  and $H(ctr || x || s) \leq T$. The
+commitment and the zero-knowledge proof are then broadcast by the party.
+
+Mining is performed by setting the first $s$ to be a predefined string (genesis)
+as usual. Each next miner then builds on top of $s'$, the commitment to the
+previous block, instead of building on top of the usual $H(ctr || x || s)$. As
+the new block points to the commitment, this is sufficient commitment to ensure
+proof-of-work security.
+
+The value $ctr$ is kept secret by the generating party until the newly generated
+block is buried under subsequent $2k$ blocks according to the view of the party
+which originally generated the block. At that point, the party reveals $ctr$
+through a revealing transaction $\text{tx}_\text{reveal}$ which includes the
+$ctr$ value as well as the commitment opening for $s'$ showing that the
+particular $ctr$ value is the one that was committed to. This transaction is
+included by an honest miner as long as the chain does not contain a previous
+commitment opening for that particular block.
+
+To incentivize this honest behavior, we mandate that the miners are paid only
+\emph{after} opening their commitment. However, if a commitment opening is done
+prior to $k$ blocks after the commitment is placed in a block, the rewards are
+slashed and the miner is not paid. For more details, see
+Section~\ref{sec.deploy}.
+
+\import{./}{chapters/superlight/trapdoor}

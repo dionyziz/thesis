@@ -1,0 +1,31 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.trapdoor-ro-imp} The Trapdoor Random Oracle Implementation
+             parameterized by ROs $G(\cdot),H(\cdot)$ and a
+             distribution ensemble $(\Xi)_\kappa = \{0,1\}^\kappa$.}
+    \begin{algorithmic}[1]
+        \Let{T_f}{\emptyset}
+        \Let{T_p}{\emptyset}
+        \Function{\textsc{query-f}}{$sw$}
+            \Let{pw}{ G(sw)}
+            \State\Return{$pw$}
+        \EndFunction
+        \Function{\textsc{query-p}}{$x$}
+            \State{parse $x$ into $x'pw$}
+            \Let{y}{H(pw||x')}
+            \State\Return{$y$}
+        \EndFunction
+        \Function{\textsc{query-s}}{$x, sw$}
+            \State{parse $x$ into $x'pw$}            
+            \If{$\textsc{query-f}(sw) \neq pw$}
+%                \CommentLine{Ensure $sw$ is the correct trapdoor}
+                \State\Return{$\bot$}
+            \EndIf
+%            \State{\textsc{query-p}(x)}
+            \Let{\xi}{ H(H(pw||x') || sw)   }
+            \State\Return{$\xi$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

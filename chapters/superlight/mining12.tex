@@ -1,0 +1,83 @@
+\section{Logspace mining against 1/2}\label{sec.mining12}%<<<
+
+
+Based on the trapdoor oracle implementation of the previous section,
+we modify the mining protocol so that the proof-of-work equation becomes
+\[H(G(ctr) || mtr || interlink) \leq T\]
+where $G$ is a pre-image resistant hash
+function. The difference with the plain protocol is that the nonce $ctr$ is
+hashed prior to being put into the proof-of-work equation. The property of a
+block being a $\mu$-superblock is then defined by the equation
+\[H(H(G(ctr) || mtr || interlink) || ctr) \leq \frac{2^\kappa}{2^\mu}\]
+Note
+that, in order to determine the $Q$-block status of a block, the inner
+evaluation of $H$ must have already been completed.
+
+Mining then works as follows. The honest miners try to solve the new
+proof-of-work equation. If they succeed, they broadcast their solution as usual.
+They get paid their rewards into a coinbase transaction. However, that coinbase
+transaction remains locked for now. The nodes receiving a blockchain check that
+the new proof-of-work equation has been solved correctly. After $k$ blocks
+(where $k$ is the Common Prefix parameter) have elapsed and the adopted
+blockchain is $\chain$, the miner who solved the proof-of-work of block
+$\chain[-k]$ discloses the value of $ctr$ with a reference to the respective
+block. This information is broadcast and included in a transaction which is
+confirmed in blocks following $\chain$. This condition ``unfreezes'' the
+coinbase payout of the miner.
+
+%>>>
+
+\subsection{Security}%<<<
+
+We show how to strengthen the Common-Prefix Lemma
+(Lemma~\ref{lemma:qblockcommonprefix}), taking advantage of the fact
+that the adversary decides to suppress a block without knowing if it
+satisfies the block property or not.
+
+\begin{lemma}[$Q$-block Common-Prefix Lemma]\label{lemma:qblockcommonprefix12}
+	Assume $t<(\frac12-\delta)n$ with $\delta>3\eps+3f$ and a $\Q$-typical
+	execution.
+	Consider a round at which a chain $\chain$ is adopted by an honest party and
+	suppose there exist another chain $\chain'$ such that
+	$\chain'\setminus(\chain'\cap\chain)$ has at least $12\lambda\xi_Qf/\eps$ $Q$-blocks.
+	Then, with high probability, $\chain$ has more $Q$-blocks than $\chain'$.
+\end{lemma}
+\begin{proof}
+	Define $r^*,S,W,W'$ as in the proof of
+	Lemma~\ref{lemma:qblockcommonprefix}. As in that proof,
+	the number of $Q$-blocks on $\chain'\setminus\chain^*$ is
+	at most
+	\[
+		(1+\eps)\xi_Qp|W'|+3\lambda\xi_Qf
+	.\]
+	To upper bound the number of $Q$-blocks the adversary can suppress we
+	are going to apply Lemma~\ref{lemma:negbin}.
+	Consider every block computed in $S$ that was suppressed by the
+	adversary. Each such block has an associated adversarial block (see
+	Lemma~\ref{lemma:balanced} and the paragraph following its proof).
+	Let $J$ contain each honest query $j$ in $S$ that attempted to create
+	a suppressed block.
+	Let $F_j=1$ for each $j\in J$, unless the suppressed block was already
+	more than $k$ blocks deep at the time its associated block was
+	created.
+	Let $M_j=1$ if the suppressed block was a valid $Q$-block.
+	By Lemma~\ref{lemma:negbin}, the adversary suppressed at most
+	$(1+\eps)\xi_Qp|W|$. Thus
+	the number of $Q$-blocks on $\chain\setminus\chain^*$ is at least
+	\[
+		Y_Q(S)-(1+\eps)\xi_Qp|W|
+	.\]
+	Subtracting from this the upper bound above we obtain
+	\begin{multline*}
+		Y_Q(S)-(1+\eps)\xi_Qpqt|S|-3\lambda\xi_Qf\\
+		>Y_Q(S)-\frac{(1+\eps)(1-\delta)}{1-f}\xi_Qf|S|-3\lambda\xi_Qf\\
+		>Y_Q(S)-\frac{(1+\eps)(1-\delta)}{1-f}\xi_Qf|S|-\eps\xi_Qf|S|\\
+		>Y_Q(S)-Z_Q(S)>0
+	.\end{multline*}
+	The first and the last inequality use Lemma~\ref{lemma:typical}. For
+	the middle inequality, observe that if in a typical execution
+	$|S|\le3\lambda/\eps$, then less than $12\lambda\xi_Qf/\eps$ $Q$-blocks
+	have been computed in total.
+\Qed\end{proof}
+
+%>>>
