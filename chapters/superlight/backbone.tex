@@ -1,0 +1,124 @@
+\subsection{The Backbone Model}
+We work in the Backbone model~\cite{EC:GarKiaLeo15} and adopt an
+environment where the network is synchronous and the protocol is executed in
+distinct \emph{rounds}. We give a short overview of the model. We let $\kappa$
+denote the security parameter. We use $n$ to denote the total number of parties,
+$t$ of which are adversarial. All parties share a common \emph{genesis} block
+$\mathcal{G}$ before which no mining has occurred. In the traditional protocol
+prior to our contributions, each party adopted a
+\emph{blockchain} $\chain$, which is a sequence of blocks each containing the
+hash of its previous block, up to the genesis block. Each honest node maintained
+an adopted blockchain, which was the longest blockchain it had observed. On top
+of that blockchain, it tried to create a new block containing data
+(transactions) $x$ it received from the environment. Block generation took
+place, by honest parties and the adversary alike, by invoking a shared Random
+Oracle which is denoted $H(\cdot)$ and whose range is $\{0,1\}^\kappa$. If the
+output of the Random Oracle was below a certain threshold $T < 2^\kappa$, which
+we call the \emph{mining target}, the block was considered \emph{valid} and was
+appended to the blockchain. The honest parties tried to find a block by performing
+proof-of-work, which entails looking for a nonce $\mathsf{ctr}$ such that the
+proof-of-work equation is satisfied i.e., $H(\mathsf{ctr} \concat s \concat x) \leq T$,
+where $s$ denotes a pointer to the previous block. We use $q$ to denote the
+number of random oracle queries per party per round. The honest parties searched
+the space by performing $q$ queries for $\mathsf{ctr} \gets 1$ to $q$. The
+adversary controlling $t$ parties gets $qt$ total queries per round. If an
+honest party found a new block, she broadcasted it to the rest of the parties.
+Whenever an honest party received a blockchain from the network, she adopted it
+using the \emph{longest blockchain rule}, which mandated that a new blockchain
+is adopted if it has strictly more blocks than the currently adopted one.
+We will devise a similar protocol in which block validity and mining follow the
+same rules, but parties mine on top of \emph{compressed blockchains} which they
+broadcast to the network. Contrary to traditional blockchains, these compressed
+blockchains are not append-only, as some of their past blocks can be
+\emph{pruned} when they are extended.
+In accordance with~\cite{EC:GarKiaLeo15},
+we begin by making the simplifying assumption that the mining target $T$ is
+constant throughout the execution for our constructions in
+Sections~\ref{sec.mining13} and~\ref{sec.mining12}.
+% We later relax this
+% assumption in Section~\ref{sec.variable} where we extend our protocol to work
+% with mining target adjustments in accordance with~\cite{C:GarKiaLeo17}.
+
+% We also assume that honest parties are
+% sufficiently greater in number than the adversarial parties. In particular, we
+% require:
+%
+% \begin{quote}
+% 	\noindent{\bf Honest Majority Assumption.~~}
+% 	A number of $t$ out of $n$ parties are corrupted such that
+% 	$t\le(\frac13-\delta)n$, where $3f+3\eps<\delta\le\frac13$.
+% \end{quote}
+%
+It has been proven~\cite{EC:GarKiaLeo15,C:GarKiaLeo17} that, in both the
+constant and variable difficulty settings, such executions
+follow the properties of \emph{Chain Growth}, \emph{Common Prefix}, and
+\emph{Chain Quality}.
+
+%>>>
+
+% TABLE <<<
+% \nikos{Do we keep the table?}
+\begin{table}
+\begin{center}
+\begin{tabular}{|p{\columnwidth}|}
+\hline
+$\delta$: advantage of honest parties%, $(t/ (n-t) \leq  1-\delta)$
+
+$f$: probability at least one honest party succeeds in finding a POW in a round
+
+$\eps$: quality of concentration of random variables in typical executions,
+cf. Definition~\ref{def:typical}
+
+$k$: number of blocks for the common prefix property
+
+$\ell$: number of blocks for the chain quality property
+
+$\mu$: chain quality parameter
+
+$s$:  number of rounds for the chain growth property
+
+$\tau$: chain growth parameter
+
+$L$: the total run-time of the system \\
+
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{tab:requirements}
+The parameters in our analysis. Positive integers $n,t,L,s,\ell,T,k,\kappa$ where $\log T$ is linearly related to $\kappa$; positive reals
+$f,\eps,\delta,\mu,\tau,\lambda$, where $f,\eps,\delta,\mu\in(0,1)$.}
+\end{table}%>>>
+
+% \noindent
+% \textbf{The variable difficulty setting.} The above model is extended to the
+% variable difficulty setting as follows~\cite{C:GarKiaLeo17}. The number of
+% parties $n$ and the number of adversarial parties $t$
+% is chosen by the environment and is allowed to change throughout
+% execution, making $\{n\}_{r\in\mathbb{N}}$ and $\{t\}_{r\in\mathbb{N}}$ two
+% sequences of numbers which can change in every round. As long as the
+% number of parties does not diverge dramatically within a short period of time
+% (in the wording of~\cite{C:GarKiaLeo17}, these are sequences which are said to be
+% \emph{$(\gamma, s)$-respecting}), the same protocol can be used to maintain the
+% chain. The key difference is that the chain is partitioned into temporal sections of fixed
+% length called \emph{epochs} during which the target remains constant. Within an
+% epoch, the analysis follows the same principles as the constant difficulty
+% setting. Across epochs, the difficulty is recalculated by setting the target $T$
+% used in the PoW equation to be representative of the computing power devoted to
+% mining during the previous epoch. More specifically, the system's $T_0$
+% parameter, the target of the genesis epoch, is set to correspond to the number
+% of parties $n_0$ participating during the genesis block. This sets up a block generation
+% rate of $f_0 = n_0 q \frac{T_0}{2^\kappa}$ blocks per round (to see why, recall
+% that each of the $n_0$ parties can make $q$ random oracle queries per round and
+% each query has a probability of success equal to $\frac{T_0}{2^\kappa}$) which
+% the recalculation algorithm attempts to keep constant in future epochs as the
+% number of parties changes. Therefore, to recalculate
+% the target for epoch $j+1$, the algorithm measures the block generation rate of
+% epoch $j$ which is $f_j = \frac{m}{r_{jm} - r_{(j-1)m}}$ (where $m$ denotes the
+% number of blocks per epoch and $r_{jm}$ denotes the round during which block
+% with height $jm$ was generated) and adjusts the target based on how inaccurate
+% the previous target was, setting $T'_{j+1} = \frac{f_0}{f_j} T_j$. This modifies
+% the target by the factor $\frac{f_0}{f_j}$ so that block generation rate is
+% changed to be equal to $f_0$ in expectation. Finally, the actual epoch target
+% $T_{j+1}$ is calculated using the probational target $T'_{j+1}$ by capping it so
+% that it cannot change by more than a fixed factor of $\tau$, i.e., $T_{j+1} =
+% \min(\max(T'_{j+1}, \tau T_j), \frac{T_j}{\tau})$.

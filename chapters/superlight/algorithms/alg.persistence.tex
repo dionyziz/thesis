@@ -1,0 +1,22 @@
+\begin{figure}
+\begin{algorithm}[H]
+    \caption{\label{alg.persistence-game} The challenger for the ledger persistence game.}
+    \begin{algorithmic}[1]
+        \Function{\validityattack$_{\mathcal{A}_1, \mathcal{A}_2,\mathcal{Z},\mathcal{A}^*,\Pi}$}{$\kappa$}
+            \Let{v}{\view^{t,n}_{\Pi,\mathcal{A}_1,\mathcal{Z}}}
+            \Let{r_1, r_2, p_1, p_2}{\mathcal{A}_2(v)}
+            \If{$r_2 < r_1 \lor (p_1, p_2 \text{ are not honest parties in } v)$}
+              \State\Return{$\false$}
+            \EndIf
+            \Let{\overline{tx}}{\mathcal{S}(v, r_1, r_2, p_1, p_2)}
+            \Let{\LState_{p_1}, \LState_{p_2}}{\text{ledgers of } p_1, p_2 \text{ in } v}
+            \If{$r_1 < r_2$}
+              \State\Return{$(\delta^*(\LState_{p_1}[r_1], \overline{\tx}) \neq \LState_{p_2}[r_2])$}
+            \Else
+              \State\Return{$(\delta^*(\LState_{p_1}[r_1], \overline{\tx}) \neq \LState_{p_2}[r_2]) \land
+              (\delta^*(\LState_{p_2}[r_2], \overline{\tx}) \neq \LState_{p_1}[r_1])$}
+            \EndIf
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

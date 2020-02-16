@@ -1,0 +1,111 @@
+\subsection{Computational Ledgers}
+
+The blockchain protocol is parametrized by a \emph{blockchain application}
+tuple $(\mathcal{L}, \mathcal{S}, S_0, \delta)$ which consists of the following:
+
+\begin{enumerate}
+  \item $\mathcal{L}$: A (potentially infinite) \emph{transaction language} containing all valid
+  transactions.
+  \item $\mathcal{S}$: A (potentially infinite) \emph{set of valid states} that the system can be in.
+  \item $S_0 \in \mathcal{S}$: A \emph{genesis state} that the system begins
+  with.
+  \item $\delta: \mathcal{S} \times \mathcal{L} \longrightarrow \mathcal{S} \cup \{\bot\}$:
+  An efficiently computable \emph{transition function} that takes a transaction
+  $\tx$, a previous state $S \in \mathcal{S}$ and returns a next state
+  $S' \in \mathcal{S}$, or $\bot$ if the transaction $\tx$ cannot be applied on
+  top of state $S$.
+\end{enumerate}
+
+The transition function $\delta$ can be extended to apply multiple transactions
+in a transition function
+$\delta^*: \mathcal{S} \times \mathcal{L}^* \longrightarrow \mathcal{S} \cup \{\bot\}$
+which is defined recursively: $\delta^*(S, \epsilon) = S$ and
+$\delta^*(S, \tx\,\overline{\tx})) = \begin{cases}
+  \bot\text{, if } S = \bot\\
+  \delta^*(S, \overline{\tx})\text{, otherwise}\end{cases}$.
+
+Each block $B$ in a blockchain contains application data which consists of the
+previous state $B.S \in \mathcal{S}$ and a sequence of transactions
+$B.\overline{\tx}$ with $\forall \tx \in B.\overline{\tx} \in \mathcal{L}$ that this
+block confirms. It must hold that the transitions described by a block are
+valid i.e., that $\delta^*(B.S, B.\overline{\tx}) \neq \bot$ and that each next
+block's previous state is the previous block's next state, i.e.,
+$\forall i > 0: \delta^*(\chain[i - 1].S, \chain[i - 1].\overline{\tx}) = \chain[i].S$.
+The genesis block $\mathcal{G}$ contains a commitment
+to the genesis state $\mathcal{G}.S = S_0$.
+
+Whenever a full node receives a blockchain $\chain$ they check its validity by
+ensuring that the above properties hold. Then, the reported \emph{stable ledger
+state} $\LState_{p}[r]$ for each honest party $p$ at round $r$ is the state $S$
+that is committed to the tip of the stable portion of the blockchain.
+
+\import{./}{chapters/superlight/algorithms/alg.persistence.tex}
+
+To define computational persistence, we set up the game illustrated in
+Algorithm~\ref{alg.validity-game}.
+Let
+$r_1 \leq r_2 \in \mathbb{N}$ be rounds and $p_1, p_2$ be honest parties.
+Consider the ledger states $\LState_{p_1}[r_1]$ and $\LState_{p_2}[r_2]$
+adopted by $p_1$ and $p_2$ at rounds $r_1 \leq r_2$.
+In this game, an adversary
+$(\mathcal{A}_1, \mathcal{A}_2)$ participates in an execution in which he
+attempts to cause $p_1$ and $p_2$ to arrive at ledger states
+$\LState_{p_1}, \LState_{p_2}$ at rounds $r_1, r_2$ such that the ledger of
+$p_2$ could not have possibly been the
+extension of the ledger of $p_1$. We capture the success of the adversary
+through a simulator who remains unable to produce a transaction sequence
+$\overline{tx}$ which conciliates ledgers $\LState_{p_1}[r_1]$ and
+$\LState_{p_2}[r_2]$, i.e.,
+$\delta^*(\LState_{p_1}[r_1], \overline{tx}) = \LState_{p_2}[r_2]$. We remark
+here that the mere existence of $\overline{tx}$ is insufficient; it must be
+efficiently computable by a simulator. An example in which a transaction
+sequence exists but is not efficiently computable is the case where the
+adversary causes the honest parties to transition from a state $S_1$ in which
+an honest party holds certain coins secured by a public signature scheme, to
+a state $S_2$ in which the coins have been transferred to the adversary's
+control. In this case, the simulator will remain unable to produce the signature
+needed to relinquish control of the honest party's coins, and the adversary will
+be deemed successful.
+
+\begin{definition}[Computational persistence]
+  A protocol $\Pi$ has \emph{computational persistence} if there is a negligible
+  function $\negl$ such that for all probabilistic
+  polynomial-time adversaries $(\mathcal{A}_1, \mathcal{A}_2)$ and all environments $\mathcal{Z}$
+  there exists a probabilistic
+  polynomial-time simulator $\mathcal{A}^*$ such that
+
+  \[
+  \Pr[\validityattack_{\mathcal{A}_1,\mathcal{A}_2,\mathcal{Z},\mathcal{A}^*,\Pi}(\kappa)]
+  \leq \negl
+  \,.
+  \]
+\end{definition}
+
+\import{./}{chapters/superlight/algorithms/alg.liveness.tex}
+
+For the case of \emph{computational liveness}, we introduce the similar game
+illustrated in Algorithm~\ref{alg.liveness-game}. In this game, parameterized by
+the \emph{liveness parameter} $u$, the environment issues a sequence of
+transactions $\overline{tx}$ each of which is given as input to all honest
+parties continuously for $u$ rounds prior to some round $r$. The adversary
+attempts to cause an honest party $p$ to arrive at a ledger state $\LState_p[r]$
+at round $r$ on which one or more of the transactions in $\overline{tx}$ have
+not been taken into account. Again, we express the adversary's success with the
+inability of a probabilistic polynomial-time simulator to produce a transaction
+sequence $\overline{tx}'$ with $\overline{tx}' \subseteq \overline{tx}$ which
+transitions the genesis state $S_0$ to the adopted ledger state $\LState_p[r]$
+of party $p$.
+
+\begin{definition}[Computational liveness]
+  A protocol $\Pi$ has \emph{computational liveness} if there is a negligible
+  function $\negl$ such that for all probabilistic
+  polynomial-time adversaries $(\mathcal{A}_1, \mathcal{A}_2)$ and all environments $\mathcal{Z}$
+  there exists a probabilistic
+  polynomial-time simulator $\mathcal{A}^*$ such that
+
+  \[
+  \Pr[\livenessattack_{\mathcal{A}_1,\mathcal{A}_2,\mathcal{Z},\mathcal{A}^*,\Pi}(\kappa)]
+  \leq \negl
+  \,.
+  \]
+\end{definition}

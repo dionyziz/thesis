@@ -1,0 +1,16 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.interlink-set}The updateInterlinkSet algorithm which
+             updates the interlink set}
+    \begin{algorithmic}[1]
+        \Function{\sf updateInterlinkSet}{$B'$}
+            \Let{\textsf{interlinkSet}}{\{H(B')\}}
+            \For{$H(B) \in B'.\textsf{interlink}$}
+                \If{$\emph{level}(B) > \emph{level}(B')$}
+                    \Let{\textsf{interlinkSet}}{\textsf{interlinkSet} \cup \{H(B)\}}
+                \EndIf
+            \EndFor
+            \State\Return{\textsf{interlinkSet}}
+        \EndFunction
+    \vskip8pt
+    \end{algorithmic}
+\end{algorithm}

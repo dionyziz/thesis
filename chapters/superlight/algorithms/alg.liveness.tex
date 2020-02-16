@@ -1,0 +1,18 @@
+\begin{figure}
+\begin{algorithm}[H]
+    \caption{\label{alg.liveness-game} The challenger for the ledger liveness game.}
+    \begin{algorithmic}[1]
+        \Function{\livenessattack$_{\mathcal{A}_1, \mathcal{A}_2,\mathcal{Z},\mathcal{A}^*,\Pi,u}$}{$\kappa$}
+            \Let{v}{\view^{t,n}_{\Pi,\mathcal{A}_1,\mathcal{Z}}}
+            \Let{r, p}{\mathcal{A}_2(v)}
+            \Let{\overline{tx}}{\text{transactions issued continuously in $v$ for $u$ rounds prior to $r$}}
+            \If{$p \text{ are is not honest in } v$}
+              \State\Return{$\false$}
+            \EndIf
+            \Let{\overline{tx}'}{\mathcal{A}^*(v, r, p)}
+            \Let{\LState_p}{\text{ledger of } p \text{ in } v}
+            \State\Return{$(\overline{tx} \not\subseteq \overline{tx}' \lor \delta^*(S_0, \overline{\tx}') \neq \LState_p[r])$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
