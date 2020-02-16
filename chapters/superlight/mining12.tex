@@ -1,5 +1,4 @@
-\section{Logspace mining against 1/2}\label{sec.mining12}%<<<
-
+\section{Logspace mining against 1/2}\label{sec.mining12}
 
 Based on the trapdoor oracle implementation of the previous section,
 we modify the mining protocol so that the proof-of-work equation becomes
@@ -25,9 +24,7 @@ block. This information is broadcast and included in a transaction which is
 confirmed in blocks following $\chain$. This condition ``unfreezes'' the
 coinbase payout of the miner.
 
-%>>>
-
-\subsection{Security}%<<<
+\subsection{Security}
 
 We show how to strengthen the Common-Prefix Lemma
 (Lemma~\ref{lemma:qblockcommonprefix}), taking advantage of the fact
@@ -35,7 +32,7 @@ that the adversary decides to suppress a block without knowing if it
 satisfies the block property or not.
 
 \begin{lemma}[$Q$-block Common-Prefix Lemma]\label{lemma:qblockcommonprefix12}
-	Assume $t<(\frac12-\delta)n$ with $\delta>3\eps+3f$ and a $\Q$-typical
+	Assume $t<(\frac12-\delta)n$ with $\delta>3\eps+3f$ and a $\mathcal{Q}$-typical
 	execution.
 	Consider a round at which a chain $\chain$ is adopted by an honest party and
 	suppose there exist another chain $\chain'$ such that
@@ -78,6 +75,4 @@ satisfies the block property or not.
 	the middle inequality, observe that if in a typical execution
 	$|S|\le3\lambda/\eps$, then less than $12\lambda\xi_Qf/\eps$ $Q$-blocks
 	have been computed in total.
-\Qed\end{proof}
-
-%>>>
+\end{proof}
