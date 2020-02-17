@@ -1,6 +1,4 @@
-\section{Mining with Variable Difficulty}\label{sec.variable}
-
-\todo{Split this section into files}
+\todo{Split this chapter into sections}
 
 We now adapt the construction of the previous sections to the variable
 difficulty model.
@@ -99,7 +97,7 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   superblock-typical'' is bounded by $e^{-\Omega(\kappa) + \lg{L}}$.
 \end{theorem}
 \begin{proof}[Sketch]
-  Apply some Chernoff bounds... \todo{add details for this proof}
+  \todo{Apply the tail bounds from the variable difficulty paper}
 \end{proof}
 
 \begin{lemma}[Pairing]\label{lem:pairing}
@@ -324,7 +322,7 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   rounds $|S^*| \geq \ell$ such that $Q(S^*) \leq A(J)$ where $J$ is the number
   of adversarial queries in $\dexpand{S^*}$. This contradicts typicality.
 
-  \todo{finish proof}
+  \todo{clean up and copy this proof from vardiff paper}
 \end{proof}
 
 \begin{lemma}[Variable Multilevel Common Prefix]
@@ -337,7 +335,7 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   2^{\mu'}|(\chain'\setminus\chain)\upchain^{\mu'}|$.
 \end{lemma}
 \begin{proof}
-  \todo{Do this proof}
+  \todo{clean up and copy this proof from vardiff paper}
 \end{proof}
 
 \begin{definition}[Admissible Chain]
@@ -363,7 +361,7 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   $\text{diff}(\pi[-k':]) \geq k \frac{n_r}{\eta n_0}$.
   Clearly $b = \pi[-k':][-1]$ belongs to the chain of the honest party that
   produced $\pi$. It suffices to show that $r_b \geq r - \frac{k}{\eta f}$.
-  Show that $m > k \geq k'$... \todo{finish proof}
+  Show that $m > k \geq k'$... \todo{clean up and copy proof from vardiff paper}
 \end{proof}
 
 \begin{theorem}[Variable NIPoPoW Admissibility]\label{thm:admissibility}
