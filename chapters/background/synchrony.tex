@@ -1,0 +1,71 @@
+\subsection{Synchrony and Adaptivity}
+
+\todo{Expand this subsection}
+
+\subsubsection{The Synchronous and Bounded Delay Setting}
+
+We employ the model from~\cite{EC:DGKR18}, which is in turn based
+on~\cite{C:KRDO17} and~\cite{EC:GarKiaLeo15}.
+The formalization we use below captures both synchronous and semi-syn\-chronous
+communication; as well as both semi-adaptive and fully adaptive corruptions.
+
+\subsubsection{Protocol Execution}
+\label{sec:prelim-exec}
+
+We divide time into discrete units called
+\emph{slots}. %, as detailed later. % in Section~\ref{sec:comm}.
+Players are equipped with (roughly) synchronized clocks that
+indicate the current slot: we assume that any clock drift is subsumed in the
+slot length.  Each slot $\slot_r$ is indexed by an integer $r \in \{1,2,\ldots
+\}$.
+We consider a UC-style~\cite{FOCS:Canetti01} execution of a protocol~$\Pi$,
+involving an environment~$\env$, a number of
+parties~$\party_i$, functionalities that these parties can access while running
+the protocol (such as the $\DelDiff$ used for communication, described below), and
+an adversary~$\adv$. All these entities are interactive algorithms.  The
+environment controls the execution by activating parties via inputs it provides
+to them. The parties, unless corrupted, respond to such activations by following
+the protocol~$\Pi$ and invoking the available functionalities as needed.
+
+\subsubsection{(Semi-)Adaptive Corruptions}
+\label{sec:prelim-corr}
+
+The adversary  influences the protocol execution by interacting
+with the available functionalities, and by corrupting parties.
+The adversary can only corrupt a party $\party_i$ if it is given
+permission by the environment $\env$ running the protocol execution (captured as
+a special message from $\env$ to $\adv$).
+%The
+%permission is in the form of a message $(\mathsf{Corrupt}, \party_i)$ which is
+%provided to the adversary by the environment.
+Upon receiving permission from the environment, the adversary
+corrupts $\party_i$ after a certain delay of $\cordelay$ slots, where $\cordelay$ is
+a parameter of our model. In particular, if $\cordelay=0$ we talk about
+\emph{fully adaptive corruptions} and the corruption is immediate.
+The model with $\cordelay>0$ is
+referred to as allowing \emph{$\cordelay$-semi-adaptive corruptions} (as opposed to the
+\emph{static corruptions model}, where parties can only be corrupted before the
+start of the execution).
+%
+A corrupted
+party $\party_i$ will relinquish its entire state to~$\adv$;
+from this point on, the adversary will be activated in place of the
+party $\party_i$.
+
+\subsubsection{(Semi-)Synchronous Communication}
+\label{sec:prelim-comm}
+
+
+We employ the ``Delayed Diffuse'' functionality $\DelDiff_\Delta$ given in~\cite{EC:DGKR18} to
+model (semi-)synchronous communication among the parties. It allows each party
+to diffuse a message once per round, with the guarantee that it will be
+delivered to all other parties in at most $\Delta$ slots (the delay within this
+interval is under adversarial control). The adversary can also read and reorder
+all messages that are in transit, as well as inject new messages.
+We provide a detailed description of the functionality $\DelDiff_\Delta$ in
+Appendix~\ref{app:diffuse} for completeness.
+
+We refer to the setting where honest parties communicate via $\DelDiff_\Delta$
+as the \emph{$\Delta$-semi-synchronous setting} and sometimes omit $\Delta$ if
+it is clear from the context. The special case of $\Delta=0$ is referred to as
+the \emph{synchronous setting}.
