@@ -1,0 +1,87 @@
+\subsection{Ouroboros}
+
+%\paragraph{Description.}
+The protocol operates (and was analyzed) in the synchronous model with
+semi-adaptive corruptions. % described in Section~\ref{sec:model}.
+%
+In each slot, each of the parties can determine whether she qualifies as a
+so-called \emph{slot leader} for this slot.  The event of a particular party
+becoming a slot leader occurs with a probability proportional to the stake
+controlled by that party and  is independent for two different slots.
+It is determined by a public, deterministic computation from the stake
+distribution and so-called \emph{epoch randomness} (we will discuss shortly
+where this randomness comes from) in such a way that for each slot, exactly one
+leader is elected.
+
+If a party is elected to act as a slot leader for the current slot, she is
+allowed to create, sign, and broadcast a block (containing transactions that
+move stake among stakeholders).  Parties participating in the protocol are
+collecting such valid blocks and always update their current state to reflect
+the longest chain they have seen so far that did not fork from their previous
+state by too many blocks into the past.
+
+Multiple slots are collected into \textit{epochs}, each of which contains
+$R\in \mathbb{N}$ slots. The security arguments in~\cite{C:KRDO17} require $R\geq 10k$
+for a security parameter $k$; we will consider $R=12k$ as additional $2k$ slots
+in each epoch will be useful for our construction.
+%(in Cardano, $R=21600$).
+Each epoch is indexed by an index $j \in \mathbb{N}$. During an epoch
+$j$, the stake distribution that is used for slot leader election corresponds to
+the distribution recorded in the ledger up to
+a particular slot of epoch $j-1$, chosen in a way that guarantees that by the
+end of epoch $j-1$, there is consensus on the chain up to this slot. (More
+concretely, this is the latest slot of epoch $j-1$ that appears in the first $4k$
+out of its total $R$ slots.)
+Additionally, the \emph{epoch randomness $\rnd_j$} for epoch $j$ is derived
+during the epoch $j-1$ via a \emph{guaranteed-output delivery coin tossing}
+protocol
+%SCRAPE~\cite{ACNS:CasDav17}
+that is executed by the epoch slot leaders,
+and is available after $10k$ slots of epoch $j-1$ have passed.
+
+In our treatment, we will refer to the relevant parts of the above-described protocol as
+follows:
+\begin{description}
+\item
+  $\GetDistr(j)$
+  returns the stake distribution $\SD_j$ to be used for epoch $j$, as recorded in the
+    chain up to slot $4k$ of epoch $j-1$;
+
+\item
+  $\GetRandomness(j)$
+  returns the randomness $\rnd_j$ for epoch $j$ as derived during epoch $j-1$;
+\item
+  $\ValidConsLevel(\Chain)$
+  checks the consensus-level validity of a given chain $\Chain$: it verifies that all block hashes
+    are correct, signatures are valid and belong to eligible slot leaders;
+\item
+  $\PickWinningChain(\Chain,\mathcal{C})$
+    applies the chain-selection rule: from a set of chains $\{\Chain\}\cup\mathcal{C}$ it
+    chooses the longest one that does not fork from the current chain $\Chain$
+    more than $k$ blocks in the past;
+\item
+  $\SlotLeader(U,j,sl,\SD_j,\rnd_{j})$
+  determines whether a party $U$ is elected a slot leader for the slot $sl$ of
+    epoch $j$, given stake distribution $\SD_j$ and randomness $\rnd_{j}$.
+\end{description}
+Moreover, the function $\EpochIndex$ (resp. $\SlotIndex$) always returns
+the index of the current epoch (resp. slot), and the event $\NewEpoch$ (resp.
+$\NewSlot$) denotes the start of a new epoch (resp. slot).
+Since we use these functions in a black-box manner, our construction can be
+readily adapted to PoS protocols with a similar structure that differ in the
+details of these procedures.
+
+%\paragraph{Security.}
+Ouroboros was shown in~\cite{C:KRDO17} to achieve
+both persistence and liveness
+%the common prefix, chain growth, and chain quality properties, proposed as
+%security desiderata for blockchain protocols in~\cite{EC:GarKiaLeo15}.
+%It is well-known that these properties imply both
+%persistence and liveness of the resulting ledger.
+%These properties are achieved by Ouroboros
+under the following assumptions:
+(1) synchronous communication;
+(2) $2R$-semi-adaptive corruptions;
+(3) majority of stake in the stake distribution for each epoch is
+always controlled by honest parties during that epoch.
+%(4)  the stake shift per epoch is limited.
