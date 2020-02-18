@@ -30,14 +30,15 @@ We compare the aforementioned schemes on whether they satisfy the burn protocol 
     \centering
     \caption{Comparison between proof-of-burn schemes.\label{table:comparison}}
 
-    \begin{tabular}{ |r|c|c|c|c|c| }
+    \begin{tabular}{ |r|c|c|c|>{\columncolor{lightgray}} c| }
      \hline
-                                        & Binding & Flexible & Unspendable & Uncensorable & User friendly \\
+                                    & $\opreturn$ & P2SH $\opreturn$ & \begin{tabular}{@{}c@{}}Nothing up\\ my sleeve\end{tabular} & \begin{tabular}{@{}c@{}}$a \xor 1$\\ \textbf{(this work)}\end{tabular} \\
      \hline
-     $\opreturn$                        & \y      & \n       & \y          & \n & \n \\
-     P2SH $\opreturn$                   & \y      & \n       & \y          & \y & \y \\
-     Nothing-up-my-sleeve               & \n      & \y       & \y          & \y & \y \\
-     $a \xor 1$ \textbf{(this work)}    & \y      & \y       & \y          & \y & \y \\
+     Binding                        & \y      & \y       & \n          & \y  \\
+     Flexible                       & \n      & \n       & \y          & \y  \\
+     Unspendable                    & \y      & \y       & \y          & \y  \\
+     Uncensorable                   & \n      & \y       & \y          & \y  \\
+     User friendly                  & \n      & \y       & \y          & \y  \\
      \hline
     \end{tabular}
 \end{table}
