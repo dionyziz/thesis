@@ -8,8 +8,8 @@
                    $\textsf{claimed-events} \gets \emptyset$}
             \Function{\sf initialize}{$\mathcal{G}_2$, \textsf{sidechain}$_2$}
                 \If{$\lnot \textsf{initialized}$}
+                    \CommentLine{Initialize with the remote chain genesis block}
                     \State\textsf{crosschain.initialize}$(\mathcal{G}_2)$
-                    \Comment{Initialize with the remote chain genesis block}
                     \State{%
                            $\textsf{this.sidechain}_2 \gets \textsf{sidechain}_2$;
                            $\textsf{initialized} \gets \emph{true}$
