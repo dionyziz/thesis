@@ -123,10 +123,13 @@ The following lemma expands on the results of Lemma~\ref{lem:ro-unpredictability
     \max_{h^* \in [X_\kappa]}\Pr[\collstar] - \Pr[t_1 = t_2]\,.
   \end{align*}
   Since $\Pr[\collisionattack_{\mathcal{A}}(\kappa) = \true] \leq \negl$
-  and $\Pr[t_1 = t_2] \leq \negl$, therefore $\max_{h^* \in [X_\kappa]} \Pr[\collstar] \leq \negl$.
+  and $\Pr[t_1 = t_2] \leq \negl$, therefore
+  \[
+    \max_{h^* \in [X_\kappa]} \Pr[\collstar] \leq \negl\; .
+  \]
   Because $H(t_1)$ and $H(t_2)$ are chosen independently,
   \[
-  \max_{h^* \in [X_\kappa]}\Pr_{x \gets X_\kappa}[x = h^*] = \sqrt{\max_{h^* \in [X_\kappa]} \Pr[\collstar]} \leq \negl\,.
+  \max_{h^* \in [X_\kappa]}\Pr_{x \gets X_\kappa}[x = h^*] = \sqrt{\max_{h^* \in [X_\kappa]} \Pr[\collstar]} \leq \negl\; .
   \]
   Applying Lemma~\ref{lem:negl-unpred}, we deduce that the distribution ensemble $X_\kappa$ is unpredictable.
 \end{proof}

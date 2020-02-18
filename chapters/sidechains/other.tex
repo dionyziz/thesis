@@ -60,16 +60,16 @@ private key, contributing to their resilience to adaptive corruptions.
 Ouroboros Praos was shown~\cite{praos} to achieve
 persistence and liveness under weaker assumptions than Ouroboros,
 namely:
-%\begin{enumerate}
-  %\item
-    (1) $\Delta$-semi-synchronous communication
+\begin{enumerate}
+  \item
+    $\Delta$-semi-synchronous communication
     (where $\Delta$ affects the security bounds
     but is unknown to the protocol);
-  %\item
-    (2) majority of the stake is always controlled by honest parties.
-  %\item
-    %(3) the stake shift per epoch is limited.
-%\end{enumerate}
+  \item
+    the majority of the stake is always controlled by honest parties;
+  \item
+    the stake shift per epoch is limited.
+\end{enumerate}
 In particular, Ouroboros Praos is secure in face of fully adaptive corruptions
 without any corruption  delay.
 Ouroboros Genesis provides the same guarantees as Praos, as well as several

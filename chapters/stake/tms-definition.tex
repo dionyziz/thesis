@@ -33,13 +33,13 @@ The definition of an ATMS is given below.
 \begin{definition}
   A \textit{$t$-ATMS} is a tuple of algorithms
   $\Pi = (
-    \GenParam,
-    \Gen,
-    \Sig,
-    \Ver,
-    \KeyCombine,
-    \Comprises,
-    \SigCombine,
+    \GenParam,\allowbreak
+    \Gen,\allowbreak
+    \Sig,\allowbreak
+    \Ver,\allowbreak
+    \KeyCombine,\allowbreak
+    \Comprises,\allowbreak
+    \SigCombine,\allowbreak
     \VerCombined
   )$
   where:
@@ -119,13 +119,13 @@ via a cryptographic game given in Algorithm~\ref{alg.tms-game}.
   %A \textit{$t$-threshold multisignature scheme}
   A \textit{$t$-ATMS} scheme
   $\Pi = (
-    \GenParam,
-    \Gen,
-    \Sig,
-    \Ver,
-    \KeyCombine,
-    \Comprises,
-    \SigCombine,
+    \GenParam,\allowbreak
+    \Gen,\allowbreak
+    \Sig,\allowbreak
+    \Ver,\allowbreak
+    \KeyCombine,\allowbreak
+    \Comprises,\allowbreak
+    \SigCombine,\allowbreak
     \VerCombined
   )$
   is \emph{secure} if for any PPT adversary $\mathcal{A}$ and any polynomial $p$
@@ -154,7 +154,7 @@ the adversary herself and therefore are not in $\mathcal{VK}$.
 It is straightforward to see that if
 $\Pi$
 is a secure ATMS, then
-the tuple $( \GenParam, \Gen, \Sig, \Ver )$ is a \textsf{EUF-CMA}-secure
+the tuple $( \GenParam,\allowbreak \Gen,\allowbreak \Sig,\allowbreak \Ver )$ is a \textsf{EUF-CMA}-secure
 signature scheme.
 
 Looking ahead, note that since the $\KeyCombine$ algorithm is only invoked with

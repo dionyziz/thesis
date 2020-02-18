@@ -356,7 +356,7 @@ Lemma~\ref{lem:plausible-balances}.
 \end{lemma}
 
 \begin{proof}
-  By direct inspection of the two algorithms, observe that the
+  By direct inspection of the two algorithms, observe that
   $\textsf{balances}[\Sidechain][\textsf{pool}_{pk}]$ are updated by
   Algorithm~\ref{alg.validity} only when $\send(\tx_a) \neq \rec(\tx_a)$. The
   balances are increased when $\send(\tx_a) = \Mainchain$ (due to $\tx_2 \in
@@ -607,15 +607,15 @@ construction satisfies the firewall property.
   checks whether the following \emph{certificate violation} condition holds:
   \begin{equation}
     \label{eq:cert-violation}
-    \VerCombined(m, avk^{j-1}, \sigma_j)
-    \land
-    \Comprises(\keyseq_{j-1}, avk^{j-1})
-    \land
-    \left(
-      \lnot \Comprises(\keyseq_j, avk^j)
-      \lor
-      \langle\pending_j\rangle \neq \langle\pending'_j\rangle
-    \right)
+    \begin{gathered}
+      \VerCombined(m, avk^{j-1}, \sigma_j) \text{ and}\\
+      \Comprises(\keyseq_{j-1}, avk^{j-1}) \text{ and}\\
+      \left(
+        \lnot \Comprises(\keyseq_j, avk^j)
+        \lor
+        \langle\pending_j\rangle \neq \langle\pending'_j\rangle
+      \right)
+    \end{gathered}
   \end{equation}
   where $avk^{j-1}$ is extracted from $\sccert_{j-1}$ according to the view of
   $\party_\Sidechain$, unless $j = 1$ in which case $avk^0$ is known.
@@ -758,18 +758,20 @@ construction satisfies the firewall property.
   holds that
   \begin{equation}
     \label{eq:cert-good}
+    \begin{gathered}
     \left(
       \VerCombined(m, avk^{j-1}, \sigma_j)
       \land
       \Comprises(\keyseq_{j-1}, avk^{j-1})
-    \right)
-    \Rightarrow
+    \right)\\
+    \Rightarrow\\
     \left(
       \Comprises(\keyseq_j, avk^j)
       \land
       \langle\pending_j\rangle = \langle\pending'_j\rangle
     \right)
     \; .
+    \end{gathered}
   \end{equation}
   Therefore, we have a chain of certificates, each of which is signed with a
   valid key $avk^{j-1}$ and attests to the validity of the next key $avk^j$.

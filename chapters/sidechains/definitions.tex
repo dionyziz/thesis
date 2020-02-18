@@ -35,7 +35,7 @@ according to these rules on each of the ledgers where it is present.
 
 We will fix an operator $\merge(\cdot)$ that
  merges a set of ledger states
-$\mathcal{L}=\{\LState_1,\LState_2,\ldots,\LState_n\}$ into a single ledger
+$\mathcal{L}=\{\LState_1,\allowbreak \LState_2,\allowbreak \ldots,\allowbreak \LState_n\}$ into a single ledger
 state  denoted by $\merge(\mathcal{L})$. We will discuss concrete instantiations
 of $\merge(\cdot)$ later, for now simply assume that some canonical way of
 merging all ledger states into one is given.
@@ -116,7 +116,10 @@ concatenation.
     \item \textbf{Uniqueness of transactions.}
       Words from $\ValLang_{\Asset}$ never contain the same transaction twice:
       for any $\tx\in\Trans_{\Asset}$ and any $w_1,w_2,w_3\in\Trans_{\Asset}^*$ we
-      have $w_1\concat\tx\concat w_2\concat\tx\concat w_3\not\in\ValLang_{\Asset}$.
+      have \[
+      w_1\concat\tx\concat w_2\concat\tx\concat w_3\not\in\ValLang_{\Asset}
+      \,~.
+      \]
   \end{enumerate}
 \end{definition}
 
@@ -170,9 +173,8 @@ $.
 transaction} of the transaction $\tx$.
 \end{definition}
 
-Intuitively, for any transaction $\tx\in\Trans_{\Ledger}$, the corresponding transaction
-$\eff{\Ledger}{\Ledger'}(\tx) \in \Trans_{\Ledger'}\cup\{\noeffect\}$ identifies
-the necessary effect  on ledger $\Ledger'$ of the  event of the inclusion of the transaction $\tx$ into the ledger
+Intuitively, for any transaction $\tx\in\Trans_{\Ledger}$, let $\tx' = \eff{\Ledger}{\Ledger'}(tx)$ be the corresponding transaction. The transaction $\tx' \in \Trans_{\Ledger'}\cup\{\noeffect\}$ identifies
+the necessary effect on ledger $\Ledger'$ of the  event of the inclusion of the transaction $\tx$ into the ledger
 $\Ledger$. With foresight, in an implementation of a  system of ledgers where a ``pegging''   exists, the transaction
 $\eff{\Ledger}{\Ledger'}(\tx)$ has to be eventually valid and includable in
 $\Ledger'$ in response to the inclusion of $\tx$ in $\Ledger$.
