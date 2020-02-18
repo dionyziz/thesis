@@ -28,9 +28,9 @@ A similar tail bound can be stated~\cite[Theorem~3.15]{mcdiarmid1998} for martin
 	\[
 		V=\sum_{i=1}^n\mathrm{var}(X_i-X_{i-1}|Y_0,\dots,Y_{i-1})
 		\hbox{~and~}
-		b=\max_{1\le i\le n}\sup(X_i-X_{i-1}|Y_0,\dots,Y_{i-1})
+		b=\max_{1\leq i\leq n}\sup(X_i-X_{i-1}|Y_0,\dots,Y_{i-1})
 	,\]
 	where sup is taken over all possible assignments to $Y_0,\dots,Y_{i-1}$.
 	Then, for any $t,v\ge0$,
-	\[\Pr\bigl[(X_n\ge X_0+t)\wedge(V\le v)\bigr]\le\exp\biggl\{-\frac{t^2}{2v+2bt/3}\biggr\}.\]
+	\[\Pr\bigl[(X_n\ge X_0+t)\wedge(V\leq v)\bigr]\le\exp\biggl\{-\frac{t^2}{2v+2bt/3}\biggr\}.\]
 \end{theorem}

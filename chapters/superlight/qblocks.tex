@@ -22,8 +22,8 @@ computable given $h$ as the input.
 \paragraph{Definitions of random variables.}
 
 We will call a query of a party \emph{successful} if it submits a triple
-$(ctr,s,x)$ such that $H(ctr,s,x)\le T$.
-Consider a block property $Q$. Let $\xi_Q=\Pr[Q(h)|h\le T]$, when $h$ is
+$(ctr,s,x)$ such that $H(ctr,s,x)\leq T$.
+Consider a block property $Q$. Let $\xi_Q=\Pr[Q(h)|h\leq T]$, when $h$ is
 uniformly distributed over the range of the hash function.
 For each round $i$, query $j\in[q]$, and $k\in[t]$ (the $k$-th party
 controlled by the adversary), we define Boolean random
@@ -50,14 +50,14 @@ computes a solution at given round is an important parameter.
 Writing $p=T/2^\kappa$ for the probability of success of a single query, we
 have
 \[
-	(1-f){pq(n-t)}\le f=\E[X(i)]=1-(1-p)^{q(n-t)}\le pq(n-t)
+	(1-f){pq(n-t)}\leq f=\Ex[X(i)]=1-(1-p)^{q(n-t)}\leq pq(n-t)
 .\]
 The following bounds relate the expectations of the random variables defined
 above to $f$, for all $i$ and block properties $Q$.
 \begin{gather*}
-	\xi_Q f\le\E[X_Q(i)]\le\frac{\xi_Q f}{1-f},\quad
-		\xi_Q f(1-f)<\E[Y_Q(i)],\\
-	\E[Z_Q(i)]\le\frac{\xi_Q f}{1-f}\cdot\frac t{n-t}
+	\xi_Q f\leq\Ex[X_Q(i)]\le\frac{\xi_Q f}{1-f},\quad
+		\xi_Q f(1-f)<\Ex[Y_Q(i)],\\
+	\Ex[Z_Q(i)]\le\frac{\xi_Q f}{1-f}\cdot\frac t{n-t}
 .\end{gather*}
 The derivations of these inequalities follow \cite{backbone-new}.
 %>>>
@@ -87,9 +87,9 @@ a block extends one which was computed at a later round.
 			For any $Q\in\mathcal{Q}$ and any set $S$ of at least $\lambda/\xi_Q$
 			consecutive rounds we have
 			\begin{align}
-				(1-\eps)\E[X_Q(S)]<~&X_Q(S)<(1+\eps)\E[X_Q(S)],
-				\\(1-\eps)\E[Y_Q(S)]<~&Y_Q(S),
-				\\&Z_Q(S)<\E[Z_Q(S)]+\eps\E[Y_Q(S)].
+				(1-\eps)\Ex[X_Q(S)]<~&X_Q(S)<(1+\eps)\Ex[X_Q(S)],
+				\\(1-\eps)\Ex[Y_Q(S)]<~&Y_Q(S),
+				\\&Z_Q(S)<\Ex[Z_Q(S)]+\eps\Ex[Y_Q(S)].
 			\end{align}
 		%\item
 		%	For any $\D,i\in[L]$ and $Q\in\mathcal{Q}$, if
@@ -173,7 +173,7 @@ explicit in \cite{backbone-new}.
 	If $r$ is a uniquely successful round and the corresponding block
 	does not belong to the chain of an honest party at a later round,
 	then there is a set of consecutive rounds $S$ such that
-	$r\in S$ and $Y(S)\le Z(S)$.
+	$r\in S$ and $Y(S)\leq Z(S)$.
 \end{lemma}
 \begin{proof}
 	Let $\chain$ be the chain of the honest party that was successful at round
@@ -185,9 +185,9 @@ explicit in \cite{backbone-new}.
 	of $\chain$ and $\chain'$, and let $r^*$ be its timestamp.
 	We claim that the set $S=\{i:r^*<i<r'\}$ satisfies the requirements of the
 	statement.
-	Clearly, $r\in S$. Let us verify that $Y(S)\le Z(S)$.
+	Clearly, $r\in S$. Let us verify that $Y(S)\leq Z(S)$.
 	Indeed, if $\chain^*[v]$ is any block computed during a uniquely successful
-	round $i\in S$, it must hold $u^*<v\le u'$. The first inequality is because
+	round $i\in S$, it must hold $u^*<v\leq u'$. The first inequality is because
 	the party computing $\chain^*[v]$ knows of $\chain[u^*]$ (it was announced
 	at round $r^*$ and received by round $i>r^*$) and would not mine on
 	a shorter chain.
@@ -257,7 +257,7 @@ adversary's strategy---will always belong to the chain of every honest party.
 	following properties.
 	\begin{itemize}
 		\item
-			For all $T\in\mathcal{T}$, $Y(T)\le Z(T)$.
+			For all $T\in\mathcal{T}$, $Y(T)\leq Z(T)$.
 		\item
 			For each $r\in U\setminus S$, there is a $T\in\mathcal{T}$ that contains $r$.
 		\item
@@ -296,7 +296,7 @@ his blocks, and assumes that he will be able to choose among these as he sees
 fit. Nevertheless, we conjecture that the bound $y-2z$ cannot be substantially
 increased in the case the property is rare.
 
-%\nikos{Requiring $t<(\frac12-\delta)(n-t)$ and $2f+2\eps\le\delta$ gives that
+%\nikos{Requiring $t<(\frac12-\delta)(n-t)$ and $2f+2\eps\leq\delta$ gives that
 %for any set $S$ of consecutive rounds in a typical execution
 %$
 %	Y(S)-2Z(S)>\delta(1-\eps)(1-f)f|S|>\frac\delta2\cdot f|S|
@@ -345,11 +345,11 @@ chain and to obtain many of them for the adversarial chain.
 	Assume an execution in which the assumptions of the lemma hold.
 	Let $r^*$ be the round on which the last honest block on
 	$\chain^*=\chain\cap\chain'$ was computed (if no such block exists let
-	$r^*=0$) and define the set of rounds $S=\{i:r^*<i\le r\}$.
+	$r^*=0$) and define the set of rounds $S=\{i:r^*<i\leq r\}$.
 	%Let also $B$ denote the first block of $\chain'\setminus\chain^*$.
 	%Let $r'>r^*$ be the round on which the $k$th block on
 	%$\chain'\setminus(\chain'\cap\chain)$ was computed and define the set of
-	%rounds $S=\{i:r'\le i\le r\}$.
+	%rounds $S=\{i:r'\leq i\leq r\}$.
 	We will study the execution during the rounds in $S$.
 	To that end, let $W'$ denote the set of adversarial queries
 	on $\chain'\setminus\chain^*$ at some round at least $\lambda$ greater from
@@ -413,7 +413,7 @@ and succinct.
 	When $\mu=0$, the verifier determines the longer chain and always
 	(correctly) accepts the corresponding proof.
 	%
-	Let us now focus on the case $0<\mu\le\ell$.
+	Let us now focus on the case $0<\mu\leq\ell$.
 	Note that, since $\mathcal{D}[\mu-1]\cap\mathcal{D}'[\mu-1]=\emptyset$, not both
 	superchains can have less than $m$ blocks after their common block. In such
 	a case, the adversary has failed to include all the last $m$ blocks of
@@ -444,7 +444,7 @@ and succinct.
 \begin{proof}
 	As $t < (\frac{1}{3} - \delta)n$ with
 	$3\epsilon + 3f < \delta < \frac{1}{3}$, therefore
-	$c = \E[Y] - 2\E[Z] - 2\lambda f(\frac{t}{n-t}\frac{1}{1-f} + \epsilon)$ will be
+	$c = \Ex[Y] - 2\Ex[Z] - 2\lambda f(\frac{t}{n-t}\frac{1}{1-f} + \epsilon)$ will be
 	a positive constant and for sets of consecutive rounds $U$ with
 	$|U| \geq \lambda$,
 	we will have
