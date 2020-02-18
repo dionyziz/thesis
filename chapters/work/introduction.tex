@@ -10,7 +10,7 @@ protocols exist and in particular if downloading fewer block headers is
 sufficient to securely synchronize with the rest of the blockchain network. Our
 requirement is that the system remains decentralized and that useful facts about
 the blockchain (such as the Merkle root of current account balances in
-Ethereum~\cite{wood,vitalik}) can be deduced from the downloaded data.
+Ethereum~\cite{wood,buterin}) can be deduced from the downloaded data.
 
 \noindent\textbf{Our contributions.}
 We put forth a cryptographic security definition for
@@ -77,8 +77,8 @@ be deployed to existing cryptocurrencies without a fork.
 % most well-known is the atomic exchange~\cite{tiernolan,herlihy2018atomic}, e.g.,
 % a trade of bitcoin for ether. However, more sophisticated
 % applications~
-% \cite{interledger,DBLP:journals/corr/DilleyPWPGF16,
-%       lerner,drivechains,wood2016polkadot,buchman2016tendermint}
+% \cite{interledger,federated-interoperability,
+%       lerner,drivechains,polkadot,tendermint}
 % could be enabled by a more efficient proof process, which would allow the
 % blockchain of one cryptocurrency to embed a client of a separate cryptocurrency.
 % This concept, initially popularized by a proposal by Back et al.
@@ -150,5 +150,5 @@ sidechains~\cite{sidechains}. It has
 also been implemented for simple classes of predicates such as atomic
 swaps~\cite{tiernolan,herlihy2018atomic}, which do not allow full
 synchronization. Non-succinct certificates about proof-of-\emph{stake}
-blockchains have been proposed in~\cite{gazi2019proof}, but their scheme is not
-applicable to proof-of-\emph{work}. Superblocks were first described in the Bitcoin Forum~\cite{highway} and later formalized~\cite{KLS} to describe their \emph{Proofs of Proof-of-Work} which have limited applications due to interactivity, lack of security, and inability to prove facts buried deep within the blockchain. We improve upon their work with a security definition, an interactive construction, and an attack against their scheme which works with overwhelming probability.
+blockchains have been proposed in~\cite{pos-sidechains}, but their scheme is not
+applicable to proof-of-\emph{work}. Superblocks were first described in the Bitcoin Forum~\cite{highway} and later formalized~\cite{popow} to describe their \emph{Proofs of Proof-of-Work} which have limited applications due to interactivity, lack of security, and inability to prove facts buried deep within the blockchain. We improve upon their work with a security definition, an interactive construction, and an attack against their scheme which works with overwhelming probability.

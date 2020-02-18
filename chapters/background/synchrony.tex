@@ -4,8 +4,8 @@
 
 \subsubsection{The Synchronous and Bounded Delay Setting}
 
-We employ the model from~\cite{EC:DGKR18}, which is in turn based
-on~\cite{C:KRDO17} and~\cite{EC:GarKiaLeo15}.
+We employ the model from~\cite{praos}, which is in turn based
+on~\cite{ouroboros} and~\cite{backbone}.
 The formalization we use below captures both synchronous and semi-syn\-chronous
 communication; as well as both semi-adaptive and fully adaptive corruptions.
 
@@ -18,7 +18,7 @@ Players are equipped with (roughly) synchronized clocks that
 indicate the current slot: we assume that any clock drift is subsumed in the
 slot length.  Each slot $\slot_r$ is indexed by an integer $r \in \{1,2,\ldots
 \}$.
-We consider a UC-style~\cite{FOCS:Canetti01} execution of a protocol~$\Pi$,
+We consider a UC-style~\cite{uc} execution of a protocol~$\Pi$,
 involving an environment~$\env$, a number of
 parties~$\party_i$, functionalities that these parties can access while running
 the protocol (such as the $\DelDiff$ used for communication, described below), and
@@ -56,7 +56,7 @@ party $\party_i$.
 \label{sec:prelim-comm}
 
 
-We employ the ``Delayed Diffuse'' functionality $\DelDiff_\Delta$ given in~\cite{EC:DGKR18} to
+We employ the ``Delayed Diffuse'' functionality $\DelDiff_\Delta$ given in~\cite{praos} to
 model (semi-)synchronous communication among the parties. It allows each party
 to diffuse a message once per round, with the guarantee that it will be
 delivered to all other parties in at most $\Delta$ slots (the delay within this

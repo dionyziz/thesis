@@ -7,10 +7,10 @@ date. It introduced \emph{blockchains}, a
 of cryptographic consensus protocol in which \emph{transactions} are organized
 into \emph{blocks} which are put in a mutually agreed sequence despite the
 presence of adversaries. Consensus is achieved via
-\emph{proof-of-work}~\cite{C:DwoNao92} which is the precondition for block
+\emph{proof-of-work}~\cite{pow} which is the precondition for block
 validity.  Transactions moving value within blockchains have been proven to
 be secure and that consensus is eventually achieved, cf.
-\cite{EC:GarKiaLeo15,EC:PasSeeShe17,C:GarKiaLeo17}.
+\cite{backbone,pass-asynchronous,varbackbone}.
 
 Ethereum~\cite{buterin} extends Bitcoin's functionality introducing
 Turing-complete \emph{smart contracts} programmed in
@@ -18,7 +18,7 @@ languages like Solidity which run on top of the Ethereum Virtual
 Machine~\cite{wood}. These contracts execute autonomously. The smart contracts
 are confined to access data only within the blockchain itself, such as previous
 transactions and blocks. Access to external data requires a trusted
-third party or group thereof to vouch for the data validity~\cite{CCS:ZCCJS16}.
+third party or group thereof to vouch for the data validity~\cite{towncrier}.
 
 Sidechains~\cite{sidechains} are a mechanism for cross-chain communication in
 blockchains. They allow smart contracts on one blockchain to receive and
@@ -63,8 +63,8 @@ convey \emph{any} information, not just transfers of value. In our work, a
 blockchain is a sidechain of another chain if it can react to events on that
 chain, and so the relationship can be symmetric.
 
-\emph{Polkadot}~\cite{wood2016polkadot}, \emph{Tendermint},
-\emph{Cosmos}~\cite{buchman2016tendermint}, \emph{Liquid} and
+\emph{Polkadot}~\cite{polkadot}, \emph{Tendermint},
+\emph{Cosmos}~\cite{tendermint}, \emph{Liquid} and
 \emph{Interledger}~\cite{interledger} also build cross-chain transfers. Their
 validation relies on a trusted committees, federations or is left unspecified.
 \emph{Drivechains} and \emph{rootstock} are sidechain proposals which require
@@ -78,6 +78,6 @@ in size of the source blockchain. This stems from the \emph{succinctness}
 property of the NIPoPoW scheme.
 None of the aforementioned constructions include
 proofs of security.
-Other related work includes Plasma~\cite{poon2017plasma},
-XCLAIM~\cite{zamyatinxclaim}, PeaceRelay, COMIT~\cite{comit}, and
-NOCUST~\cite{khalil2018nocust} and Dogethereum.
+Other related work includes Plasma~\cite{plasma},
+XCLAIM~\cite{xclaim}, PeaceRelay, COMIT~\cite{comit}, Plasma Cash~\cite{plasmacash},
+NOCUST~\cite{nocust} and Dogethereum~\cite{dogethereum}.

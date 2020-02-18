@@ -6,7 +6,7 @@ We now compare alternatives for proof-of-burn proposed in previous work. Our bur
 
 \noindent
 \textbf{$\opreturn$.}
-Bitcoin provides a native opcode called  $\opreturn$~\cite{bartoletti2017analysis} which can be used for burning.
+Bitcoin provides a native opcode called  $\opreturn$~\cite{opreturn} which can be used for burning.
 Unfortunately,
 standard wallets do not provide a user friendly interface for creating $\opreturn$ transactions.
 However, it benefits the Bitcoin network by allowing the UTXO to be pruned, at
@@ -22,7 +22,7 @@ An $\opreturn$ or other provably failing script can also be used as the redeemSc
 \textbf{Nothing-up-my-sleeve.}
 An address is manually crafted, so that it is clear it was not generated from a regular keypair. For example, the all-zeros address is considered nothing-up-my-sleeve\footnote{The Bitcoin address \texttt{1111111111111111111114oLvT2} encodes the all-zeros string and has received more than $50{,}000$ transactions dating back to Aug 2010.}. It is hard to obtain a public key hashing to this address, thus funds sent to it are unspendable. Because no metadata can be associated with such a burn, this scheme is not binding.
 
-We compare the aforementioned schemes on whether they satisfy the burn protocol properties we define: Binding, unspendability and uncensorability. Additionally, we compare them based on how easily they translate to multiple cryptocurrencies. For instance, $\opreturn$ and P2SH $\opreturn$ rely on Bitcoin Script semantics and do not directly apply to any non-Bitcoin based cryptocurrencies like Monero~\cite{van2013cryptonote}, thus we say they are not \emph{flexible}. The comparison is illustrated on Table~\ref{table:comparison}.
+We compare the aforementioned schemes on whether they satisfy the burn protocol properties we define: Binding, unspendability and uncensorability. Additionally, we compare them based on how easily they translate to multiple cryptocurrencies. For instance, $\opreturn$ and P2SH $\opreturn$ rely on Bitcoin Script semantics and do not directly apply to any non-Bitcoin based cryptocurrencies like Monero~\cite{cryptonote}, thus we say they are not \emph{flexible}. The comparison is illustrated on Table~\ref{table:comparison}.
 
 \begin{table}[h!]
     \newcommand{\y}{$\bullet$}

@@ -6,7 +6,7 @@
 \label{sec:interlink}
 
 In order to construct our protocol, we rely on the \emph{interlink data
-structure}~\cite{KLS}. This is an additional hash-based data
+structure}~\cite{popow}. This is an additional hash-based data
 structure that is proposed to be included in the header of each block. The
 interlink data structure is a skip-list~\cite{skiplist} that makes it efficient
 for a verifier to process a sparse subset of the blockchain, rather than only
@@ -26,7 +26,7 @@ Observe that in a blockchain protocol execution it is expected $1/2$ of the
 blocks will be of level $1$; $1/4$ of the blocks will be of level $2$; $1/8$
 will be of level $3$; and $1/2^\mu$ blocks will be of level $\mu$. In
 expectation, the number of superblock levels of a chain $\chain$ will be
-$\Theta(\log(\chain))$~\cite{KLS}. Figure~\ref{fig.hierarchy} illustrates the
+$\Theta(\log(\chain))$~\cite{popow}. Figure~\ref{fig.hierarchy} illustrates the
 blockchain superblocks starting from level $0$ and going up to level $3$ in case
 these blocks are distributed exactly according to expectation. Here, each level
 contains half the blocks of the level below.
@@ -51,7 +51,7 @@ need to be included per block is in expectation $\log(|\chain|)$.
 \end{figure}
 
 The algorithm for this construction is shown in
-Algorithm~\ref{alg.nipopow-interlink} and is borrowed from~\cite{KLS}. The
+Algorithm~\ref{alg.nipopow-interlink} and is borrowed from~\cite{popow}. The
 interlink data structure turns the blockchain into a
 skiplist-like~\cite{skiplist} data structure.
 

@@ -6,7 +6,7 @@ in some execution, our construction presented in the main paper is insecure by
 illustrating an explicit attack against our scheme.
 % We show that this attack is applicable in the same
 % manner against our construction as it is applicable against the previous
-% PoPoW work~\cite{KLS}. PoPoW serves as the starting point and inspiration for
+% PoPoW work~\cite{popow}. PoPoW serves as the starting point and inspiration for
 % our protocol. The security proof is incorrect, and in fact the PoPoW protocol is
 % susceptible to a double-spending attack within the model (i.e., that can be
 % carried out by an attacker with less than 50\% hash power)
@@ -48,7 +48,7 @@ the strategy by inspecting $\chain[-1]$ and acting accordingly. An execution of
 this attack is illustrated in Figure~\ref{fig.superquality-attack}.
 
 \begin{figure}[h]
-    \caption{Superquality attack on prior work (PoPoW)~\cite{KLS}.
+    \caption{Superquality attack on prior work (PoPoW)~\cite{popow}.
     The adversary performs a selfish-mining~\cite{selfish} attack (gray blocks)
     whenever any honest parties have recently mined a rare $\mu$-superblock
     (black). The attack reduces the honest chain's superquality, while the
@@ -149,9 +149,9 @@ overwhelming probability.
 \import{./}{chapters/work/proofs/attack.tex}
 
 \subsection{Interactive Proofs of Proof-of-Work}
-Our attack also applies against the protocol described in~\cite{KLS}.
+Our attack also applies against the protocol described in~\cite{popow}.
 
-In~\cite{KLS}, the main algorithm of the verifier aims at distinguishing
+In~\cite{popow}, the main algorithm of the verifier aims at distinguishing
 between two candidate proofs $(\pi_A, \chi_A)$ and $(\pi_B, \chi_B)$. The honest
 prover, having adopted $\chain_B$ during mining, initially produces the proof
 $(\pi_B, \chi_B)$ as follows. First, the last $k$ blocks are sent as $\chi_B =

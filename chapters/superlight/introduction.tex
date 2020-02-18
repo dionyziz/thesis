@@ -4,13 +4,13 @@
 
 The typical blockchain protocol, as exemplified by the Bitcoin~\cite{bitcoin}
 blockchain, has parties called \emph{miners} issue blocks by solving a cryptographic
-puzzle known as \emph{proof of work} (PoW)~\cite{C:DwoNao92}. This block extends
+puzzle known as \emph{proof of work} (PoW)~\cite{pow}. This block extends
 the longest (or, more precisely, the most \emph{difficult}) chain of blocks that
 is known to the party at each time. Blocks are exchanged between parties and
 accepted as long as they are fresh and are extending the longest chain a party
 is aware of. This protocol logic has been formally analysed in a number of
 previous works,
-e.g.,~\cite{EC:GarKiaLeo15,C:GarKiaLeo17,DBLP:conf/eurocrypt/PassSS17,DBLP:conf/crypto/BadertscherMTZ17}
+e.g.,~\cite{backbone,varbackbone,pass-asynchronous,composable-bitcoin}
 and shown to be capable of withstanding a suitably bounded, in terms of
 computational power, adversary.
 

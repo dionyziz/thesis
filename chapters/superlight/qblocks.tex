@@ -45,7 +45,7 @@ $Y(i)=1$, a \emph{uniquely successful round}.
 %>>>
 
 % BOUNDS ON EXPECTATIONS <<<
-As in \cite{EC:GarKiaLeo15}, the probability $f$ that at least one honest party
+As in \cite{backbone}, the probability $f$ that at least one honest party
 computes a solution at given round is an important parameter.
 Writing $p=T/2^\kappa$ for the probability of success of a single query, we
 have
@@ -59,18 +59,18 @@ above to $f$, for all $i$ and block properties $Q$.
 		\xi_Q f(1-f)<\E[Y_Q(i)],\\
 	\E[Z_Q(i)]\le\frac{\xi_Q f}{1-f}\cdot\frac t{n-t}
 .\end{gather*}
-The derivations of these inequalities follow \cite{GKL15NEW}.
+The derivations of these inequalities follow \cite{backbone-new}.
 %>>>
 
 \paragraph{Typical executions.} %<<<
-We now define our typical set of executions. This follows \cite{GKL15NEW}, but
+We now define our typical set of executions. This follows \cite{backbone-new}, but
 extended to include block properties.
 Informally, this set consists of
 those executions with polynomially many rounds and with the property that all
 the random variables of interest over sufficiently many (at least
 $\lambda=\Omega(\kappa)$) consecutive rounds do not deviate too much from
 their expectation.
-To this end, recall the following terms from \cite{GKL15NEW}. An
+To this end, recall the following terms from \cite{backbone-new}. An
 \emph{insertion} occurs when, given a chain $\chain$ with two consecutive
 blocks $B$ and $B'$, a block $B^*$ created after $B'$ is such that $B,B^*,B'$
 form three consecutive blocks of a valid chain. A \emph{copy} occurs if the
@@ -107,7 +107,7 @@ a block extends one which was computed at a later round.
 	an execution is typical with probability $1-e^{-\Omega(\eps^2f\lambda)}$.
 \end{theorem}
 \begin{proof}
-	The proof uses standard Chernoff bounds, along the lines of \cite{GKL15NEW}.
+	The proof uses standard Chernoff bounds, along the lines of \cite{backbone-new}.
 	We just note that the variables $X_Q(i)$ (and similarly $Y_Q(i)$ and
 	$Z_Q(i,j,k))$ are independent Bernoulli trials for each $Q$ and successful
 	with probability $\Theta(\xi_Qf)$. In addition, a union bound is applied
@@ -139,7 +139,7 @@ a block extends one which was computed at a later round.
 	This follows with straightforward calculations from the properties of
 	a typical execution, the bounds (given in the introduction of this section)
 	on the expectations of the involved random variables, and the assumed bounds
-	on $t/n,\delta,\eps$ and $f$. (See also \cite{GKL15NEW}.)
+	on $t/n,\delta,\eps$ and $f$. (See also \cite{backbone-new}.)
 \end{proof}
 %>>>
 
@@ -149,8 +149,8 @@ follows.
 
 % PAIRING LEMMA <<<
 Uniquely successful rounds have the following important property, which was
-implicit in the proof of the Common-Prefix Lemma in \cite{EC:GarKiaLeo15} and was made
-explicit in \cite{GKL15NEW}.
+implicit in the proof of the Common-Prefix Lemma in \cite{backbone} and was made
+explicit in \cite{backbone-new}.
 \begin{lemma}[Pairing]\label{lemma:pairing}
 	For any $i$ and any pair of distinct blocks $\chain[i]$ and
 	$\chain'[i]$, if $\chain[i]$ was computed by an honest party in a uniquely
@@ -504,7 +504,7 @@ large (more than polylogarithmic) without processing them fully.
 \textbf{Remark.} One important difference between our scheme and the existing
 blockchain protocols is that full nodes are able to verify the whole state
 evolution of the system from Genesis. This allows them to recover in case of
-temporary dishonest majority~\cite{avarikioti2019bitcoin}, while our system is
+temporary dishonest majority~\cite{dishonest-majority}, while our system is
 not able to do so. However, this treatment is beyond the Bitcoin backbone model.
 
 We note here that our analysis critically relies on the honest majority

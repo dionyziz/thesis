@@ -28,7 +28,7 @@ employing an appropriate multisignature
 scheme.
 In the construction below, we consider the multisignature scheme
 $\Bsig$
-from~\cite{PKC:Boldyreva03}.
+from~\cite{boldyreva2003threshold}.
 
 We make use of a homomorphic property of
 this scheme:
@@ -90,7 +90,7 @@ $\prod_{i=1}^{n-d}\vkh_i$;
 verifies as a $\Bsig$-signature under $avk'$.
 
 Note that  the scheme $\Bsig$ requires $vk_i$ to be  accompanied by a (non-interactive)
-proof-of-possession (POP) \cite{RY} of the respective secret key.  This POP can be
+proof-of-possession (POP) \cite{pop} of the respective secret key.  This POP can be
 appended to the public key and verified when the key is communicated in the
 protocol.  For conciseness, we omit these proofs-of-knowledge from the
 description (but we include them in the size calculation below).
@@ -112,8 +112,8 @@ clearly preferable.
 \paragraph{Concrete space requirements.}
 Concrete signature sizes in this scheme for practical parameters
 could be as follows.
-We set $k = 2160$ (as is done in the Cardano implementations of~\cite{C:KRDO17})
-and for the signature of~\cite{PKC:Boldyreva03} we have
+We set $k = 2160$ (as is done in the Cardano implementations of~\cite{ouroboros})
+and for the signature of~\cite{boldyreva2003threshold} we have
  in bits: $|vk_i| = 272$, $|\sigma_i| = 528$
  (N. Di Prima, V. Hanquez, personal communication, 16 Mar 2018), with
  $|vk_i + POP| = |vk_i| + |\sigma_i| = 800$ bits.
@@ -143,7 +143,7 @@ epoch (which is approximately 5 days).
 %\mathcal{S}} s_i$. The $\Comprises$ algorithm, since $\KeyCombine$ is deterministic, simply
 %recomputes it to verify that the same aggregate key is produced.
 %Finally, $\Ver$ and $\VerCombined$ are identical. For details on why this
-%construction works, consult~\cite{PKC:Boldyreva03}.
+%construction works, consult~\cite{boldyreva2003threshold}.
 
 %One can tolerate any $r$ number of failures by making use of the Merkle Tree
 %included as part of the aggregated keys. Concretely, if $r$ keys fail to sign,
@@ -179,9 +179,9 @@ with witness $\{\pi_i, (s_i, vk_i)\}_{i\in S'}$ such that for all $i$ we have th
 $\Ver(vk_i, m, s_i) = 1$ and $\pi_i$ is a valid Merkle tree proof pointing to a
 unique leaf for every $i$. $\pi_i$ demonstrates that $vk_i$ is in $avk$. We also
 require $|S'| \geq t$. It is possible to construct succinct proofs for this
-statement using SNARKs~\cite{ITCS:BCCT12} or even without any trusted setup
+statement using SNARKs~\cite{snarks} or even without any trusted setup
 using e.g., STARKs~\cite{ben2017scalable} or
-Bulletproofs~\cite{bunzbulletproofs} in the Random Oracle
-model~\cite{CCS:BelRog93}. In both cases the actual size of the resulting
+Bulletproofs~\cite{bulletproofs} in the Random Oracle
+model~\cite{ro}. In both cases the actual size of the resulting
 signature will be at most logarithmic in $k$, while in the case of STARKs the
 verifier will also have time complexity logarithmic in $k$.

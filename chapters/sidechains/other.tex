@@ -5,9 +5,9 @@
 
 Our construction can be adapted to work with other provably secure
 proof-of-stake blockchains discussed in Section~\ref{sec:pos}:
-Ouroboros Praos~\cite{EC:DGKR18},
+Ouroboros Praos~\cite{praos},
 Ouroboros Genesis~\cite{genesis},
-Snow White~\cite{DBLP:journals/iacr/BentovPS16a}, and
+Snow White~\cite{snowwhite}, and
 Algorand~\cite{algorand}.
 Here we assume some familiarity with the
 considered protocols and refer the interested reader to the original papers for
@@ -17,7 +17,7 @@ details.
 
 \subsection{Ouroboros Praos and Ouroboros Genesis}
 
-These protocols~\cite{EC:DGKR18,genesis} are strongly related and differ from each
+These protocols~\cite{praos,genesis} are strongly related and differ from each
 other only in the chain-selection
 rule they use, which is irrelevant for our discussion here, hence we
 consider both of the protocols simultaneously.
@@ -28,7 +28,7 @@ Despite sharing the basic structure with Ouroboros,
 they differ in several significant points which we now outline.
 
 The slot leaders are elected differently: Namely, each party for each
-slot evaluates a verifiable random function (VRF,~\cite{PKC:DodYam05}) using
+slot evaluates a verifiable random function (VRF,~\cite{vrf}) using
 the secret key associated with their stake, and providing as inputs to the VRF
 both the slot index and the epoch randomness. If the VRF output is below a
 certain threshold that depends on the party's stake, then the party is an
@@ -57,7 +57,7 @@ block signing, and in each slot the honest parties are mandated to update their
 private key, contributing to their resilience to adaptive corruptions.
 
 %\paragraph{Security}
-Ouroboros Praos was shown~\cite{EC:DGKR18} to achieve
+Ouroboros Praos was shown~\cite{praos} to achieve
 persistence and liveness under weaker assumptions than Ouroboros,
 namely:
 %\begin{enumerate}
@@ -117,7 +117,7 @@ While the above sidechain certificate is larger (and hence takes more space on
 $\MC$) than the one we propose for Ouroboros, a switch to Ouroboros
 Praos or Genesis would also bring several advantages. First off, both
 constructions would give us security in the semi-synchronous model with fully
-adaptive corruptions (as shown in~\cite{EC:DGKR18,genesis}),
+adaptive corruptions (as shown in~\cite{praos,genesis}),
 %and discussed in Section~\ref{sec:ouroboros}),
 and the use of
 Ouroboros Genesis would allow newly joining players to bootstrap from the

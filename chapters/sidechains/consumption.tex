@@ -6,7 +6,7 @@ This chicken-and-egg situation presents the need for a solution that circumvents
 
 \noindent
 \textbf{Workflow.}
-A user who wishes to acquire a target cryptocurrency first forms a burn address valid in the source blockchain which encodes her receiving address on the target blockchain by using it as a tag. She then sends an amount of source cryptocurrency to that address. She submits a proof of this burn to a smart contract~\cite{buterin} on the target blockchain, where it is verified and she is credited an equivalent amount of target cryptocurrency on her receiving address. Proof-of-burn verification happens in either a centralized manner which is lighter on computation, or in a decentralized manner using Non-Interactive Proofs of Proof-of-Work (NIPoPoWs)~\cite{FCW:KiaLamSto16,nipopows,superblocks,gtklocker}.
+A user who wishes to acquire a target cryptocurrency first forms a burn address valid in the source blockchain which encodes her receiving address on the target blockchain by using it as a tag. She then sends an amount of source cryptocurrency to that address. She submits a proof of this burn to a smart contract~\cite{buterin} on the target blockchain, where it is verified and she is credited an equivalent amount of target cryptocurrency on her receiving address. Proof-of-burn verification happens in either a centralized manner which is lighter on computation, or in a decentralized manner using Non-Interactive Proofs of Proof-of-Work (NIPoPoWs)~\cite{popow,nipopows,compactsuperblocks,gtklocker}.
 
 Target blockchain miners need not be connected to every other source blockchain network. We call this property \emph{miner-isolation} and we propose methods to achieve it.
 
@@ -25,7 +25,7 @@ For a verifier to be convinced that an event occurred on a source blockchain, th
 
 We assume the source blockchain provides a function \verifytx(\textsf{addr}, \textsf{amount}, $b$, \textsf{tx}, $\txInclusion$) which can be written in the smart contract language of the target blockchain and verifies the validity of a source blockchain transaction. It takes a source blockchain address \textsf{addr}, an amount of source cryptocurrency \textsf{amount}, a block $b$, a transaction \textsf{tx} and a proof $\txInclusion$ for the inclusion of \textsf{tx} in $b$. It returns $\true$ if \textsf{tx} contains a transfer of \textsf{amount} to \textsf{addr} and the proof $\txInclusion$ is valid for $b$.
 
-The proof $\txInclusion$ is usually a Merkle Tree inclusion proof. More concretely, in Bitcoin, each block header contains a commitment to the set of transaction ids in the block in the form of a Merkle Tree root. Ethereum stores a similar commitment in its header --- the root of a Merkle--Patricia Trie~\cite{wood2014ethereum}.
+The proof $\txInclusion$ is usually a Merkle Tree inclusion proof. More concretely, in Bitcoin, each block header contains a commitment to the set of transaction ids in the block in the form of a Merkle Tree root. Ethereum stores a similar commitment in its header --- the root of a Merkle--Patricia Trie~\cite{wood}.
 
 For verifying that a provided block $b$ belongs to the best source blockchain and is stable, we assume the existence of a function $\textsf{in-best-chain}(b)$. We explore how it can be implemented in the ``Verifying block connection'' paragraph below.
 

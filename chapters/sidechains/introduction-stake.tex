@@ -22,9 +22,9 @@ The main function of a blockchain protocol  is to organise \textit{application
 data} into \textit{blocks} so that a set of nodes that evolves over time can
 arrive eventually to consensus about the sequence of events that took place.
 The consensus component can be achieved in a number of ways, the most popular
-is using proof-of-work~\cite{C:DwoNao92} (cf. \cite{bitcoin,EC:GarKiaLeo15}),
+is using proof-of-work~\cite{pow} (cf. \cite{bitcoin,backbone}),
 while a promising alternative is to use proof-of-stake
-(cf. \cite{algorand,C:KRDO17,EPRINT:BenPasShi16b,EC:DGKR18}).
+(cf. \cite{algorand,ouroboros,snowwhite,praos}).
 Application data typically
 consists of \textit{transactions} indicating some transfer of value as in the
 case of Bitcoin~\cite{bitcoin}.  The transfer of value can be conditioned on
@@ -85,7 +85,7 @@ of the pressing open questions in blockchain systems mentioned above. Specifical
     particular sidechain can offer specialization by, e.g., industry, in order
     to avoid requiring the mainchain to handle all the transactions occurring
     within a particular economic sector. This provides a straightforward way to
-    ``shard'' blockchains, cf. \cite{DBLP:conf/ccs/LuuNZBGS16,SP:KJGGSF18,EPRINT:ZamMovRay18}.
+    ``shard'' blockchains, cf. \cite{sharding,omniledger,rapidchain}.
 
 %\noindent
 {\em Upgradability.} A child sidechain can be created from a parent
@@ -150,13 +150,13 @@ Second, we  outline a concrete exemplary
 construction for sidechains for proof-of-stake
 blockchains. For conciseness our construction is described
 with respect to a generic PoS blockchain consistent with the  Ouroboros
-protocol~\cite{C:KRDO17} that underlies the Cardano blockchain, which is currently one of the largest
+protocol~\cite{ouroboros} that underlies the Cardano blockchain, which is currently one of the largest
 pure PoS blockchains by market capitalisation,\footnote{See \url{https://coinmarketcap.com}. }
 nevertheless we also discuss how to modify our construction to
 operate for
-Ouroboros Praos~\cite{EC:DGKR18},
+Ouroboros Praos~\cite{praos},
 Ouroboros Genesis~\cite{genesis},
-Snow White \cite{DBLP:journals/iacr/BentovPS16a}
+Snow White \cite{snowwhite}
 and
 Algorand \cite{algorand}.
 
@@ -170,7 +170,7 @@ to the chains whose security conditions have been violated.
 %
 
 A critical consideration in a sidechain construction is safeguarding
-a new sidechain in its initial ``bootstrapping'' stage against a ``goldfinger'' type of attack \cite{Kroll:2013sp}. Our construction
+a new sidechain in its initial ``bootstrapping'' stage against a ``goldfinger'' type of attack \cite{mining-economics,hostile}. Our construction
 features a mechanism we call {\em merged-staking}
 that allows  mainchain stakeholders who have signalled
 sidechain awareness to create sidechain blocks even without moving stake
@@ -206,7 +206,7 @@ the sidechain in a single message that will be prepared once per ``epoch.'' We w
 refer to this signaling  as
  {\em cross-chain certification}.
 
-In greater detail, adopting some terminology  from \cite{C:KRDO17},
+In greater detail, adopting some terminology  from \cite{ouroboros},
 the sidechain certificate  is constructed by obtaining
 signatures  from the set of so-called \emph{slot leaders} of the last
 $\Theta(k)$ slots of the previous epoch, where $k$ is the security parameter.
@@ -224,7 +224,7 @@ $\Theta(k)$ signatures.
 An improvement can be achieved by
 employing multisignatures and Merkle-tree hashing for verification key aggregation;  using this we can drop the sidechain-certificate size to
 $\Theta(r)$ signatures where $r$  slot leaders do not participate in its generation; in the optimistic case $r\ll k$ and thus this scheme can be
-a significant improvement in practice. Finally, we show that STARKs and bulletproofs~\cite{ben2017scalable,bunzbulletproofs}
+a significant improvement in practice. Finally, we show that STARKs and bulletproofs~\cite{ben2017scalable,bulletproofs}
 can be used to bring down the size of the certificate to be optimally succinct in the random oracle model.  We observe that in the case of an active sidechain (e.g., one that returns assets
 at least once per epoch) our construction with succinct sidechain
 certificates has optimal storage requirements in the mainchain.
@@ -241,16 +241,16 @@ is provided and their performance is sometimes akin to maintaining the whole
 blockchain within the sidechain, limiting any potential scalability gains.
 %
 There have been several attempts to create various cross-chain transfer
-mechanisms including Polkadot~\cite{wood2016polkadot},
-Cosmos~\cite{buchman2016tendermint}, Blockstream's Liquid \cite{DBLP:journals/corr/DilleyPWPGF16} and Interledger \cite{interledger}. These constructions  differ in various aspects from our work including in that
+mechanisms including Polkadot~\cite{polkadot},
+Cosmos~\cite{tendermint}, Blockstream's Liquid \cite{federated-interoperability} and Interledger \cite{interledger}. These constructions  differ in various aspects from our work including in that
 they focus on proof-of-work or private (Byzantine) blockchains, require
 federations, are not decentralized and --- in all cases ---
  lack a formal security model and analysis.
-Threshold multi-signatures were considered before, e.g., \cite{DBLP:conf/eurocrypt/LiHL94},
+Threshold multi-signatures were considered before, e.g., \cite{pass-asynchronous},
 without the ad-hoc characteristic we consider here.
 A related primitive that has been considered as potentially useful for enabling
 proof-of-work (PoW) sidechains (rather than PoS ones) is a (non-interactive) proof of
-proof-of-work~\cite{FCW:KiaLamSto16,nipopows}; nevertheless,  these works do not give a
+proof-of-work~\cite{popow,nipopows}; nevertheless,  these works do not give a
 formal security definition for sidechains, nor provide a complete sidechain
 construction. We reiterate that while we focus on  PoS, our definitions and model
 are fully relevant for the PoW setting as well.

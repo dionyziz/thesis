@@ -45,7 +45,7 @@ weaning slot and the two chains will become sidechains of each other.
     for the duration of (roughly) 2 epochs.  From these two assumptions, one can
     conclude that the distribution from which leaders are elected is currently
     controlled by an honest majority.  The latter approach was taken for example
-    in~\cite{C:KRDO17}.
+    in~\cite{ouroboros}.
 \end{remark}
 
 \subsection{Proof Overview}
@@ -57,7 +57,7 @@ The proof of Theorem~\ref{thm:security} that shows that
 our construction from Section~\ref{sec:construction} has pegging security with overwhelming probability will be
 established as follows. We will borrow the fact that our construction achieves
 persistence and liveness
-from the original analysis~\cite{C:KRDO17} and state
+from the original analysis~\cite{ouroboros} and state
 them as Lemma~\ref{lem:perslive}. The main challenge will
 be to establish the firewall property, which is done in
 Lemma~\ref{lem:firewall}. These properties together establish pegging
@@ -104,7 +104,7 @@ collision resistance of the underlying hash function.
 
 We begin by stating the persistence and liveness guarantees of our
 construction, they both follow directly from the guarantees shown for the
-standalone Ouroboros blockchain in~\cite{C:KRDO17}.
+standalone Ouroboros blockchain in~\cite{ouroboros}.
 
 \begin{lemma}[Persistence and Liveness]\label{lem:perslive}
   Consider the construction of Section~\ref{sec:construction} with
@@ -115,7 +115,7 @@ standalone Ouroboros blockchain in~\cite{C:KRDO17}.
 
 We now restate the Common Prefix property of blockchains for future reference.
 If the Common Prefix property holds, then Persistence can be derived along the
-lines of~\cite{C:KRDO17}.
+lines of~\cite{ouroboros}.
 
 \begin{definition}[Common Prefix]
   For every honest party $\party_1$ and $\party_2$
