@@ -5,11 +5,11 @@ SOURCES := $(shell find . -iname '*.tex' -o -iname '*.bib' -o -iname '*.sty')
 all: thesis.pdf
 
 thesis.pdf: $(SOURCES)
-	pdflatex -halt-on-error thesis.tex
+	xelatex thesis.tex
 	bibtex thesis
 	makeindex thesis.idx
-	pdflatex -halt-on-error thesis.tex
-	pdflatex -halt-on-error thesis.tex
+	xelatex thesis.tex
+	xelatex thesis.tex
 
 clean:
 	rm -f *.aux *.log *.out *.cfg *.glo *.idx *.toc *.ilg *.ind *.lof *.lot *.bbl *.blg *.gls *.cut *.hd *.dvi *.ps *.thm *.rpi *.d *.fls *.pyc *.fdb_latexmk
