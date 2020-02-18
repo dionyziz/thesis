@@ -1,22 +1,22 @@
 \begin{algorithm}
   \caption{\label{alg.sccert}Constructing sidechain certificate $\sccert$.}
   \smallskip
-  The algorithm is run by every $\SC$-maintainer
+  The algorithm is run by every $\Sidechain$-maintainer
   at the end of each epoch, $j$ denotes the index of the ending epoch.
   \smallskip
   \begin{algorithmic}[1]
     \Function{\sf ConstructSCCert}{$j$}
       \Let{T}{\text{%time interval of
         last $4k$ slots of $\epoch_{j-1}$ and first $R-4k$ slots of $\epoch_j$}}
-      \Let{\vec\tx}{\text{transactions included in $\SC$ during $T$}}
+      \Let{\vec\tx}{\text{transactions included in $\Sidechain$ during $T$}}
       \Let{\pending_{j+1}}{\setd{\tx\in\vec\tx}{\tx.\send\neq\tx.\rec}}
-      \Let{\mathcal{VK}_{j+1}}{\text{keys of last $2k$ $\SC$ slot leaders in
+      \Let{\mathcal{VK}_{j+1}}{\text{keys of last $2k$ $\Sidechain$ slot leaders in
           $\epoch_{j+1}$}}
       \Let{avk^{j+1}}{\KeyCombine(\mathcal{VK}_{j+1})}
       \Let{m}{\left(
         \commit{\pending_{j+1}},avk^{j+1}
       \right)}
-      \Let{\VK_{j}}{\text{keys of last $2k$ $\SC$ slot leaders for $\epoch_j$}}
+      \Let{\VK_{j}}{\text{keys of last $2k$ $\Sidechain$ slot leaders for $\epoch_j$}}
       \Let{\sigma_{j+1}}{
         \SigCombine\left(
           m,

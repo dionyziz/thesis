@@ -23,22 +23,22 @@
             \If{$\send = \rec$}
                 \Return{$(\tx)$}
             \EndIf
-            \If{$\send = \MC$}
-                \Let{\tx_1}{\eff{\MC}{\SC}(\tx)}
+            \If{$\send = \Mainchain$}
+                \Let{\tx_1}{\eff{\Mainchain}{\Sidechain}(\tx)}
                 \State{\text{Construct a valid $\sig_2$ using the private key corresponding to $\recAccount$}}
                 \State{\text{Generate a fresh $\txid_2$}}
-                \Let{\tx_2}{\left(\txid_2, \SC, (\SC, \recAccount), (\SC, \textsf{pool}_{pk}), \amount, \sig_2\right)}
+                \Let{\tx_2}{\left(\txid_2, \Sidechain, (\Sidechain, \recAccount), (\Sidechain, \textsf{pool}_{pk}), \amount, \sig_2\right)}
                 \label{alg.plausibility.mc-sc-sc}
 
                 \Return{$(\tx, \tx_1, \tx_2)$}
             \EndIf
-            \If{$\send = \SC$}
+            \If{$\send = \Sidechain$}
                 \State{\text{Construct a valid $\sig_2$ using $\textsf{pool}_{sk}$}}
                 \State{\text{Generate a fresh $\txid_2$}}
-                \Let{\tx_2}{\left(\txid_2, \SC, (\SC, \textsf{pool}_{pk}), (\SC, \sendAccount), \amount, \sig_2\right)}
+                \Let{\tx_2}{\left(\txid_2, \Sidechain, (\Sidechain, \textsf{pool}_{pk}), (\Sidechain, \sendAccount), \amount, \sig_2\right)}
                 \label{alg.plausibility.sc-sc-sc}
 
-                \Let{\tx_1}{\eff{\SC}{\MC}^{-1}(\tx)}
+                \Let{\tx_1}{\eff{\Sidechain}{\Mainchain}^{-1}(\tx)}
                 \Return{$(\tx_2, \tx_1, \tx)$}
             \EndIf
         \EndFunction

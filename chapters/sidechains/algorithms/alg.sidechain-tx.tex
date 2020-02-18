@@ -1,6 +1,6 @@
 \Function{$\verifierSCtx$}{$\vec\tx$}
-    \Let{\balances[\MC]}{\text{Initial $\MC$ stake}}
-    \Let{\balances[\SC]}{\text{Initial $\SC$ stake}}
+    \Let{\balances[\Mainchain]}{\text{Initial $\Mainchain$ stake}}
+    \Let{\balances[\Sidechain]}{\text{Initial $\Sidechain$ stake}}
     \State{$\textsf{mc\_outgoing\_tx} \gets \emptyset$;
            $\seen \gets \emptyset$}
     \For{$\tx \in \vec\tx$}
@@ -30,7 +30,7 @@
               \Continue
               \label{alg.sidechain.conservation-failure}
           \EndIf
-          \If{$\llid = \MC \land \send \neq \rec$}
+          \If{$\llid = \Mainchain \land \send \neq \rec$}
               \Let{\textsf{mc\_outgoing\_tx}[\txid]}{t + 2k}
           \EndIf
       \EndIf

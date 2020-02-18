@@ -61,8 +61,8 @@ of pegging and can be easily adapted
 to  any other of the configurations between two ledgers in Figure~\ref{fig:sidechain-options}.
 
 In order to reflect the asymmetry between the two chains in our exemplary
-construction we will refer to $\Ledger_1$ as the ``mainchain'' $\MC$, and to
-$\Ledger_2$ as the ``sidechain'' $\SC$. To elaborate further on this concrete
+construction we will refer to $\Ledger_1$ as the ``mainchain'' $\Mainchain$, and to
+$\Ledger_2$ as the ``sidechain'' $\Sidechain$. To elaborate further on this concrete
 asymmetric use case, we also fully specify how the sidechain can be
 initialized from scratch, assuming that the mainchain already exists.
 
@@ -70,15 +70,15 @@ initialized from scratch, assuming that the mainchain already exists.
 %We also assume (as discussed in Section~\ref{sec:model}) that all
 %actors have relatively synchronized clocks: i.e., clock drift is bounded
 %and time can be divided in time slots that all parties can agree on.
-%During the existence of the mainchain $\MC$,
-%the sidechain can come to existence whenever a new epoch starts on $\MC$.
+%During the existence of the mainchain $\Mainchain$,
+%the sidechain can come to existence whenever a new epoch starts on $\Mainchain$.
 
-The pegging with the sidechain will be provided with respect to a specific asset of $\MC$
-that will be created on $\MC$.
+The pegging with the sidechain will be provided with respect to a specific asset of $\Mainchain$
+that will be created on $\Mainchain$.
 % PG: not used ever again
 %and referred to as the \emph{home} asset of the
 %whole sidechain ecosystem.
-Note that $\MC$ as well as $\SC$ may carry
+Note that $\Mainchain$ as well as $\Sidechain$ may carry
 additional assets but for simplicity we will assume that staking and pegging is
 accomplished only via this single primary asset.
 

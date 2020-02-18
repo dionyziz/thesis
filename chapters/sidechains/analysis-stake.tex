@@ -16,20 +16,20 @@ Let $\Assum_{\hm}(\Ledger)[t]$ denote the honest-majority assumption for an
 Ouroboros ledger $\Ledger$. Namely, $\Assum_{\hm}(\Ledger)[t]$ postulates that
 in all slots $t' \leq t$, the majority of stake in the stake distribution used to
 sample the slot leader for slot $t'$ in $\Ledger$ is controlled by honest parties
-(note that the distribution in question is $\SD$ and $\SDb^*$ for $\MC$ and
-$\SC$, respectively).
+(note that the distribution in question is $\SD$ and $\SDb^*$ for $\Mainchain$ and
+$\Sidechain$, respectively).
 Specifically, the adversary is restricted to $(1 - \epsilon)/{2}$ relative stake
 for some fixed $\epsilon>0$.
 % PG: we never use this epsilon again.
 
-The assumption $\Assum_\MC$ we consider for $\MC$
-is precisely $\Assum_\MC[t]\defeq\Assum_{\hm}(\MC)[t]$, while the assumption $\Assum_\Sidechain$ for $\SC$ is
-$\Assum_\Sidechain[t]\defeq\Assum_\MC[t]\land\Assum_{\hm}(\SC)[t]$. The reason that
-$\Assum_\Sidechain[t]\Rightarrow\Assum_\MC[t]$ is that $\SC$ uses merged staking and hence
-cannot provide any security guarantees if the stake records on $\MC$ get
-corrupted. It is worth noting that it is possible to program $\SC$ to wean off
-$\MC$ and switch to independent staking; in such case the assumption for $\SC$
-will transition to $\Assum_{\hm}(\SC)$ (now with respect to $\SDb$) after the
+The assumption $\Assum_\Mainchain$ we consider for $\Mainchain$
+is precisely $\Assum_\Mainchain[t]\defeq\Assum_{\hm}(\Mainchain)[t]$, while the assumption $\Assum_\Sidechain$ for $\Sidechain$ is
+$\Assum_\Sidechain[t]\defeq\Assum_\Mainchain[t]\land\Assum_{\hm}(\Sidechain)[t]$. The reason that
+$\Assum_\Sidechain[t]\Rightarrow\Assum_\Mainchain[t]$ is that $\Sidechain$ uses merged staking and hence
+cannot provide any security guarantees if the stake records on $\Mainchain$ get
+corrupted. It is worth noting that it is possible to program $\Sidechain$ to wean off
+$\Mainchain$ and switch to independent staking; in such case the assumption for $\Sidechain$
+will transition to $\Assum_{\hm}(\Sidechain)$ (now with respect to $\SDb$) after the
 weaning slot and the two chains will become sidechains of each other.
 
 \begin{remark}
@@ -65,34 +65,34 @@ security as required by Definition~\ref{def:security}.
 
 To show that the firewall property holds, we
 perform a case analysis, looking at
-the two cases of interest: when both $\MC$ and
-$\SC$ are secure (i.e., when $\Assum_\MC\land\Assum_\Sidechain$ holds), and when only $\MC$ is secure while the security assumption of
-$\SC$ has been violated.
-As discussed above, the case where $\SC$ is secure and
-the security of $\MC$ has been violated cannot occur per definition of
-$\Assum_\MC$ and $\Assum_\Sidechain$, and so examining this
+the two cases of interest: when both $\Mainchain$ and
+$\Sidechain$ are secure (i.e., when $\Assum_\Mainchain\land\Assum_\Sidechain$ holds), and when only $\Mainchain$ is secure while the security assumption of
+$\Sidechain$ has been violated.
+As discussed above, the case where $\Sidechain$ is secure and
+the security of $\Mainchain$ has been violated cannot occur per definition of
+$\Assum_\Mainchain$ and $\Assum_\Sidechain$, and so examining this
 case is not necessary.
 
-First, we examine the case where both $\MC$ and $\SC$ are secure, but only
+First, we examine the case where both $\Mainchain$ and $\Sidechain$ are secure, but only
 concern ourselves with \emph{direct observation} transactions, or transactions
 that can be verified without relying on sidechain certificates.
 We show that such
 transactions will always be correctly verified
 in this case.
-%as long as Persistence of both $\MC$
-%and $\SC$ are satisfied.
+%as long as Persistence of both $\Mainchain$
+%and $\Sidechain$ are satisfied.
 
-Next, we establish that, when only $\MC$ is secure, it is impossible for the
-$\MC$ maintainers to accept a view inconsistent with the validity language, and
+Next, we establish that, when only $\Mainchain$ is secure, it is impossible for the
+$\Mainchain$ maintainers to accept a view inconsistent with the validity language, and
 hence the firewall property is maintained in the case of a sidechain failure.
-%When $\MC$ has persistence, this holds for the shared view across \emph{all}
+%When $\Mainchain$ has persistence, this holds for the shared view across \emph{all}
 %parties which is derived in Lemma~\ref{lem:catastrophe-firewall}.
 
 Finally, the heart of the proof is a computational reduction (using the above
 partial results) showing how, given
 an adversary that breaks the firewall property,
-%when both $\MC$ and $\SC$ are secure,
-there must exist a receiving transaction on $\MC$
+%when both $\Mainchain$ and $\Sidechain$ are secure,
+there must exist a receiving transaction on $\Mainchain$
 which breaks the validity of the scheme. Given such a transaction, we can
 construct an adversary against either the security of the underlying ATMS scheme or the
 collision resistance of the underlying hash function.
@@ -108,8 +108,8 @@ standalone Ouroboros blockchain in~\cite{ouroboros}.
 
 \begin{lemma}[Persistence and Liveness]\label{lem:perslive}
   Consider the construction of Section~\ref{sec:construction} with
-  the assumptions $\Assum_\Sidechain, \Assum_\MC$. For all slots $t$, if
-  $\Assum_\Sidechain[t]$ (resp. $\Assum_\MC[t]$) holds, then $\SC$ (resp. $\MC$)
+  the assumptions $\Assum_\Sidechain, \Assum_\Mainchain$. For all slots $t$, if
+  $\Assum_\Sidechain[t]$ (resp. $\Assum_\Mainchain[t]$) holds, then $\Sidechain$ (resp. $\Mainchain$)
   satisfies persistence and liveness up to slot $t$ with overwhelming probability in $k$.
 \end{lemma}
 
@@ -119,15 +119,15 @@ lines of~\cite{ouroboros}.
 
 \begin{definition}[Common Prefix]
   For every honest party $\party_1$ and $\party_2$
-  both maintaining the same ledger (i.e., either both maintaining $\MC$, or both
-  maintaining $\SC$) and for every slot $r_1$ and $r_2$ such that
+  both maintaining the same ledger (i.e., either both maintaining $\Mainchain$, or both
+  maintaining $\Sidechain$) and for every slot $r_1$ and $r_2$ such that
   $r_1 \leq r_2 \leq t$, let $\Chain_1$ be the adopted chain of $\party_1$ at
   slot $r_1$ and $\Chain_2$ be the adopted chain of $\party_2$ at slot $r_2$.
   The \emph{$k$-common prefix property} for slot $t$ states
   that $\Chain_2[:|\Chain_1[:-k]|] = \Chain_1[:-k]$.
 \end{definition}
 
-\subsubsection{The Firewall Property and $\MC$-Receiving Transactions}
+\subsubsection{The Firewall Property and $\Mainchain$-Receiving Transactions}
 
 Recall that the transactions in $\Trans_\ada$ can be partitioned into several classes with
 different validity-checking procedures. First, there are
@@ -137,12 +137,12 @@ and
 Then we have
 \emph{receiving} transactions (with $\send\neq\rec=\llid$),
 which can be split into
-\emph{$\SC$-receiving} transactions ($\send\neq\rec=\llid=\SC$)
+\emph{$\Sidechain$-receiving} transactions ($\send\neq\rec=\llid=\Sidechain$)
 and
-\emph{$\MC$-receiving} transactions ($\send\neq\rec=\llid=\MC$).
+\emph{$\Mainchain$-receiving} transactions ($\send\neq\rec=\llid=\Mainchain$).
 
 As the lemma below observes, if a transaction violates the firewall property in
-a certain situation, it must be an $\MC$-receiving transaction.
+a certain situation, it must be an $\Mainchain$-receiving transaction.
 
 %Before we turn our attention to proving that the firewall property holds for{{{
 %cross-chain transactions, we first address the simpler case of transactions that
@@ -162,37 +162,37 @@ a certain situation, it must be an $\MC$-receiving transaction.
 %which belong to $\adalang$ and therefore members of the validity language.
 
 %The transactions that are verifiable via  direct observation are those that have
-%$\send(\tx) \neq \llid(\tx)$, but $\llid(\tx) = \SC$. Because the $\SC$
-%maintainers directly observe $\MC$, these transactions can also be treated
-%easily. The result here is conditioned on the persistence of $\MC$.
+%$\send(\tx) \neq \llid(\tx)$, but $\llid(\tx) = \Sidechain$. Because the $\Sidechain$
+%maintainers directly observe $\Mainchain$, these transactions can also be treated
+%easily. The result here is conditioned on the persistence of $\Mainchain$.
 
 %The following lemma captures both of these cases.
 
 %\begin{definition}[Immediately verifiable transaction]
   %Let $\tx \in \Trans_\ada$. We call $\tx$ an \emph{immediately verifiable transaction}
-  %if $\llid(\tx) = \send(\tx)$ or $\llid(\tx) = \SC$.
+  %if $\llid(\tx) = \send(\tx)$ or $\llid(\tx) = \Sidechain$.
 %\end{definition}}}}
 
 \begin{lemma}\label{lem:firewall-tx-types}
   Consider an execution of the protocol of Section~\ref{sec:construction} at
   slot $t$ in
-  which $\MC$ and $\SC$ satisfy persistence.
+  which $\Mainchain$ and $\Sidechain$ satisfy persistence.
   Suppose
   $$
     \LState =
     \merge\left(
-        \{\LState_\MC^{\cup}[t], \LState_\Sidechain^{\cup}[t]\}
+        \{\LState_\Mainchain^{\cup}[t], \LState_\Sidechain^{\cup}[t]\}
     \right)
     \not\in
     \adalang
   %\; .
   $$
-  and suppose that $\Secure_t = \{\SC, \MC\}$.
+  and suppose that $\Secure_t = \{\Sidechain, \Mainchain\}$.
   Let $\LState'$ be the minimum prefix of $\LState$ such that
   $\LState' \not\in \adalang$. Then
   $\LState'\neq\eps$ and
   $\tx \defeq \LState'[-1]$
-  is an $\MC$-receiving transaction.
+  is an $\Mainchain$-receiving transaction.
 \end{lemma}
 
 \begin{proof}
@@ -201,7 +201,7 @@ a certain situation, it must be an $\MC$-receiving transaction.
   Algorithm~\ref{alg.validity} returns \emph{false} for $\LState'$ but
   \emph{true} for $\LState'[:-1]$. Since it processes transactions sequentially,
   it must return \emph{false} during the processing of $\tx$. Suppose for
-  contradiction that $\tx$ is not an $\MC$-receiving transaction; let us call
+  contradiction that $\tx$ is not an $\Mainchain$-receiving transaction; let us call
   such a transaction \emph{direct} in this proof.
 
   Algorithm~\ref{alg.validity} can output \emph{false} while processing a direct
@@ -214,42 +214,42 @@ a certain situation, it must be an $\MC$-receiving transaction.
   Line~\ref{alg.validity.prior-failure-2} when the pre-image transaction has not
   yet been processed. Hence, $\tx$ falls under one of these violations.
 
-  Due to persistence and the definition of $\LState_{\MC}^{\cup}[t]$ and
-  $\LState_{\SC}^{\cup}[t]$, there exists an $\MC$ maintainer $\party_\MC$ and
-  an $\SC$
+  Due to persistence and the definition of $\LState_{\Mainchain}^{\cup}[t]$ and
+  $\LState_{\Sidechain}^{\cup}[t]$, there exists an $\Mainchain$ maintainer $\party_\Mainchain$ and
+  an $\Sidechain$
   maintainer $\party_\Sidechain$, such that
-  $\LState_{\MC}^{\party_\MC}[t] = \LState_{\MC}^{\cup}[t]$
+  $\LState_{\Mainchain}^{\party_\Mainchain}[t] = \LState_{\Mainchain}^{\cup}[t]$
   and
-  $\LState_{\SC}^{\party_\Sidechain}[t] = \LState_{\SC}^{\cup}[t]$,
+  $\LState_{\Sidechain}^{\party_\Sidechain}[t] = \LState_{\Sidechain}^{\cup}[t]$,
   respectively.
   Due to the \emph{partitioning property} of $\merge$, $\tx$ will be in
   $\LState_{\llid(\tx)}^{\party_{\llid(\tx)}}[t]$.
   We separately consider the two possibilities for $\llid(\tx)$.
 
-  \textbf{Case 1: } $\llid(\tx) = \MC$.
+  \textbf{Case 1: } $\llid(\tx) = \Mainchain$.
   In this case, the only violations that a direct $\tx$ can attain
-  are (a), (b) and (c), as the cases (d) and (e) for $\llid(\tx) = \MC$ do not
-  pertain to a direct transaction. $\party_\MC$ has reported
-  $\LState_\MC^{\party_\MC}[t]$ as its adopted state, hence
-  $\LState_\MC^{\party_\MC}[t]$ is a fixpoint of $\textsc{verifytx}_\MC$ (as
-  $\textsc{verifytx}_\MC$ checks for a fixpoint). The execution of
-  $\textsc{verifytx}_\MC$ included every transaction in
-  $\LState_\MC^{\party_\MC}[t]$.
-  Therefore, $\textsc{verifytx}_\MC$ has accepted every transaction in every
+  are (a), (b) and (c), as the cases (d) and (e) for $\llid(\tx) = \Mainchain$ do not
+  pertain to a direct transaction. $\party_\Mainchain$ has reported
+  $\LState_\Mainchain^{\party_\Mainchain}[t]$ as its adopted state, hence
+  $\LState_\Mainchain^{\party_\Mainchain}[t]$ is a fixpoint of $\textsc{verifytx}_\Mainchain$ (as
+  $\textsc{verifytx}_\Mainchain$ checks for a fixpoint). The execution of
+  $\textsc{verifytx}_\Mainchain$ included every transaction in
+  $\LState_\Mainchain^{\party_\Mainchain}[t]$.
+  Therefore, $\textsc{verifytx}_\Mainchain$ has accepted every transaction in every
   iteration until the last iteration, which processes $\tx$.
   Consider, now, what happened in the last iteration of the execution of
-  $\textsc{verifytx}_\MC$.
-  In that iteration, $\textsc{verifytx}_\MC$ checks the
+  $\textsc{verifytx}_\Mainchain$.
+  In that iteration, $\textsc{verifytx}_\Mainchain$ checks the
   validity of~$\sigma$, the Conservation Law, and transaction replay. In
-  all cases (a), (b) and (c), $\textsc{verifytx}_\MC$ will reject $\tx$. But
-  this could not have happened, as $\LState_\MC^{\party_\MC}[t]$ is a fixpoint,
+  all cases (a), (b) and (c), $\textsc{verifytx}_\Mainchain$ will reject $\tx$. But
+  this could not have happened, as $\LState_\Mainchain^{\party_\Mainchain}[t]$ is a fixpoint,
   and we have a contradiction.
 
-  \textbf{Case 2: } $\llid(\tx) = \SC$.
-  Let $\Chainmc$ and $\Chainsc$ be the $\MC$ and respectively $\SC$ chain
+  \textbf{Case 2: } $\llid(\tx) = \Sidechain$.
+  Let $\Chainmc$ and $\Chainsc$ be the $\Mainchain$ and respectively $\Sidechain$ chain
   adopted by $\party_\Sidechain$ at slot~$t$ (and recall that $\party_\Sidechain$ maintains
   both chains). Let $\Chainmc'$ be the chain adopted by
-  $\party_\MC$ at slot $t$. As before,
+  $\party_\Mainchain$ at slot $t$. As before,
   $\textsc{annotatetx}_\Sidechain(\Chainmc,\Chainsc)$ must be a fixpoint of
   $\textsc{verifytx}_\Sidechain$ (as $\textsc{verifytx}_\Sidechain$ checks for a fixpoint).
   As in the previous case, $\tx$ cannot violate (a), (b), (c) and in this case
@@ -257,26 +257,26 @@ a certain situation, it must be an $\MC$-receiving transaction.
   effect transaction and we will examine whether $\tx$ constitutes a violation
   of~(e).
 
-  Let $\tx^{-1} \defeq \eff{\MC}{\SC}^{-1}(\tx)$. Since $\tx$ is accepted
+  Let $\tx^{-1} \defeq \eff{\Mainchain}{\Sidechain}^{-1}(\tx)$. Since $\tx$ is accepted
   by $\textsc{verifytx}_\Sidechain$ on input
   $\textsc{annotatetx}_\Sidechain(\Chainmc,\Chainsc)$, we deduce that
   there exists some block $B \in \Chainmc[:-k]$
   with $\tx^{-1} \in B$. But $\Chainmc'[:-k]$
   is the longest stable chain among
-  $\MC$ maintainers (due to $\LState_\MC^\cup[t] = \LState_\MC^{\party_\MC}[t]$),
+  $\Mainchain$ maintainers (due to $\LState_\Mainchain^\cup[t] = \LState_\Mainchain^{\party_\Mainchain}[t]$),
   hence $\Chainmc[:-k]$ is its prefix. Therefore
   $B \in \Chainmc'[:-k]$.
-  Hence, $\tx^{-1} \in \Ledger^{\party_\MC}_\MC[t]$.
+  Hence, $\tx^{-1} \in \Ledger^{\party_\Mainchain}_\Mainchain[t]$.
   Due to the \emph{partioning property} of $\merge$, $\tx^{-1}$ must appear in
   the output of $\merge\left(
-      \{\LState_\MC^{\party_\MC}[t], \LState_\Sidechain^{\party_\Sidechain}[t]\}
+      \{\LState_\Mainchain^{\party_\Mainchain}[t], \LState_\Sidechain^{\party_\Sidechain}[t]\}
   \right)$.
   Due to the
   \emph{topological soundness} of $\merge$, $\tx^{-1}$ must appear
   \emph{before} $\tx$
   in
   $\merge\left(
-      \{\LState_\MC^{\party_\MC}[t], \LState_\Sidechain^{\party_\Sidechain}[t]\}
+      \{\LState_\Mainchain^{\party_\Mainchain}[t], \LState_\Sidechain^{\party_\Sidechain}[t]\}
   \right)$. Hence, it cannot be the case that (e) is violated, as the pre-image
   transaction exists.
 \end{proof}
@@ -284,24 +284,24 @@ a certain situation, it must be an $\MC$-receiving transaction.
 \subsubsection{Firewall Property During Sidechain Failure}
 
 %Now that we have studied what happens to direct observation transactions when
-%both chains are secure, i.e., at slots $t$ such that $\Secure_t = \{\MC, \SC\}$,
+%both chains are secure, i.e., at slots $t$ such that $\Secure_t = \{\Mainchain, \Sidechain\}$,
 
 We now turn our attention to the case where the sidechain has suffered a
-``catastrophic failure'' and so $\Secure_t = \{\MC\}$. We describe why a
+``catastrophic failure'' and so $\Secure_t = \{\Mainchain\}$. We describe why a
 catastrophic failure in the sidechain does not violate the firewall property. To
 do this, we need to illustrate that, given a transaction sequence $\LState$ which is
-accepted by the $\MC$ verifier, we can ``fill in the gaps'' with transactions
-from $\SC$ in order to produce a new transaction sequence $\vec\tx$ which is
+accepted by the $\Mainchain$ verifier, we can ``fill in the gaps'' with transactions
+from $\Sidechain$ in order to produce a new transaction sequence $\vec\tx$ which is
 valid with respect to $\adalang$.
 
 We prove this constructively in Lemma~\ref{lem:plausibility}. The construction
 of such a sequence
 is described in Algorithm~\ref{alg.plausibility}. The algorithm accepts a
-transaction sequence $\LState \subseteq \Trans_\MC$
+transaction sequence $\LState \subseteq \Trans_\Mainchain$
 valid according to
-$\textsc{verifier}_\MC$ and produces a transaction sequence $\vec\tx \in
+$\textsc{verifier}_\Mainchain$ and produces a transaction sequence $\vec\tx \in
 \ValLang_\ada$ satisfying
-$\proj_\MC(\vec\tx) = \LState$, as desired.
+$\proj_\Mainchain(\vec\tx) = \LState$, as desired.
 
 The algorithm works by mapping each $\tx \in \LState$ to one or more transactions in
 $\vec\tx$. The mapping is done by calling $\textsf{plausibility-map}(\tx)$ for
@@ -312,7 +312,7 @@ transaction, then it is simply copied over, otherwise
 some extra transactions are included. Specifically, if it's an
 sending transaction $\tx$, then first $\tx$ is included, and
 subsequently the funds are recovered by a corresponding transaction $\tx_1$ on
-$\SC$, the effect transaction of $\tx$. The funds are afterwards moved to a
+$\Sidechain$, the effect transaction of $\tx$. The funds are afterwards moved to a
 pool address $\textsf{pool}_{pk}$ by a transaction $\tx_2$.
 (Note that for this, we assume that the receiving account public key has a
 correspnding private key, as this key is needed to sign $\tx_2$. As we are only
@@ -320,51 +320,51 @@ demonstrating the existence of $\vec\tx$, Algorithm~\ref{alg.plausibility} does
 not need to be efficient and so assuming the existence of the private key is
 sufficient.)
 On the other hand,
-if it is an ($\MC$-)receiving transaction $\tx$, the reverse procedure is
+if it is an ($\Mainchain$-)receiving transaction $\tx$, the reverse procedure is
 followed. First, the funds are collected by $\tx_2$ from the pool address
-$\textsf{pool}_{pk}$ and moved into the $\SC$ address which will be used for the
-upcoming remote transaction. Then $\tx_1$ moves the funds out of $\SC$ so that
-they can be collected by the corresponding $\tx$ on $\MC$. In the first case, the
+$\textsf{pool}_{pk}$ and moved into the $\Sidechain$ address which will be used for the
+upcoming remote transaction. Then $\tx_1$ moves the funds out of $\Sidechain$ so that
+they can be collected by the corresponding $\tx$ on $\Mainchain$. In the first case, the
 transaction sequence is $(\tx, \tx_1, \tx_2)$ and in the second case the
 sequence is $(\tx_2, \tx_1, \tx)$. Note that, in both cases, $\tx$ and $\tx_1$
-are identical, except for the fact that $\tx$ is recorded on $\MC$ while $\tx_1$
-is recorded on $\SC$; the latter is the effect (or pre-image, respectively)
+are identical, except for the fact that $\tx$ is recorded on $\Mainchain$ while $\tx_1$
+is recorded on $\Sidechain$; the latter is the effect (or pre-image, respectively)
 of the former.
 
 The simple intuition behind this construction is that, in the plausible history
 $\vec\tx$ produced by Algorithm~\ref{alg.plausibility}, the account $\textsf{pool}_{pk}$
 is holding all the money of the sidechain. More specifically, the
 balance that is maintained in the variable
-$\textsf{balances}[\SC][\textsf{pool}_{pk}]$ is identical to the $\textsf{pool}$
-variable maintained by the $\MC$ verifier. This invariant is made formal in
+$\textsf{balances}[\Sidechain][\textsf{pool}_{pk}]$ is identical to the $\textsf{pool}$
+variable maintained by the $\Mainchain$ verifier. This invariant is made formal in
 Lemma~\ref{lem:plausible-balances}.
 
 \begin{lemma}[Plausible balances]\label{lem:plausible-balances}
-  Let $\LState \in \Trans_{\ada,\MC}^*$ and $\vec\tx \gets \textsf{plausible}(\LState)$.
+  Let $\LState \in \Trans_{\ada,\Mainchain}^*$ and $\vec\tx \gets \textsf{plausible}(\LState)$.
   Consider an execution of
   Algorithm~\ref{alg.validity} on $\vec\tx$ and an execution of
-  $\textsc{verifier}_{\MC}$ on $\LState$. Let $\tx \in \LState$. Call
+  $\textsc{verifier}_{\Mainchain}$ on $\LState$. Let $\tx \in \LState$. Call
   $\textsf{pool}_{\tx}$ the value of the \textsf{pool} variable maintained by
-  $\textsc{verifier}_{\MC}$ prior to processing $\tx$ in its
+  $\textsc{verifier}_{\Mainchain}$ prior to processing $\tx$ in its
   main \emph{for} loop; call
-  $\textsf{balances}[\SC][\textsf{pool}_{pk}]_{\tx}$ the value of the
-  $\textsf{balances}[\SC][\textsf{pool}_{pk}]$ variable prior to the iteration
+  $\textsf{balances}[\Sidechain][\textsf{pool}_{pk}]_{\tx}$ the value of the
+  $\textsf{balances}[\Sidechain][\textsf{pool}_{pk}]$ variable prior to the iteration
   of its main \emph{for} loop which processes the first item of
   $\textsf{plausibility-map}(\tx)$. For all $\tx \in \LState$, the following
   invariant will hold: $\textsf{pool}_{\tx} =
-  \textsf{balances}[\SC][\textsf{pool}_{pk}]_{\tx}$.
+  \textsf{balances}[\Sidechain][\textsf{pool}_{pk}]_{\tx}$.
 \end{lemma}
 
 \begin{proof}
   By direct inspection of the two algorithms, observe that the
-  $\textsf{balances}[\SC][\textsf{pool}_{pk}]$ are updated by
+  $\textsf{balances}[\Sidechain][\textsf{pool}_{pk}]$ are updated by
   Algorithm~\ref{alg.validity} only when $\send(\tx_a) \neq \rec(\tx_a)$. The
-  balances are increased when $\send(\tx_a) = \MC$ (due to $\tx_2 \in
+  balances are increased when $\send(\tx_a) = \Mainchain$ (due to $\tx_2 \in
   \textsf{plausibility-map}(\tx)$ at Line~\ref{alg.plausibility.mc-sc-sc} of
-  Algorithm~\ref{alg.plausibility}) and decreased when $\send(\tx_a) = \SC$ (due
+  Algorithm~\ref{alg.plausibility}) and decreased when $\send(\tx_a) = \Sidechain$ (due
   to $\tx_2 \in \textsf{plausibility-map}(\tx)$ at
   Line~\ref{alg.plausibility.sc-sc-sc} of Algorithm~\ref{alg.plausibility}).
-  Exactly the same accounting is performed by $\textsc{verifier}_{\MC}$ when the
+  Exactly the same accounting is performed by $\textsc{verifier}_{\Mainchain}$ when the
   respective $\tx$ is processed.
 \end{proof}
 
@@ -374,7 +374,7 @@ We now prove the correctness of Algorithm~\ref{alg.plausibility} in
 Lemma~\ref{lem:plausibility}.
 
 \begin{lemma}[Plausibility]\label{lem:plausibility}
-  For all $\LState \in \Trans_{\ada,\MC}^*$, if $\textsc{verifytx}_\MC(\LState) =
+  For all $\LState \in \Trans_{\ada,\Mainchain}^*$, if $\textsc{verifytx}_\Mainchain(\LState) =
   \LState$ then $\vec\tx \gets \textsf{plausible}(\LState)$ will satisfy $\vec\tx \in
   \adalang$.
 \end{lemma}
@@ -394,14 +394,14 @@ Lemma~\ref{lem:plausibility}.
 
   \textbf{Case 1: Local transaction:} $\send(\tx_{\LState}) = \rec(\tx_{\LState})$.
   Then $\tx = \tx_{\LState}$ and $\send(\tx) = \llid(\tx)$. Since
-  $\LState$ is a fixpoint of $\textsc{verifytx}_\MC$,
+  $\LState$ is a fixpoint of $\textsc{verifytx}_\Mainchain$,
   $\tx$ must (a) have a valid signature $\sigma$, (b) not be a replay transaction,
   and (c) respect the Conservation Law. As $\tx_{\LState}$ is a local
   transaction satisfying all of (a), (b) and (c), therefore
   $\vec\tx' \in \adalang$, which is a contradiction.
 
-  \textbf{Case 2: Sending transaction:} $\send(\tx_{\LState}) = \MC$ and $\rec(\tx_{\LState}) =
-  \SC$. In this case, let $(\tx_{\LState}, \tx_1, \tx_2) = \textsf{plausibility-map}(\tx_{\LState})$.
+  \textbf{Case 2: Sending transaction:} $\send(\tx_{\LState}) = \Mainchain$ and $\rec(\tx_{\LState}) =
+  \Sidechain$. In this case, let $(\tx_{\LState}, \tx_1, \tx_2) = \textsf{plausibility-map}(\tx_{\LState})$.
   If $\tx = \tx_{\LState}$,
   then $\tx$ is a sending transaction
   and we can apply the same
@@ -413,8 +413,8 @@ Lemma~\ref{lem:plausibility}.
   If $\tx = \tx_1$, then Algorithm~\ref{alg.validity} must return \emph{true}.
   To see this, consider the cases when Algorithm~\ref{alg.validity} returns
   \emph{false}: (d) a replay failure in Line~\ref{alg.validity.prior-failure-1},
-  which cannot occur as $\tx_{\LState}$ has been accepted by $\textsc{verifytx}_\MC$ and
-  so $\textsc{verifytx}_\MC$ must have \emph{seen} $\tx_{\LState}$ only once while
+  which cannot occur as $\tx_{\LState}$ has been accepted by $\textsc{verifytx}_\Mainchain$ and
+  so $\textsc{verifytx}_\Mainchain$ must have \emph{seen} $\tx_{\LState}$ only once while
   Algorithm~\ref{alg.validity} must be seeing it for exactly the second time; or
   (e) a mismatch failure in Line~\ref{alg.validity.prior-failure-1} which cannot
   occur as $\tx_1$ is constructed identical to $\tx_{\LState}$.
@@ -429,53 +429,53 @@ Lemma~\ref{lem:plausibility}.
   Line~\ref{alg.validity.conservation-failure} cannot occur because the
   immediately preceding transaction $\vec\tx'[-2]$ supplies sufficient balance.
 
-  \textbf{Case 3: Receiving transaction:} $\send(\tx_{\LState}) = \SC$ and
-  $\rec(\tx_{\LState}) = \MC$. In this case, let
+  \textbf{Case 3: Receiving transaction:} $\send(\tx_{\LState}) = \Sidechain$ and
+  $\rec(\tx_{\LState}) = \Mainchain$. In this case, let
   $(\tx_2, \tx_1, \tx_{\LState}) = \textsf{plausibility-map}(\tx_{\LState})$.
   The argument for $\tx = \tx_{\LState}$ and $\tx = \tx_1$ is as in \emph{Case 2}. For
   the case of $\tx = \tx_2$, the same argument as before holds for a signature
   validity and for replay protection. It suffices to show that the conservation
   law is not violated. This is established in Lemma~\ref{lem:plausible-balances}
   by the invariant that $\textsf{pool}_{\tx_{\LState}} =
-  \textsf{balances}[\SC][\textsf{pool}_{pk}]_{\tx_{\LState}}$ that holds prior to
+  \textsf{balances}[\Sidechain][\textsf{pool}_{pk}]_{\tx_{\LState}}$ that holds prior to
   processing $\tx_2$, as it is the first transaction of a triplet produced by
-  \textsf{plausibility-map}. As $\textsc{verifytx}_{\MC}(\LState) =
+  \textsf{plausibility-map}. As $\textsc{verifytx}_{\Mainchain}(\LState) =
   \LState$ then therefore $\textsf{pool}_{\tx_{\LState}} - \amount \geq 0$
-  and so $\textsf{balances}[\SC][\textsf{pool}_{pk}]_{\tx_{\LState}} - amount \geq 0$
+  and so $\textsf{balances}[\Sidechain][\textsf{pool}_{pk}]_{\tx_{\LState}} - amount \geq 0$
   and Algorithm~\ref{alg.validity} returns \emph{true}.
 
   All three cases result in a contradiction, concluding the proof.
 \end{proof}
 
-\begin{lemma}[$\SC$ failure firewall]\label{lem:catastrophe-firewall}
+\begin{lemma}[$\Sidechain$ failure firewall]\label{lem:catastrophe-firewall}
   Consider any execution of the construction of Section~\ref{sec:construction}
-  in which persistence holds for $\MC$.
-  For all slots $t$ such that $\Secure_t = \{\MC\}$
+  in which persistence holds for $\Mainchain$.
+  For all slots $t$ such that $\Secure_t = \{\Mainchain\}$
   we have that
   $$
-    \merge(\{\Ledger_\MC^\cup[t]\})
+    \merge(\{\Ledger_\Mainchain^\cup[t]\})
     \in
-    \proj_{\{\MC\}}(\ValLang_{\ada})
+    \proj_{\{\Mainchain\}}(\ValLang_{\ada})
   \; .
   $$
 \end{lemma}
 
 \begin{proof}
-  From the assumption that persistence holds, there exists some $\MC$ party
+  From the assumption that persistence holds, there exists some $\Mainchain$ party
   $\party$
-  for which $\Ledger_\MC^\party[t] = \Ledger_\MC^{\cup}[t]$.
-  Additionally, $\merge(\{\Ledger_\MC^{\cup}[t]\}) = \Ledger_\MC^{\cup}[t]$ due to the
+  for which $\Ledger_\Mainchain^\party[t] = \Ledger_\Mainchain^{\cup}[t]$.
+  Additionally, $\merge(\{\Ledger_\Mainchain^{\cup}[t]\}) = \Ledger_\Mainchain^{\cup}[t]$ due to the
   \emph{partitioning} property.
   It suffices to show that there exists some $\vec\tx \in \adalang$ such
-  that $\proj_{\{\MC\}}(\vec\tx) = \Ledger_\MC^{\party}[t]$. Let
-  $\vec\tx \gets \textsf{plausible}(\Ledger_\MC^{\party}[t])$. We have
-  $\textsc{verifier}_\MC(\Ledger_\MC^{\party}[t]) = \text{\emph{true}}$, so apply
+  that $\proj_{\{\Mainchain\}}(\vec\tx) = \Ledger_\Mainchain^{\party}[t]$. Let
+  $\vec\tx \gets \textsf{plausible}(\Ledger_\Mainchain^{\party}[t])$. We have
+  $\textsc{verifier}_\Mainchain(\Ledger_\Mainchain^{\party}[t]) = \text{\emph{true}}$, so apply
   Lemma~\ref{lem:plausibility} to obtain that $\vec\tx \in \adalang$.
 
-  To see that $\proj_{\{\MC\}}(\vec\tx) = \Ledger_\MC^{\party}[t]$, note that
+  To see that $\proj_{\{\Mainchain\}}(\vec\tx) = \Ledger_\Mainchain^{\party}[t]$, note that
   Algorithm~\ref{alg.plausibility} for input $\LState$ includes all $\tx \in \LState$ in the
   same order as in its input. Furthermore, all $\tx \in \vec\tx$ such that $\tx
-  \not\in \LState$ have $\llid(\tx) = \SC$ and so are excluded from the projection.
+  \not\in \LState$ have $\llid(\tx) = \Sidechain$ and so are excluded from the projection.
 \end{proof}
 
 \subsubsection{General Firewall Property}
@@ -517,7 +517,7 @@ construction satisfies the firewall property.
   For all PPT adversaries $\mathcal{A}$, the construction of
   Section~\ref{sec:construction} with a secure ATMS and a collision-resistant
   hash function satisfies the firewall property with respect to assumptions
-  $\Assum_\MC, \Assum_\Sidechain$ with overwhelming probability in $k$.
+  $\Assum_\Mainchain, \Assum_\Sidechain$ with overwhelming probability in $k$.
 \end{lemma}
 \begin{proof}
   Let $\mathcal{A}$ be an arbitrary PPT adversary against the firewall property,
@@ -535,37 +535,37 @@ construction satisfies the firewall property.
   \bigskip
   \textbf{The adversary $\mathcal{A}_1$.}
   $\mathcal{A}_1$ simulates the execution of $\mathcal{A}$ and $\env$ and
-  of two populations of maintainers for two blockchains, $\MC$ and $\SC$,
-  which run the protocol $\Pi$ (either the $\MC$ or the $\SC$-maintainer part
+  of two populations of maintainers for two blockchains, $\Mainchain$ and $\Sidechain$,
+  which run the protocol $\Pi$ (either the $\Mainchain$ or the $\Sidechain$-maintainer part
   respectively) and spawns parties according to the mandates of the environment
-  $\mathcal{Z}$ as follows. For all parties that are spawned as $\MC$
+  $\mathcal{Z}$ as follows. For all parties that are spawned as $\Mainchain$
   maintainers, $\mathcal{A}_1$ generates keys internally by invoking the $\Gen$
-  algorithm of the ATMS scheme. For all parties that are spawned as $\SC$
+  algorithm of the ATMS scheme. For all parties that are spawned as $\Sidechain$
   maintainers, $\mathcal{A}_1$ uses the oracle $\mathcal{O}^\textsf{gen}$
   to produce the public keys $vk_i$.
 
   Whenever $\mathcal{A}$ requests that a (block or transaction) signature in
-  $\SC$  is created, $\mathcal{A}_1$ invokes its oracle
+  $\Sidechain$  is created, $\mathcal{A}_1$ invokes its oracle
   $\mathcal{O}^\textsf{sig}$ to obtain the respective signature to provide to
-  $\mathcal{A}$. When $\mathcal{A}$ requests that a $\MC$ signature is created,
+  $\mathcal{A}$. When $\mathcal{A}$ requests that a $\Mainchain$ signature is created,
   $\mathcal{A}_1$ uses its own generated private key to sign by invoking the
   $\Sig$ algorithm of the ATMS scheme. If $\mathcal{A}$ requests the corruption
   of a certain party $\party^*$, then $\mathcal{A}_1$ reveals $\party^*$'s
-  private key to $\mathcal{A}$ as follows: If $\party^*$ is a $\MC$ maintainer,
+  private key to $\mathcal{A}$ as follows: If $\party^*$ is a $\Mainchain$ maintainer,
   then the secret key is directly available to $\mathcal{A}_1$, so it is
-  immediately returned. Otherwise, if $\party^*$ is a $\SC$ maintainer, then
+  immediately returned. Otherwise, if $\party^*$ is a $\Sidechain$ maintainer, then
   $\mathcal{A}_1$ obtains the secret key of $\party^*$ by invoking the oracle
   $\mathcal{O}^\textsf{cor}$.
 
   For every time slot $t$ of the execution, $\mathcal{A}_1$ inspects all pairs
-  $(\party_\MC, \party_\Sidechain)$ of honest parties such that $\party_\MC$ is a $\MC$
-  maintainer and $\party_\Sidechain$ is a $\SC$ maintainer such that
-  $\LState_\MC^{\party_\MC}[t] = \LState_\MC^\cup[t]$ and
+  $(\party_\Mainchain, \party_\Sidechain)$ of honest parties such that $\party_\Mainchain$ is a $\Mainchain$
+  maintainer and $\party_\Sidechain$ is a $\Sidechain$ maintainer such that
+  $\LState_\Mainchain^{\party_\Mainchain}[t] = \LState_\Mainchain^\cup[t]$ and
   $\LState_\Sidechain^{\party_\Sidechain}[t] = \LState_\Sidechain^\cup[t]$ (if such parties exist).
-  Let $\LState_1 = \LState_\MC^{\party_\MC}[t]$ and
+  Let $\LState_1 = \LState_\Mainchain^{\party_\Mainchain}[t]$ and
   $\LState_2 = \LState_\Sidechain^{\party_\Sidechain}[t]$.
   The adversary obtains the stable portion of the
-  honestly adopted chain, namely $\Chain_1 = \LView{\Chain}{\party_\MC}{t}[:-k]$ and the
+  honestly adopted chain, namely $\Chain_1 = \LView{\Chain}{\party_\Mainchain}{t}[:-k]$ and the
   transactions included in $\Chain_1$, namely $\LState'_1$ (note that
   $\LState'_1 \neq \LState_1$ if $\LState'_1$ contains certificate
   transactions). $\mathcal{A}_1$ examines whether $\LState = \merge(\LState_1,
@@ -573,7 +573,7 @@ construction satisfies the firewall property.
   Note that both the evaluation of $\merge$ on arbitrary states and the
   verification of inclusion in $\adalang$ are efficiently computable and hence
   $\mathcal{A}_1$ can execute them. If $\mathcal{A}_1$ is not able to find such
-  a time slot $t$ and parties $\party_\MC, \party_\Sidechain$, it returns \textsc{failure}
+  a time slot $t$ and parties $\party_\Mainchain, \party_\Sidechain$, it returns \textsc{failure}
   (in the latter part of this proof, we will argue that all $\mathcal{A}_1$
   failures occur with negligible probability conditioned on the event that
   $\mathcal{A}$ is successful, unless $\mathcal{A}_2$ is successful).
@@ -582,11 +582,11 @@ construction satisfies the firewall property.
   for this $t$. Because of the \emph{base property} of the validity language, we
   have that $\epsilon \in \adalang$ and therefore $\LState \neq \epsilon$. Let
   $\LState^*$ be the minimum prefix of $\LState$ such that $\LState^* \not\in
-  \adalang$ and let $\tx = \LState^*[-1]$. If $\tx$ has $\send(\tx) \neq \SC$ or
-  $\llid(\tx) \neq \MC$, then $\mathcal{A}_1$ returns \textsc{failure}. Now
-  therefore $\send(\tx) = \SC$ and $\llid(\tx) = \MC$ (and so $\tx \in \LState_1$).
+  \adalang$ and let $\tx = \LState^*[-1]$. If $\tx$ has $\send(\tx) \neq \Sidechain$ or
+  $\llid(\tx) \neq \Mainchain$, then $\mathcal{A}_1$ returns \textsc{failure}. Now
+  therefore $\send(\tx) = \Sidechain$ and $\llid(\tx) = \Mainchain$ (and so $\tx \in \LState_1$).
   Hence, $\tx$ references a certain certificate transaction, say $\tx'$. Due to
-  the algorithm executed by $\MC$ maintainers for validation, we will have that
+  the algorithm executed by $\Mainchain$ maintainers for validation, we will have that
   $\tx' \in \LState'_1\{:\tx\}$.
 
   Let $\vec\tx^*$ be the subsequence of $\LState'_1$ containing all certificate
@@ -639,16 +639,16 @@ construction satisfies the firewall property.
   private key to $\mathcal{A}$.
 
   For every time slot $t$ of the execution, $\mathcal{A}_2$ inspects all pairs
-  of honest parties such that $\party_\MC$ is a $\MC$ maintainer and $\party_\Sidechain$ is
-  a $\SC$ maintainer such that
-  $\LState_\MC^{\party_\MC}[t] = \LState_\MC^\cup[t]$ and
+  of honest parties such that $\party_\Mainchain$ is a $\Mainchain$ maintainer and $\party_\Sidechain$ is
+  a $\Sidechain$ maintainer such that
+  $\LState_\Mainchain^{\party_\Mainchain}[t] = \LState_\Mainchain^\cup[t]$ and
   $\LState_\Sidechain^{\party_\Sidechain}[t] = \LState_\Sidechain^\cup[t]$
   and obtains the variables $\LState_1, \LState_2, \Chain_1,
   \LState'_1$ as before. $\mathcal{A}_2$ examines whether $\LState =
   \merge(\LState_1, \LState_2) \not\in\adalang$, to deduce whether $\mathcal{A}$
   has succeeded. If $\mathcal{A}_2$ is not able to find such a time slot $t$ and
-  parties $\party_\MC, \party_\Sidechain$, it returns \textsc{failure}. Let $\tx$ be as in
-  $\mathcal{A}_1$. If $\send(\tx) \neq \SC$ or $\llid(\tx) \neq \MC$, then
+  parties $\party_\Mainchain, \party_\Sidechain$, it returns \textsc{failure}. Let $\tx$ be as in
+  $\mathcal{A}_1$. If $\send(\tx) \neq \Sidechain$ or $\llid(\tx) \neq \Mainchain$, then
   $\mathcal{A}_2$ returns \textsc{failure}. Then $\tx$ references a certain
   certificate transaction $\sccert_j = (j,\langle\pending_j\rangle, avk^j,\sigma_j)$ and
   uses a Merkle tree proof $\pi$ which proves the inclusion of $\tx$ in
@@ -679,8 +679,8 @@ construction satisfies the firewall property.
           %$\langle\pending_j\rangle \neq \langle\pending'_j\rangle$.
     \item \textsc{hash-collision}:  $\mathcal{A}_2$ finds a
           hash function collision.
-    %\item $\textsc{mc-violation}[t]$: $\MC \not \in \Secure_t$.
-    %\item $\textsc{sc-violation}[t]$: $\SC \not \in \Secure_t$.
+    %\item $\textsc{mc-violation}[t]$: $\Mainchain \not \in \Secure_t$.
+    %\item $\textsc{sc-violation}[t]$: $\Sidechain \not \in \Secure_t$.
   \end{itemize}
   Note that ledger states in the protocol only contain $\ada$-transactions,
   hence
@@ -702,9 +702,9 @@ construction satisfies the firewall property.
 
   \textbf{Case 1:}
   %$\lnot\textsc{mc-violation}[t]$ and $\lnot\textsc{sc-violation}[t]$.
-  $\Secure_t = \{\MC,\SC\}$.
-  %We conclude that $\Secure_t = \{\MC, \SC\}$ and that
-  In this case Persistence holds for both $\MC$ and $\SC$,
+  $\Secure_t = \{\Mainchain,\Sidechain\}$.
+  %We conclude that $\Secure_t = \{\Mainchain, \Sidechain\}$ and that
+  In this case Persistence holds for both $\Mainchain$ and $\Sidechain$,
   and $\proj_{\Secure_t}$ is the identity function.
   We deal with this case in two successive claims (both implicitly conditioning
   on being in Case~1).
@@ -724,24 +724,24 @@ construction satisfies the firewall property.
   $\textsc{sc-forge}[t] \Rightarrow \textsc{atms-forge} \lor \textsc{hash-collision}$.
 
   \noindent
-  Because persistence holds in both $\MC$ and $\SC$, we know that there exist two parties $\party_\MC, \party_\Sidechain$
-  such that at slot $t$ we have that $\Ledger_\MC^{\party_\MC}[t] =
-  \Ledger_\MC^{\cup}[t]$ and $\Ledger_\Sidechain^{\party_\Sidechain}[t] =
+  Because persistence holds in both $\Mainchain$ and $\Sidechain$, we know that there exist two parties $\party_\Mainchain, \party_\Sidechain$
+  such that at slot $t$ we have that $\Ledger_\Mainchain^{\party_\Mainchain}[t] =
+  \Ledger_\Mainchain^{\cup}[t]$ and $\Ledger_\Sidechain^{\party_\Sidechain}[t] =
   \Ledger_\Sidechain^{\cup}[t]$,
   respectively. Therefore $\scforge[t]$ implies
   $$
     \merge(\{
-      \Ledger_\MC^{\party_\MC}[t],
+      \Ledger_\Mainchain^{\party_\Mainchain}[t],
       \Ledger_\Sidechain^{\party_\Sidechain}[t]
     \}) \not\in \adalang
   \; .
   $$
   Let $\tx, \tx'$ be as in the definition of
   $\mathcal{A}_1$.
-  By Lemma~\ref{lem:firewall-tx-types} and using $\MC$ and $\SC$
+  By Lemma~\ref{lem:firewall-tx-types} and using $\Mainchain$ and $\Sidechain$
   persistence, $\tx$ will exist and
-  be an $\MC$-receiving transaction.
-  Hence, $\send(\tx) = \SC$ and $\rec(\tx) = \llid(\tx) = \MC$.
+  be an $\Mainchain$-receiving transaction.
+  Hence, $\send(\tx) = \Sidechain$ and $\rec(\tx) = \llid(\tx) = \Mainchain$.
   Therefore, $\tx'$ will also exist.
   %We distinguish two cases, depending on whether
   If $\mathcal{A}_1$ finds the index $j^*$ for which~(\ref{eq:cert-violation})
@@ -774,7 +774,7 @@ construction satisfies the firewall property.
   Therefore, we have a chain of certificates, each of which is signed with a
   valid key $avk^{j-1}$ and attests to the validity of the next key $avk^j$.
   For all of these certificates, $\VerCombined(m, avk^{j-1}, \sigma_j)$ holds,
-  as it has been verified by $\party_\MC$.
+  as it has been verified by $\party_\Mainchain$.
   Furthermore, by an induction argument (where the base case comes from the
   construction of $avk^0$ and the induction step follows
   from~(\ref{eq:cert-good})) we have
@@ -791,7 +791,7 @@ construction satisfies the firewall property.
   Therefore, the conclusion of the implication
   $\langle\pending_k\rangle = \langle\pending'_k\rangle$ holds.
   However, the sending transaction corresponding to $\tx$ has been proven to belong to the Merkle Tree
-  $\langle\pending_k\rangle$ (as verified by $\party_\MC$), but does not belong
+  $\langle\pending_k\rangle$ (as verified by $\party_\Mainchain$), but does not belong
   to $\pending'_k$ (by the selection of $\tx$). This constitutes a Merkle Tree collision,
   which translates to a hash collision. The construction of $\mathcal{A}_2$
   outputs exactly this collision, and in this case we deduce that
@@ -809,7 +809,7 @@ construction satisfies the firewall property.
   $\VerCombined(m, avk^{j-1}, \sigma_j)$ and $\Comprises(\keyseq_{j-1},
   avk^{j-1})$, but $\lnot \Comprises(\keyseq_j, avk^j)$ or
   $\langle\pending_j\rangle \neq \langle\pending'_j\rangle$. From
-  Lemma~\ref{lem:honest-subsequence} and using $\Assum_{\hm}(\SC)[t]$, we deduce that in the last $2k$ slots of epoch
+  Lemma~\ref{lem:honest-subsequence} and using $\Assum_{\hm}(\Sidechain)[t]$, we deduce that in the last $2k$ slots of epoch
   $\epoch_{j-1}$, at least $k+1$ must be honest. Since $\epoch_j$ is the
   earliest epoch in which this occurs, this means that $\keyseq_{j-1}$
   corresponds to the last $2k$ slot leaders of epoch $\epoch_{j-1}$, and all
@@ -826,18 +826,18 @@ construction satisfies the firewall property.
   \textbf{Case 2:}
   %$\textsc{mc-violation}[t]$ or $\textsc{sc-violation}[t]$
   %has occurred.
-  $\Secure_t \neq \{\MC,\SC\}$.
-  If $\MC\not\in\Secure_t$ then, since
-  $\Assum_\MC[t] \Rightarrow \Assum_\Sidechain[t]$, we have $\Secure_t = \emptyset$ and
+  $\Secure_t \neq \{\Mainchain,\Sidechain\}$.
+  If $\Mainchain\not\in\Secure_t$ then, since
+  $\Assum_\Mainchain[t] \Rightarrow \Assum_\Sidechain[t]$, we have $\Secure_t = \emptyset$ and
   $\lnot \textsc{sc-forge}[t]$, as $\epsilon \in \adalang$ by the
   \emph{base property}.
   %It remains to show that
   %$\textsc{sc-violation}[t] \rightarrow \lnot\textsc{sc-forge}[t]$ under the
   %condition that $\lnot \textsc{mc-violation}[t]$.
   %In that case,
-  It remains to consider the case $\Secure_t = \{\MC\}$. Using $\MC$ persistence,
+  It remains to consider the case $\Secure_t = \{\Mainchain\}$. Using $\Mainchain$ persistence,
   by Lemma~\ref{lem:catastrophe-firewall} we obtain
-  $\merge(\{\Ledger_\MC^{\cup}[t]\}) \in \proj_{\{\MC\}}(\adalang)$,
+  $\merge(\{\Ledger_\Mainchain^{\cup}[t]\}) \in \proj_{\{\Mainchain\}}(\adalang)$,
   %which is a contradiction.
   and hence $\scforge[t]$ did not occur.
 
@@ -873,7 +873,7 @@ construction satisfies the firewall property.
   hash function is \textit{pegging secure} with liveness parameter
   $u=2k$
   with respect to
-  assumptions $\Assum_\MC$ and $\Assum_\Sidechain$ defined above,
+  assumptions $\Assum_\Mainchain$ and $\Assum_\Sidechain$ defined above,
   and $\merge$, $\effect$ and
   $\adalang$ defined in Section~\ref{sec:inst}.
 \end{theorem}

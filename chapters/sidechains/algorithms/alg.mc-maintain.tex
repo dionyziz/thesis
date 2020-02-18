@@ -1,35 +1,35 @@
 \begin{algorithm}
   \caption{\label{alg.maintain.MC}Mainchain maintenance procedures.}
   \smallskip
-  The algorithm is run by every stakeholder $U$ with stake on $\MC$ in every
+  The algorithm is run by every stakeholder $U$ with stake on $\Mainchain$ in every
   epoch $j\geq\jstart$, $sk$ denotes the secret key of $U$. An analogous
   mainchain-maintaining procedure was running also before $\jstart$ and is
   omitted.
   \smallskip
   \begin{algorithmic}[1]
-    \On{$\MC.\NewSlot()$}
-      %\Comment{$\SC$-slots coincide with $\MC$-slots}
-      \Let{\slot}{\MC.\SlotIndex()}
+    \On{$\Mainchain.\NewSlot()$}
+      %\Comment{$\Sidechain$-slots coincide with $\Mainchain$-slots}
+      \Let{\slot}{\Mainchain.\SlotIndex()}
       \CommentLine{First slot of a new epoch}
       \If{$\slot\mod R=1$}
         %\State $\SwitchMCEpoch()$
         %  \label{line:switch}
-        \Let{j}{\MC.\EpochIndex()}
-        %\Let{\SD_j}{\MC.\GetDistr(8k, \epoch_{j-1})}
-        \Let{\SD_j}{\MC.\GetDistr(j)}
+        \Let{j}{\Mainchain.\EpochIndex()}
+        %\Let{\SD_j}{\Mainchain.\GetDistr(8k, \epoch_{j-1})}
+        \Let{\SD_j}{\Mainchain.\GetDistr(j)}
           \label{line:SD}
-        \Let{\rnd_{j}}{\MC.\GetRandomness(j)}
+        \Let{\rnd_{j}}{\Mainchain.\GetRandomness(j)}
       \EndIf
       \Let{\mathcal{C}}{\text{chains received via $\Diffuse$}}
       \CommentLine{Consensus-level validation}
-      \Let{\mathcal{C}_{\valid}}{\Filter(\mathcal{C},\MC.\ValidConsLevel)}
+      \Let{\mathcal{C}_{\valid}}{\Filter(\mathcal{C},\Mainchain.\ValidConsLevel)}
       \CommentLine{Transaction-level validation}
       \Let{\mathcal{C}_{\validtx}}{\Filter(\mathcal{C_{\valid}},\verifierMC(\cdot))}
         \label{line:filter}
       \CommentLine{Apply chain selection rule}
-      \Let{\ChainMC}{\MC.\PickWinningChain(\ChainMC,\mathcal{C_{\validtx}})}
+      \Let{\ChainMC}{\Mainchain.\PickWinningChain(\ChainMC,\mathcal{C_{\validtx}})}
       \CommentLine{Decide slot leadership based on $\SD_j$ and $\rnd_{j}$}
-      \If{$\MC.\SlotLeader(U,j,sl,\SD_j,\rnd_{j})$}
+      \If{$\Mainchain.\SlotLeader(U,j,sl,\SD_j,\rnd_{j})$}
         \label{line:leader}
         \Let{\prev}{H(\ChainMC[-1])}
         \Let{\vec\tx_{\state}}{\text{transaction sequence in $\ChainMC$}}

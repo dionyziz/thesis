@@ -1,57 +1,57 @@
 \begin{algorithm}
-  \caption{\label{alg.deposit}Depositing from $\MC$ to $\SC$.}
+  \caption{\label{alg.deposit}Depositing from $\Mainchain$ to $\Sidechain$.}
   \smallskip
   The algorithm is run by a stakeholder $U$ in control of the secret key $sk$
-  corresponding to the account $\sendAccount$ on $\MC$.
+  corresponding to the account $\sendAccount$ on $\Mainchain$.
   \smallskip
   \begin{algorithmic}[1]
     \Function{\sf Send}{$\sendAccount,\recAccount,\amount$}
-      \Comment{Send $\amount$ from $\sendAccount$ on $\MC$ to $\recAccount$ on $\SC$}
+      \Comment{Send $\amount$ from $\sendAccount$ on $\Mainchain$ to $\recAccount$ on $\Sidechain$}
       \Sample{\txid}{\bin^{k}}
       \Let{\sig}{\Sig_{sk}
         \left(
           \txid,
-          \MC,
-          (\MC, \sendAccount),
-          (\SC, \recAccount),
+          \Mainchain,
+          (\Mainchain, \sendAccount),
+          (\Sidechain, \recAccount),
           \amount
         \right)
       }
       \Let{\txsend}{
         \left(
           \txid,
-          \MC,
-          (\MC, \sendAccount),
-          (\SC, \recAccount),
+          \Mainchain,
+          (\Mainchain, \sendAccount),
+          (\Sidechain, \recAccount),
           \amount,
           \sig
         \right)
       }
-      \Post{$\txsend$}{$\MC$}
+      \Post{$\txsend$}{$\Mainchain$}
     \EndFunction
     \Function{\sf Receive}{$\txid,\sendAccount,\recAccount,\amount$}
       \Wait{$\txsend\in\stateMC$}
-      \Comment{$\stateMC$ is the stable part of $\MC$}
+      \Comment{$\stateMC$ is the stable part of $\Mainchain$}
       \Let{\sig}{\Sig_{sk}
         \left(
           \txid,
-          \SC,
-          (\MC, \sendAccount),
-          (\SC, \recAccount),
+          \Sidechain,
+          (\Mainchain, \sendAccount),
+          (\Sidechain, \recAccount),
           \amount
         \right)
       }
       \Let{\txrec}{
         \left(
           \txid,
-          \SC,
-          (\MC, \sendAccount),
-          (\SC, \recAccount),
+          \Sidechain,
+          (\Mainchain, \sendAccount),
+          (\Sidechain, \recAccount),
           \amount,
           \sig
         \right)
       }
-      \Post{$\txrec$}{$\SC$}
+      \Post{$\txrec$}{$\Sidechain$}
     \EndFunction
   \end{algorithmic}
 \end{algorithm}

@@ -1,33 +1,33 @@
 \begin{algorithm}[H]
-  \caption{\label{alg.withdraw}Withdrawing from $\SC$ to $\MC$.}
+  \caption{\label{alg.withdraw}Withdrawing from $\Sidechain$ to $\Mainchain$.}
   \smallskip
   The algorithm is run by a stakeholder $U$ in control of the secret key $sk$
-  corresponding to the account $\sendAccount$ on $\SC$.
+  corresponding to the account $\sendAccount$ on $\Sidechain$.
   \smallskip
   \begin{algorithmic}[1]
     \Function{\sf Send}{$\sendAccount,\recAccount,\amount$}
-      \Comment{Send $\amount$ from $\sendAccount$ on $\SC$ to $\recAccount$ on $\MC$}
+      \Comment{Send $\amount$ from $\sendAccount$ on $\Sidechain$ to $\recAccount$ on $\Mainchain$}
       \Sample{\txid}{\bin^{k}}
       \Let{\sig}{\Sig_{sk}
         \left(
           \txid,
-          \SC,
-          (\SC, \sendAccount),
-          (\MC, \recAccount),
+          \Sidechain,
+          (\Sidechain, \sendAccount),
+          (\Mainchain, \recAccount),
           \amount
         \right)
       }
       \Let{\txsend}{
         \left(
           \txid,
-          \SC,
-          (\SC, \sendAccount),
-          (\MC, \recAccount),
+          \Sidechain,
+          (\Sidechain, \sendAccount),
+          (\Mainchain, \recAccount),
           \amount,
           \sig
         \right)
       }
-      \Post{$\txsend$}{$\SC$}
+      \Post{$\txsend$}{$\Sidechain$}
     \EndFunction
     \Function{\sf Receive}{$\txid,\sendAccount,\recAccount,\amount$}
       \Wait{$\txsend\in\ChainSC$}
@@ -42,9 +42,9 @@
       \Let{\sig}{\Sig_{sk}
         \left(
           \txid,
-          \MC,
-          (\SC, \sendAccount),
-          (\MC, \recAccount),
+          \Mainchain,
+          (\Sidechain, \sendAccount),
+          (\Mainchain, \recAccount),
           \amount,
           \pi
         \right)
@@ -52,15 +52,15 @@
       \Let{\txrec}{
         \left(
           \txid,
-          \MC,
-          (\SC, \sendAccount),
-          (\MC, \recAccount),
+          \Mainchain,
+          (\Sidechain, \sendAccount),
+          (\Mainchain, \recAccount),
           \amount,
           \pi,
           \sig
         \right)
       }
-      \Post{$\txrec$}{$\MC$}
+      \Post{$\txrec$}{$\Mainchain$}
     \EndFunction
   \end{algorithmic}
 \end{algorithm}

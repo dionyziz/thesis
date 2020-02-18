@@ -11,9 +11,9 @@
 \label{sec:const}
 
 We now describe the procedures for running a sidechain in the configuration
-outlined at the beginning of this section: with independent staking on $\MC$ and
-merged staking on $\SC$; direct observation of $\MC$ and
-cross-chain certification of $\SC$.
+outlined at the beginning of this section: with independent staking on $\Mainchain$ and
+merged staking on $\Sidechain$; direct observation of $\Mainchain$ and
+cross-chain certification of $\Sidechain$.
 We describe the sidechain's creation,
 maintenance, and the way assets can be  transferred to it and back.  The
 protocol we describe below is quite complex,
@@ -35,14 +35,14 @@ is given in Figure~\ref{fig:sidechain}.
   \caption{
   Our sidechain construction. Blocks are shown as rectangles. Adjacent blocks
   connect with straight lines. Squiggly lines indicate some blocks are omitted.
-  $\MC$ is at the top, $\SC$ at the bottom. Epochs are separated by dashed
+  $\Mainchain$ is at the top, $\Sidechain$ at the bottom. Epochs are separated by dashed
   lines. $\epoch_{j_\text{adopt}}$ is the epoch of first signalling;
   $\epoch_{j_\text{start}}$ is the activation epoch. Blocks of interest: 1. The
-  first block signalling $\SC$ awareness;
-  2. The $\SC$ genesis block; 3. A $\tx_{\send}$
+  first block signalling $\Sidechain$ awareness;
+  2. The $\Sidechain$ genesis block; 3. A $\tx_{\send}$
   transaction for a deposit; 4. A $\tx_{\rec}$ transaction for a
   deposit; 5. A $\tx_{\send}$ transaction for withdrawal; 6. A $\sccert$
-  transaction signalling trust transition within $\SC$ and certifying pending
+  transaction signalling trust transition within $\Sidechain$ and certifying pending
   withdrawals; 7. A $\tx_{\rec}$ transaction for withdrawal, certified in a $\sccert$
   transaction e.g. in block~6.
   }
@@ -55,15 +55,15 @@ sidechain with an additional overline.
 %For instance, while $\SD_j$ denotes the
 %stake distribution recorded on the mainchain by the latest block in
 %the first $4k$ slots of epoch $j-1$ (which is the stake distribution used for
-%sampling slot leaders for epoch $j$ on $\MC$), $\SDb_j$ will denote
-%the stake distribution induced by the stake that resides on $\SC$ at the same
+%sampling slot leaders for epoch $j$ on $\Mainchain$), $\SDb_j$ will denote
+%the stake distribution induced by the stake that resides on $\Sidechain$ at the same
 %slot (this would be the stake distribution used for sampling slot leaders for
-%epoch $j$ if $\SC$ was using independent staking).
+%epoch $j$ if $\Sidechain$ was using independent staking).
 %Finally, we let  $\SDb^*_j$ denote  the distribution of stake
 %that exists in either the sidechain or the mainchain, but has indicated
 %sidechain adoption (as discussed below) by the end of the first $4k$ slots of epoch $\epoch_{j-1}$.
 %This will be the stake
-%distribution \emph{actually used} for leader election on $\SC$ in epoch $j$ as
+%distribution \emph{actually used} for leader election on $\Sidechain$ in epoch $j$ as
 %per the merged staking paradigm.
 %
 In our pseudocode, we use the statement
@@ -73,10 +73,10 @@ action of broadcasting the transaction $\tx$ to the maintainers of the ledger
 $\Ledger$ so that they include it in the ledger eventually as prescribed by the
 protocol.
 Unless indicated otherwise, we also denote by $\stateMC$ (resp.
-$\stateSC$) the current \emph{ledger state} of the ledger $\MC$ (resp. $\SC$) as
+$\stateSC$) the current \emph{ledger state} of the ledger $\Mainchain$ (resp. $\Sidechain$) as
 viewed by the party executing the protocol. Similarly, we denote by $\ChainMC$
 (resp. $\ChainSC$) the currently held \emph{chain} corresponding to the ledger
-$\MC$ (resp. $\SC$). Hence, for example $\stateMC$ always represents the state
+$\Mainchain$ (resp. $\Sidechain$). Hence, for example $\stateMC$ always represents the state
 stored in the stable part of the chain $\ChainMC$.
 
 \paragraph{Helper Transactions and Data}
@@ -96,7 +96,7 @@ the blockchain is interpreted as a ledger.
 
 \paragraph{Initialisation}
 
-The creation of a new sidechain~$\SC$ starts by any of the stakeholders of the
+The creation of a new sidechain~$\Sidechain$ starts by any of the stakeholders of the
 mainchain adopting the code that implements the sidechain. This action does not
 require the stakeholders to put stake on the sidechain but merely to run the
 code to support it (e.g. by installing a pluggable module into their client
@@ -110,53 +110,53 @@ detailed below.  Each sidechain is identified by a unique identifier $\id_\Sidec
 %the first attempt at launching a smart-contract-supporting sidechain could have
 %the identifier
 %e.g. ``\texttt{computation\_layer\_1.0.0}''. As mentioned, we consider a
-%single sidechain which we will refer to as $\SC$, but our results extend to
+%single sidechain which we will refer to as $\Sidechain$, but our results extend to
 %multiple sidechains sharing the same mainchain.
 
-Let $\jadopt$ denote the epoch on $\MC$ when the first adoption transaction has
-appeared; the sidechain $\SC$ -- if its activation succeeds as discussed
+Let $\jadopt$ denote the epoch on $\Mainchain$ when the first adoption transaction has
+appeared; the sidechain $\Sidechain$ -- if its activation succeeds as discussed
 below -- will start at the beginning of some later epoch $\jstart$ and will have
-its slots and epochs synchronized with $\MC$.
+its slots and epochs synchronized with $\Mainchain$.
 The software module implementing the sidechain comes with a set of
 deterministic rules describing the requirements for the successful activation of
 the sidechain, as well as for determining $\jstart$.
 These rules are sidechain-specific and are captured in a predicate
 $\ActSuccess$ and a function $\ActEpoch$, respectively.
 One typical such example is the following:
-the sidechain starts at the beginning of $\MC$-epoch $\jstart$ for the smallest
+the sidechain starts at the beginning of $\Mainchain$-epoch $\jstart$ for the smallest
 $\jstart$ that satisfies:
 %\begin{itemize}
   %\item
     (i)  $\jstart - \jadopt > c_1$;
   %\item
-    (ii) at least $c_2$-fraction of stake on $\MC$ is controlled by stakeholders that
-    have adopted $\SC$;
+    (ii) at least $c_2$-fraction of stake on $\Mainchain$ is controlled by stakeholders that
+    have adopted $\Sidechain$;
 %\end{itemize}
 for some constants $c_1$,$c_2$. Additionally, if such a successful activation
 does not occur until a failure condition captured by a predicate
 $\ActFail$ is met (e.g. until a predetermined period of $c_3>c_1$ epochs has
 passed), the sidechain initialization is aborted.
 %The exact mechanics of the abortion procedure are also left to be
-%determined by the sidechain module (we denote them as $\SC.\Cleanup()$)
+%determined by the sidechain module (we denote them as $\Sidechain.\Cleanup()$)
 %but they include straightforward actions such
 %as removing the module that supports the sidechain and erasing any other data
 %structure associated with it.
 %\footnote{We note that there is nothing that
-%prevents a minority of $\MC$ stakeholders from continuing to support an aborted
+%prevents a minority of $\Mainchain$ stakeholders from continuing to support an aborted
 %sidechain if they insist, in violation of the sidechain creation rules. However
-%all the other stakeholders of $\MC$ will consider the sidechain as failed, and
+%all the other stakeholders of $\Mainchain$ will consider the sidechain as failed, and
 %assuming they represent the majority of stake, any blocks produced by the
 %diverging stakeholders that reference the failed sidechain will be collectively
-%removed from the ledger of $\MC$. On the other hand, if the majority of stake in
-%$\MC$ insists on the violation of the sidechain creation rules, we observe that
-%the constants $c_1,c_2$ can be effectively changed by a soft-fork of $\MC$. Such
+%removed from the ledger of $\Mainchain$. On the other hand, if the majority of stake in
+%$\Mainchain$ insists on the violation of the sidechain creation rules, we observe that
+%the constants $c_1,c_2$ can be effectively changed by a soft-fork of $\Mainchain$. Such
 %soft-forks can be avoided by choosing relatively low values for $c_1,c_2$. On
 %the other hand, it is important to note that really low values for $c_1,c_2$ may
-%result in unnecessarily cluttering the $\MC$ with data related to sidechains
+%result in unnecessarily cluttering the $\Mainchain$ with data related to sidechains
 %that are spuriously created. }
 
 %%Suppose the first occurrence of sidechain adoption is
-%%announced by a stakeholder at epoch $j^*$ of $\MC$ for some $j^* \geq 2$. Then the
+%%announced by a stakeholder at epoch $j^*$ of $\Mainchain$ for some $j^* \geq 2$. Then the
 %%sidechain will be created at epoch $\epoch_j$ for some $j > j^*$. The sidechain
 %%genesis block is created at the first slot of epoch $\epoch_j$.
 
@@ -230,7 +230,7 @@ Algorithm~\ref{alg.init}).
 \import{chapters/sidechains/}{algorithms/alg.sc-init}
 %\begin{enumerate}
 %\item
-    First, every stakeholder $U_i$ of $\MC$ (holding a key pair $(vk,sk)$) that supports the sidechain
+    First, every stakeholder $U_i$ of $\Mainchain$ (holding a key pair $(vk,sk)$) that supports the sidechain
     posts a special transaction
     $
     \mathsf{sidechain\_support}(\id_\Sidechain,vk,vk')
@@ -246,7 +246,7 @@ Algorithm~\ref{alg.init}).
 
   %\item
     If the sidechain activation succeeds, then during the first slot of epoch $\jstart$
-    the stakeholders of $\MC$ that support $\SC$  construct the genesis block
+    the stakeholders of $\Mainchain$ that support $\Sidechain$  construct the genesis block
     $
     \Genesisb
     =(
@@ -257,14 +257,14 @@ Algorithm~\ref{alg.init}).
       avk^{\jstart}
     )
     $
-    for $\SC$. $\rnd_{\jstart}$ is the
-    randomness for leader election on $\MC$ in epoch $\jstart$ (derived
-    on $\MC$ in epoch $\jstart-1$). It is reused to compute the
+    for $\Sidechain$. $\rnd_{\jstart}$ is the
+    randomness for leader election on $\Mainchain$ in epoch $\jstart$ (derived
+    on $\Mainchain$ in epoch $\jstart-1$). It is reused to compute the
     initial sidechain randomness
     $\rndb_{\jstart}$ as well, further
-    $\rndb_{j'}$ for $j'>\jstart$ are determined independently on $\SC$ using
+    $\rndb_{j'}$ for $j'>\jstart$ are determined independently on $\Sidechain$ using
     the Ouroboros coin-tossing protocol.\footnote{This can be interpreted as
-    using $\MC$ to implement the setup functionality needed to bootstrap $\SC$.
+    using $\Mainchain$ to implement the setup functionality needed to bootstrap $\Sidechain$.
     }
     Furthermore, $\params$ and $avk^{\jstart}$ are public parameters and an aggregated public
     key of an ATMS scheme; their creation and role is
@@ -280,15 +280,15 @@ Algorithm~\ref{alg.init}).
     %slot $16k/f$ of epoch ${j-1}$.
 
   %\item
-    The stakeholders that adopted $\SC$ post into $\MC$
+    The stakeholders that adopted $\Sidechain$ post into $\Mainchain$
     %in the first block of epoch $\epoch_j$
     a transaction $\mathsf{sidechain\_success}(\id_\Sidechain)$ to
-    signify that $\SC$ has been initialized.
+    signify that $\Sidechain$ has been initialized.
     If the sidechain creation expires, then, after the first block of the next
-    epoch after expiration occurs, the stakeholders of $\MC$ that supported
-    $\SC$ post the transaction $\mathsf{sidechain\_failure}(\id_\Sidechain)$ to $\MC$.
+    epoch after expiration occurs, the stakeholders of $\Mainchain$ that supported
+    $\Sidechain$ post the transaction $\mathsf{sidechain\_failure}(\id_\Sidechain)$ to $\Mainchain$.
     We assume that both predicates $\ActSuccess$ and $\ActFail$ can be evaluated
-    based on the state of $\MC$ only, and hence spurious success/failure
+    based on the state of $\Mainchain$ only, and hence spurious success/failure
     transactions will be considered invalid.
     %Upon
     %posting this message, refund transactions can be issued on the mainchain.
@@ -297,9 +297,9 @@ Algorithm~\ref{alg.init}).
 
 %Note that as soon as a sidechain is created it holds that an initial
 %stakeholder distribution for the sidechain is known by the maintainers of the
-%ledger state of $\MC$. We will maintain this property: the $\MC$ ledger state
+%ledger state of $\Mainchain$. We will maintain this property: the $\Mainchain$ ledger state
 %will always have a relatively current commitment to the stakeholder distribution
-%of $\SC$.
+%of $\Sidechain$.
 
 %\newpage
 
@@ -316,20 +316,20 @@ In the case of the mainchain, the maintenance procedure is given
 in Algorithm~\ref{alg.maintain.MC}.
 This algorithm is run by all stakeholders controlling stake that is recorded on
 the mainchain. Each stakeholder, on every new slot, collects all the candidate
-$\MC$-chains from the network (modelled via the $\Diffuse$ functionality) and
-filters them for both consensus-level validity (using $\MC.\ValidConsLevel$) and
+$\Mainchain$-chains from the network (modelled via the $\Diffuse$ functionality) and
+filters them for both consensus-level validity (using $\Mainchain.\ValidConsLevel$) and
 transaction validity (using the $\verifierMC$ predicate given in
 Algorithms~\ref{alg.mainchain} and~\ref{alg.mainchain-tx}). Out of the remaining valid chains, he chooses
-his new state $\Chain_{\MC}$ via $\PickWinningChain$. Then the stakeholder
+his new state $\Chain_{\Mainchain}$ via $\PickWinningChain$. Then the stakeholder
 evaluates whether he is an eligible leader for this slot, basing its selection
 on the stake distribution $\SD_j$ and randomness $\rnd_j$, which are determined
 once per epoch
 %in the $\SwitchMCEpoch$ function
 in accordance with the Ouroboros protocol.
 If the stakeholder finds out he is a slot leader, he creates a new block $B$ by
-including all transactions currently valid with respect to $\Chain_{\MC}$
+including all transactions currently valid with respect to $\Chain_{\Mainchain}$
 (as per the predicate $\verifierMCtx$ given also in Algorithm~\ref{alg.mainchain-tx}),
-appends it to the chain $\Chain_{\MC}$ and diffuses the result\footnote{
+appends it to the chain $\Chain_{\Mainchain}$ and diffuses the result\footnote{
 As in~\cite{ouroboros,praos}, we simplify our
 presentation by diffusing the complete chains,
 although a practical implementation would only diffuse the block $B$.}
@@ -338,15 +338,15 @@ for other parties to adopt.
 \import{chapters/sidechains/}{algorithms/alg.mc-maintain.tex}
 \import{chapters/sidechains/}{algorithms/alg.mainchain.tex}
 
-The maintenance procedure for $\SC$ is similar, hence we only
+The maintenance procedure for $\Sidechain$ is similar, hence we only
 describe here how it differs from Algorithm~\ref{alg.maintain.MC}. Most
-importantly, it is executed by all stakeholders who have adopted $\SC$,
-irrespectively of whether they own any stake on $\SC$.
-Recall that the slots and epochs of the $\SC$-instance of Ouroboros are aligned
-with the slots and epochs of $\MC$.
+importantly, it is executed by all stakeholders who have adopted $\Sidechain$,
+irrespectively of whether they own any stake on $\Sidechain$.
+Recall that the slots and epochs of the $\Sidechain$-instance of Ouroboros are aligned
+with the slots and epochs of $\Mainchain$.
 
-The first difference is that all ocurrences of $\MC$ and $\ChainMC$ are
-naturally replaced by $\SC$ and $\ChainSC$, respectively.  This also means that
+The first difference is that all ocurrences of $\Mainchain$ and $\ChainMC$ are
+naturally replaced by $\Sidechain$ and $\ChainSC$, respectively.  This also means that
 the validity of received chains (resp. transactions), determined on
 line~\ref{line:filter} (resp.~\ref{line:filtertx}), is decided based on
 predicate
@@ -356,8 +356,8 @@ instead of
 the predicate
 $\verifierMC(\cdot)$ (resp.
 $\verifierMCtx(\cdot)$). Additionally, note that $\verifierSCtx$ must be called
-with a sequence of transactions containing both the transactions in $\SC$ as
-well as the transactions in $\MC$ interspersed and timestamped, similarly to the
+with a sequence of transactions containing both the transactions in $\Sidechain$ as
+well as the transactions in $\Mainchain$ interspersed and timestamped, similarly to the
 way done in Line~\ref{alg.sidechain.interspersing} of
 Algorithm~\ref{alg.sidechain}. This is straightforward to implement, as the
 sidechain maintainers also directly observe the mainchain. The predicates
@@ -377,17 +377,17 @@ Second, instead of the
 stake distribution $\SD_j$ determined on line~\ref{line:SD}, a different
 distribution $\SDb^*_j$ is determined to be used for slot leader selection in
 the $j$-th epoch of the sidechain.  The distribution $\SDb^*$ contains all
-stake belonging to stakeholders that have adopted $\SC$, irrespectively of
-whether this stake is located on $\MC$ or $\SC$ (we call such stake
-\emph{$\SC$-aware}).  It can be obtained by combining the distribution $\SDb$ as
-recorded in $\SC$ with the distribution of $\SC$-aware stake on $\MC$ (which is
-known to $\SC$-maintainers via direct observation of $\MC$).
+stake belonging to stakeholders that have adopted $\Sidechain$, irrespectively of
+whether this stake is located on $\Mainchain$ or $\Sidechain$ (we call such stake
+\emph{$\Sidechain$-aware}).  It can be obtained by combining the distribution $\SDb$ as
+recorded in $\Sidechain$ with the distribution of $\Sidechain$-aware stake on $\Mainchain$ (which is
+known to $\Sidechain$-maintainers via direct observation of $\Mainchain$).
 %This is
-%in contrast to a hypothetical stand-alone execution of Ouroboros  on $\SC$,
+%in contrast to a hypothetical stand-alone execution of Ouroboros  on $\Sidechain$,
 %which would only use the stake distribution $\SDb$ instead.
 Note that the
-distribution used for epoch $j$ reflects the stake distribution of $\SC$-aware
-stake in the past, namely by slot $4k$ of epoch $j-1$, just as in $\MC$.
+distribution used for epoch $j$ reflects the stake distribution of $\Sidechain$-aware
+stake in the past, namely by slot $4k$ of epoch $j-1$, just as in $\Mainchain$.
 %The randomness $\rndb_{j}$ for each epoch $j$
 %is derived deterministically from the mainchain randomness for the same
 %epoch $\rnd_j$, concretely $\rndb_{j}\defeq H(\id_\Sidechain, \rnd_{j})$.
@@ -417,64 +417,64 @@ $\sigma_{\sccert_{j+1}}=\Sig_{sk}(\sccert_{j+1})$ and $j$ is the current epoch i
 
 %\newpage
 
-\paragraph{Depositing to $\SC$}
+\paragraph{Depositing to $\Sidechain$}
 
-Once $\SC$ is initialized, cross-chain transfers to it can be made from $\MC$.
+Once $\Sidechain$ is initialized, cross-chain transfers to it can be made from $\Mainchain$.
 A cross-chain transfer operation in this
 case consists of two transactions $\tx_{\send}$ and $\tx_{\rec}$ that both have
-$\send=\MC$, $\rec=\SC$, and all other fields are also identical, except that
+$\send=\Mainchain$, $\rec=\Sidechain$, and all other fields are also identical, except that
 each $\tx_i$ for $i\in\{\send,\rec\}$ contains $\llid=i$.
 %(and of course, the signatures differ as well).
 The \emph{sending transaction} $\tx_{\send}$ is
-meant to be included in $\MC$, while the \emph{receiving transaction} $\tx_{\rec}$ is meant to be included in
-$\SC$.
+meant to be included in $\Mainchain$, while the \emph{receiving transaction} $\tx_{\rec}$ is meant to be included in
+$\Sidechain$.
 
 %\begin{enumerate}[resume]
   %\item
-    Whenever a stakeholder on $\MC$ that has adopted $\SC$  wants to transfer funds to $\SC$, she
+    Whenever a stakeholder on $\Mainchain$ that has adopted $\Sidechain$  wants to transfer funds to $\Sidechain$, she
     diffuses $\tx_{\send}$ with the correct receiving account on
-    $\SC$ and the desired amount.
+    $\Sidechain$ and the desired amount.
     %, which contains as an
-    %additional information an address $\recAccount$ in $\SC$ where the funds
+    %additional information an address $\recAccount$ in $\Sidechain$ where the funds
     %should arrive. If the transaction is issued %in limbo
-    %before $\SC$ is activated,
+    %before $\Sidechain$ is activated,
     %then it also includes
-    %an address $\recAccount'$ in $\MC$ where the funds can be recovered in case
+    %an address $\recAccount'$ in $\Mainchain$ where the funds can be recovered in case
     %the creation of the sidechain is abandoned.
-    Honest slot leaders in $\MC$
+    Honest slot leaders in $\Mainchain$
     include these transactions into their blocks just like any
     intra-chain transfer transactions.
     %In the validity language $\tilde\ValLang_\Asset$,
     %the $\mathsf{sidechain\_send}$ transactions appear
     %as transactions with $\send \neq \rec$ and $\llid = \send$.
   %\item
-    Maintainers of $\MC$ keep account of a variable $\pool_{\SC}$, initially set
-    to zero. Whenever a $\tx_{\send}$ is included into $\MC$, they increase
-    $\pool_{\SC}$ by the amount of this transaction.
+    Maintainers of $\Mainchain$ keep account of a variable $\pool_{\Sidechain}$, initially set
+    to zero. Whenever a $\tx_{\send}$ is included into $\Mainchain$, they increase
+    $\pool_{\Sidechain}$ by the amount of this transaction.
 
   %\item
-    When $\tx_{\send}$ becomes stable in $\MC$ (i.e., appears in
+    When $\tx_{\send}$ becomes stable in $\Mainchain$ (i.e., appears in
     $\stateMC$, this happens at
     most $2k$ slots after its inclusion),
     the stakeholder creates and diffuses the corresponding $\tx_{\rec}$
-    which credits the respective amount of coins to $\recAccount$ in $\SC$,
-    to be included into $\SC$.
+    which credits the respective amount of coins to $\recAccount$ in $\Sidechain$,
+    to be included into $\Sidechain$.
     %a $\mathsf{sidechain\_receive}$ transaction on
-    %$\SC$ to receive the funds into $\recAccount$ on $\SC$.
+    %$\Sidechain$ to receive the funds into $\recAccount$ on $\Sidechain$.
     %For any
     %$\mathsf{sidechain\_send}$ transaction $\tx$ we have
-    %$\eff{\MC}{\SC}(\tx) = \tx$ where $\tx'$ is the
+    %$\eff{\Mainchain}{\Sidechain}(\tx) = \tx$ where $\tx'$ is the
     %$\mathsf{sidechain\_receive}$ transaction corresponding to $\tx$,
-    %and honest slot leaders in $\SC$ include these transactions into their
+    %and honest slot leaders in $\Sidechain$ include these transactions into their
     %blocks (to satisfy pegging correctness).
     %The transaction $\tx_{\rec}$ credits the respective amount
-    %of coins to $\recAccount$ in $\SC$.
+    %of coins to $\recAccount$ in $\Sidechain$.
     In practice, this is akin to a coinbase
-    transaction, as the money was not transferred from an existing $\SC$
+    transaction, as the money was not transferred from an existing $\Sidechain$
     account.
     %with sufficient funds.
     %The inclusion of $\mathsf{sidechain\_receive}$ into
-    %the $\SC$ can only happen as soon as the sidechain has been created; otherwise,
+    %the $\Sidechain$ can only happen as soon as the sidechain has been created; otherwise,
     %the money remains \textit{in limbo} until either the sidechain is created or
     %its creation expires. In the validity language $\tilde\ValLang_\Asset$, the
     %$\mathsf{sidechain\_receive}$ transactions appear as transactions with
@@ -482,45 +482,45 @@ $\SC$.
 
   %\item
   %  If the sidechain creation expires, the stakeholder diffuses a
-  %  $\mathsf{sidechain\_recover}$ to $\MC$ which returns the funds from
-  %  limbo to the recovery address $\recAccount'$ in $\MC$. For conciseness, we
+  %  $\mathsf{sidechain\_recover}$ to $\Mainchain$ which returns the funds from
+  %  limbo to the recovery address $\recAccount'$ in $\Mainchain$. For conciseness, we
   %  do not detail the structure of $\mathsf{sidechain\_recover}$ transactions
   %  in the validity language, as it is immaterial to the correctness and
   %  security of the scheme. The $\mathsf{sidechain\_recover}$ transactions can be
   %  considered as $\mathsf{sidechain\_receive}$ transactions which recover funds
-  %  into $\recAccount'$ of $\MC$.
+  %  into $\recAccount'$ of $\Mainchain$.
 
 %\end{enumerate}
 
-Note that depositing from $\MC$ to $\SC$ is relatively fast; it merely requires
-a reliable inclusion of $\tx_{\send}$ into $\MC$ and
-consequently of $\txrec$ into $\SC$, as guaranteed
+Note that depositing from $\Mainchain$ to $\Sidechain$ is relatively fast; it merely requires
+a reliable inclusion of $\tx_{\send}$ into $\Mainchain$ and
+consequently of $\txrec$ into $\Sidechain$, as guaranteed
 by the liveness of the underlying Ouroboros instances.
-%the coins can be moved from $\MC$ to $\SC$ in at most $8k/f$ slots ($4k/f$ to
-%reliably include $\mathsf{sidechain\_send}$ into $\MC$, and $4k/f$ to reliably
-%include  $\mathsf{sidechain\_receive}$ into $\SC$).
+%the coins can be moved from $\Mainchain$ to $\Sidechain$ in at most $8k/f$ slots ($4k/f$ to
+%reliably include $\mathsf{sidechain\_send}$ into $\Mainchain$, and $4k/f$ to reliably
+%include  $\mathsf{sidechain\_receive}$ into $\Sidechain$).
 The depositing algorithm code is shown in
 %Appendix~\ref{sec:algorithms} as
 Algorithm~\ref{alg.deposit}.
 \import{chapters/sidechains/}{algorithms/alg.depositing}
 
 
-\paragraph{Withdrawing to $\MC$}
+\paragraph{Withdrawing to $\Mainchain$}
 
 The withdrawal operation is more cumbersome than the depositing
-operation since not all nodes of $\MC$ have adopted (i.e., are aware of and follow) the
-sidechain $\SC$.
+operation since not all nodes of $\Mainchain$ have adopted (i.e., are aware of and follow) the
+sidechain $\Sidechain$.
 As transactions, the withdrawals have the same structure as deposits, consisting
 of $\tx_{\send}$ and $\tx_{\rec}$, with the only difference
-that now they both have $\send=\SC$ and $\rec=\MC$.
+that now they both have $\send=\Sidechain$ and $\rec=\Mainchain$.
 The sending transaction will be handled in the same way as in the case of
 deposits, but the receiving transaction requires a different certificate-based
 treatment, as detailed below.
 
 %\begin{enumerate}[resume]
   %\item
-    Whenever a stakeholder in $\SC$ wishes to withdraw coins from $\SC$
-    to $\MC$, she creates and diffuses the respective transaction $\tx_{\send}$
+    Whenever a stakeholder in $\Sidechain$ wishes to withdraw coins from $\Sidechain$
+    to $\Mainchain$, she creates and diffuses the respective transaction $\tx_{\send}$
     with the correct transfer details as before.
     If $\tx_{\send}$ is included in a block that belongs in one of the first
     $R-4k$ slots of some epoch then let $\jsend$ denote the index of this epoch,
@@ -532,14 +532,14 @@ treatment, as detailed below.
   %\item
     At the beginning of $\epoch_{\jsend+1}$, a special transaction called
     \emph{sidechain certificate
-    $\sccert_{\jsend+1}$} is generated by the maintainers of $\SC$.
+    $\sccert_{\jsend+1}$} is generated by the maintainers of $\Sidechain$.
     It contains:
     %\begin{itemize}
       %\item
         (i) a Merkle-tree commitment to all withdrawal transactions $\tx_{\send}$ that were
-        %the total inflow of funds from $\MC$ to $\SC$,
+        %the total inflow of funds from $\Mainchain$ to $\Sidechain$,
         %summarizing all $\mathsf{sidechain\_send}$ transactions that were
-        included into $\SC$ during last
+        included into $\Sidechain$ during last
         %$4k/f$
         $4k$ slots of epoch $\jsend-1$ and
         the first
@@ -547,41 +547,41 @@ treatment, as detailed below.
         $R-4k$ slots of epoch $\jsend$ (as these all are already stable by slot
         $R-2k$ of epoch $\jsend$);
       %\item
-        (ii) other information allowing the maintainers of $\MC$ to
+        (ii) other information allowing the maintainers of $\Mainchain$ to
         inductively validate the certificate in every epoch.
         %the stake distribution $\SDb_{j'+1}$ (which is known to the
-        %stakeholders following both $\SC$ and $\MC$, can be used to derive
-        %$\SDb^*_{j'+1}$ by anyone following $\MC$); and
+        %stakeholders following both $\Sidechain$ and $\Mainchain$, can be used to derive
+        %$\SDb^*_{j'+1}$ by anyone following $\Mainchain$); and
     %\end{itemize}
     %that that certain transactions moving
-    %money from $\SC$ to $\MC$ are pending.
+    %money from $\Sidechain$ to $\Mainchain$ are pending.
     %and a certain amount of
     %funds is waiting for withdrawalunts.
     The construction of $\sccert$ is detailed  below, for now  assume
     that the transaction provides a proof that the included information about
     withdrawal transactions is correct.
-    %shifting and pending transactions have taken place in $\SC$.
+    %shifting and pending transactions have taken place in $\Sidechain$.
     %Concrete constructions will be provided in the next section.
   %\item
     The transaction $\sccert$ is broadcast into the
-    $\MC$ network to be
-    included into $\MC$ at the beginning of $\epoch_{\jsend+1}$ by the first honest
+    $\Mainchain$ network to be
+    included into $\Mainchain$ at the beginning of $\epoch_{\jsend+1}$ by the first honest
     slot leader.
 
   %\item
-    The stakeholder who wishes to withdraw their money into $\MC$ now creates
-    and diffuses the transaction $\tx_{\rec}$ to be included in~$\MC$.
+    The stakeholder who wishes to withdraw their money into $\Mainchain$ now creates
+    and diffuses the transaction $\tx_{\rec}$ to be included in~$\Mainchain$.
     %which includes a reference to the
     %respective $\sccert$ transaction, along with a
     %proof that they are the rightful owner which should receive the incoming
     %funds.
-    This transaction is only included into $\MC$ if it is considered valid,
+    This transaction is only included into $\Mainchain$ if it is considered valid,
     which means:
     (1) it is properly signed;
     (2) it contains a Merkle inclusion proof confirming its presence in some
     already included sidechain certificate;
-    (3) its amount is less or equal to the current value of $\pool_{\SC}$.
-    If included, $\MC$-maintainers decrease the value of $\pool_{\SC}$ by the
+    (3) its amount is less or equal to the current value of $\pool_{\Sidechain}$.
+    If included, $\Mainchain$-maintainers decrease the value of $\pool_{\Sidechain}$ by the
     amount of this transaction.
 %\end{enumerate}
 The code of the withdrawal algorithm is illustrated in
@@ -598,37 +598,37 @@ We now describe the construction of the $\sccert$ transaction, also called the
 Algorithm~\ref{alg.sccert}).
 \import{chapters/sidechains/}{algorithms/alg.cert}
 The role of the
-certificate produced by the end of epoch $j-1$ to be included in $\MC$ at
+certificate produced by the end of epoch $j-1$ to be included in $\Mainchain$ at
 the beginning of epoch ${j}$ (denoted $\sccert_{j}$)  is to attest
 all the withdrawals that had their sending transactions included
-into $\SC$
-%to $\MC$ by including a $\tx_{send}$ transaction into
-%$\SC$
+into $\Sidechain$
+%to $\Mainchain$ by including a $\tx_{send}$ transaction into
+%$\Sidechain$
 in either the last $4k$ slots of $\epoch_{j-2}$ or the first $R-4k$ slots
 of $\epoch_{j-1}$.
-To maintain a chain of trust for the $\MC$ maintainers that cannot
-verify these transactions by observing $\SC$, we make use of
+To maintain a chain of trust for the $\Mainchain$ maintainers that cannot
+verify these transactions by observing $\Sidechain$, we make use of
 ad-hoc threshold multisignatures introduced in Section~\ref{sec:ats}.
 Namely, the $\sccert_{j}$ transaction
 also contains an aggregate key $avk^{j}$ of an ATMS, and is signed by the
 previous aggregate key $avk^{j-1}$ included in $\sccert_{j-1}$.
 
-$\sccert_{j}$ is generated by $\SC$-maintainers
+$\sccert_{j}$ is generated by $\Sidechain$-maintainers
 %examining the
-%sequence of all transactions $\vec\tx$ which are included in $\SC$ during those
+%sequence of all transactions $\vec\tx$ which are included in $\Sidechain$ during those
 %$R$ slots
 and contains:
 \begin{itemize}
     \item
           \textbf{The epoch index $j$}.
     \item
-          \textbf{The pending transactions from $\SC$ to $\MC$.}
+          \textbf{The pending transactions from $\Sidechain$ to $\Mainchain$.}
           Let $\vec\tx$ be the sequence of all transactions
-          which are included in $\SC$ during either
+          which are included in $\Sidechain$ during either
           the last $4k$ slots of $\epoch_{j-2}$ or the first $R-4k$ slots of
-          $\epoch_j$. All transactions in $\vec\tx$ that have $\SC=\send \neq \rec=\MC$
+          $\epoch_j$. All transactions in $\vec\tx$ that have $\Sidechain=\send \neq \rec=\Mainchain$
           are picked up and combined into a list $\pending_{j}$ (sorted in the
-          same order as in $\SC$). Let $\commit{\pending_{j}}$ denote a Merkle-tree commitment to
+          same order as in $\Sidechain$). Let $\commit{\pending_{j}}$ denote a Merkle-tree commitment to
           this list.
 
     \item
@@ -647,22 +647,22 @@ using $avk^{j-1}$.
 
 The certificate $\sccert_{j+1}$ is constructed as follows:
 Both the stake distribution
-$\SDb^*_{j+1}$ and the $\SC$-randomness $\rndb_{j+1}$ (and hence also the slot leader
-schedule for $\SC$ in epoch $j+1$)
+$\SDb^*_{j+1}$ and the $\Sidechain$-randomness $\rndb_{j+1}$ (and hence also the slot leader
+schedule for $\Sidechain$ in epoch $j+1$)
 are determined by the states of
-the blockchains $\MC$ and $\SC$ by the end of slot $10k$ of epoch $j$.
+the blockchains $\Mainchain$ and $\Sidechain$ by the end of slot $10k$ of epoch $j$.
 Therefore, during the last $2k$ slots of epoch $j$, the $2k$ elected slot
 leaders for these slots can already include a (local) signature on (their
 proposal of) $\sccert_{j+1}$ into the blocks they create. Given the
 deterministic construction of $\sccert_{j+1}$, all valid blocks ending up in
-the part of $\SC$-chain belonging to the last $2k$ slots of epoch $j$ will
+the part of $\Sidechain$-chain belonging to the last $2k$ slots of epoch $j$ will
 contain a local signature on the same $\sccert_{j+1}$,
 and by the chain growth
 property of the underlying blockchain, there will be at least $k+1$ of them.
 Therefore, any party
-observing $\SC$ can now combine these signatures into an ATMS that can be later
+observing $\Sidechain$ can now combine these signatures into an ATMS that can be later
 verified using the ATMS key $avk^j$, it can hence create the complete certificate
-$\sccert_{j+1}$ and serve it to the maintainers of $\MC$ for inclusion.
+$\sccert_{j+1}$ and serve it to the maintainers of $\Mainchain$ for inclusion.
 
 %This includes two pieces of data into $\sccert$: The hash of the transactions
 %Merkle tree root and the new aggregate key $avk^{j+1}$.
@@ -686,7 +686,7 @@ $\sccert_{j+1}$ and serve it to the maintainers of $\MC$ for inclusion.
 %\subsubsection{Advancing to next epoch.}
 %\TODO{probably not needed}
 
-%Each $j^\text{th}$ $\SC$ epoch maintains an \emph{epoch key} $avk^{j}$ which
+%Each $j^\text{th}$ $\Sidechain$ epoch maintains an \emph{epoch key} $avk^{j}$ which
 %corresponds to a uniform sample, by stake, of the protocol participants. These
 %$avk^{j}$ keys are committed to the mainchain and are used to sign off the
 %transition to a new epoch key $avk^{j+1}$ at the end of each epoch. They are
@@ -707,8 +707,8 @@ $\sccert_{j+1}$ and serve it to the maintainers of $\MC$ for inclusion.
 %The aggregate signature can then be verified by anyone who knows that $avk$ is
 %authentic by evaluating $\VerCombined(avk, \sigma, m)$.
 
-%In order for the sidechain $\SC$ to advance from epoch $\epoch_j$ to
-%$\epoch_{j+1}$ the $\MC$ stakeholders will need to update the $avk$ that they
+%In order for the sidechain $\Sidechain$ to advance from epoch $\epoch_j$ to
+%$\epoch_{j+1}$ the $\Mainchain$ stakeholders will need to update the $avk$ that they
 %hold about the sidechain.
 
 %Both of these pieces of data, i.e., the transition to the new $avk$ as well as
@@ -755,23 +755,23 @@ $\Genesisb$.
 %legitimacy, each of these $2k$ keys are included in the mainchain as part of
 %its initialization (together with the sidechain identifier).
 %\aggelos{There should be a better way to do this without directly burdening
-%the $\MC$ with more information. For example,
-Each time an $\MC$ stakeholder $U_i$
+%the $\Mainchain$ with more information. For example,
+Each time an $\Mainchain$ stakeholder $U_i$
 posts the
-$\mathsf{sidechain\_support}$ message to $\MC$, he  also includes an ATMS key $vk_i$.
+$\mathsf{sidechain\_support}$ message to $\Mainchain$, he  also includes an ATMS key $vk_i$.
 Subsequently,
-when the $\SC$ is initialised, the
-stake distribution $\SDb^*_{\jstart}$ is known to the $\MC$ participants. Hence,
+when the $\Sidechain$ is initialised, the
+stake distribution $\SDb^*_{\jstart}$ is known to the $\Mainchain$ participants. Hence,
 based on $\SDb^*_{\jstart}$ and $\rndb_{\jstart}$,
-these can determine the last $2k$ slot leaders of epoch $\jstart$ in $\SC$,
+these can determine the last $2k$ slot leaders of epoch $\jstart$ in $\Sidechain$,
 we will refer to them as the $\jstart$-{th} \emph{trust committee}.
 (In general, the $j$-th \emph{trust committee} for $j\geq\jstart$ will be the set
 of last $2k$ slot leaders in epoch $j$.)
-%$\MC$-maintainers (and thus also $\SC$-maintainers) can
-$\SC$-maintainers (that also follow $\MC$) can also determine the $\jstart$-{th} trust committee
+%$\Mainchain$-maintainers (and thus also $\Sidechain$-maintainers) can
+$\Sidechain$-maintainers (that also follow $\Mainchain$) can also determine the $\jstart$-{th} trust committee
 and therefore create $avk^{\jstart}$ from their public keys and insert it into
-the genesis block $\Genesisb$ of  $\SC$. They can also serve it as a special
-transaction to the $\MC$-maintainers to include into the mainchain.
+the genesis block $\Genesisb$ of  $\Sidechain$. They can also serve it as a special
+transaction to the $\Mainchain$-maintainers to include into the mainchain.
 The correctness of $avk^{\jstart}$ can be
 readily verified by anyone following the mainchain using the procedure
 $\Comprises$ of the used ATMS.
@@ -782,9 +782,9 @@ $\Comprises$ of the used ATMS.
 %\KeyCombine(\{vk^0_i: i \in [2k]\})$, where $\{vk^0_i: i \in [2k]\}$ is the set
 %of public keys corresponding to the last $2k$ slot leaders of the epoch. Anyone
 %can generate this key and checking its validity requires verifying
-%that $\Comprises(\mathcal{VK}^0, avk^0)$ is \emph{true}. An honest $\MC$ slot
+%that $\Comprises(\mathcal{VK}^0, avk^0)$ is \emph{true}. An honest $\Mainchain$ slot
 %leader extending a blockchain not containing a commitment to a valid $avk^0$
-%will include $avk^0$ into their block. Any $\MC$ maintainer can verify if this
+%will include $avk^0$ into their block. Any $\Mainchain$ maintainer can verify if this
 %$avk^0$ is valid and reject blocks that include invalid values.  This allows the
 %mainchain maintainers to reach consensus about the first trust committee key
 %after the first claimed key $avk^0$ has been buried under $k$ blocks.
@@ -795,16 +795,16 @@ there exists an ATMS key of the previous epoch $avk^{j-1}$,
 known to the mainchain maintainers.
 %These keys are then
 %collected into a combined key $avk^j \gets \KeyCombine(\{vk^j_i:
-%i \in [2k]\})$ by any $\SC$ maintainer.
-Every honest $\SC$ slot leader
-among the last $2k$ slot leaders of $\SC$ epoch $j-1$ will produce a local
+%i \in [2k]\})$ by any $\Sidechain$ maintainer.
+Every honest $\Sidechain$ slot leader
+among the last $2k$ slot leaders of $\Sidechain$ epoch $j-1$ will produce a local
 signature $s^j_i$ on the message $m = (j,\langle\pending_j\rangle,avk_j)$
 using their private key $sk^{j-1}_i$ by running $\Sig(sk^{j-1}_i, m)$, and
 include this signature into the block they create.
-The rest of the $\SC$ maintainers will
+The rest of the $\Sidechain$ maintainers will
 verify that the epoch index, $avk^j$ and $\langle\pending_j\rangle$ are correct (by
 ensuring $\Comprises(\mathcal{VK}^j, avk^j)$ is \emph{true} for
-$\mathcal{VK}$ denoting the public keys of the last $2k$ slot leaders on $\SC$
+$\mathcal{VK}$ denoting the public keys of the last $2k$ slot leaders on $\Sidechain$
 for epoch $j$,
 %the verification
 %of the correctness of $avk^j$
@@ -838,7 +838,7 @@ committee.
 %so that it waits to collect as signatures as possible.}
 
 %\aggelos{we also need a paragraph about the efficiency of the construction above.
-%We need to answer the question what is the burden on $\MC$ both in terms of space and in terms of verification that is incurred because of the presence $\SC$. The description can be done modularly in terms of the ATMS primitive. We also need
+%We need to answer the question what is the burden on $\Mainchain$ both in terms of space and in terms of verification that is incurred because of the presence $\Sidechain$. The description can be done modularly in terms of the ATMS primitive. We also need
 %to count the size of pending. Recall that we mentioned in the intro that if ATMS is optimal then our sidechain construction is also optimal. Can we support this? }
 
 % PG: repetitive, we said this already at the beginning of section

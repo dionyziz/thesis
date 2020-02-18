@@ -85,7 +85,7 @@ private, local leader selection using VRFs in these protocols, which makes it
 impossible to identify the set of slot leaders for the suffix of an epoch at the
 beginning of this epoch, as done for Ouroboros.
 
-The sidechain certificate included in $\MC$ at the beginning of epoch $j$
+The sidechain certificate included in $\Mainchain$ at the beginning of epoch $j$
 would hence contain the following, for parameters $Q$ and $T$ specified below:
 \begin{enumerate}
 \item
@@ -93,7 +93,7 @@ the epoch index;
 \item
 a Merkle commitment to the list of withdrawals as in the case of Ouroboros;
 \item
-a Merkle commitment to the $\SC$ stake distribution $\SDb_{j}$;
+a Merkle commitment to the $\Sidechain$ stake distribution $\SDb_{j}$;
 \item
 a list of $Q$ public keys;
 \item
@@ -102,7 +102,7 @@ certificate) and $Q$ VRF-proofs certifying that these $Q$ keys belong
 to slot leaders of $Q$ out of the last $T$ slots in epoch $j-1$;
 \item
 $Q$ signatures from the above $Q$ public keys on the above; these can be
-replaced by a single aggregate signature to save space on $\MC$.
+replaced by a single aggregate signature to save space on $\Mainchain$.
 \end{enumerate}
 
 The parameters $Q$ and $T$ have to be chosen in such a way that with
@@ -114,7 +114,7 @@ to come from an honest slot leader).
 The existence of such constants for $T=\Theta(k)$ was shown in~\cite{genesis}.
 
 While the above sidechain certificate is larger (and hence takes more space on
-$\MC$) than the one we propose for Ouroboros, a switch to Ouroboros
+$\Mainchain$) than the one we propose for Ouroboros, a switch to Ouroboros
 Praos or Genesis would also bring several advantages. First off, both
 constructions would give us security in the semi-synchronous model with fully
 adaptive corruptions (as shown in~\cite{praos,genesis}),
@@ -126,7 +126,7 @@ extensively in~\cite{genesis}.
 
 %Additionally, since the epoch randomness generation in these two protocols is
 %significantly more efficient than in Ouroboros and only involves a hash function
-%invocation, our construction could be adapted so that $\SC$ produces its own
+%invocation, our construction could be adapted so that $\Sidechain$ produces its own
 %epoch randomness in this way instead of reusing the mainchain randomness,
 %opening doors to a greater separation of the two chains.
 
@@ -144,18 +144,18 @@ work with Snow White-based blockchains in a straightforward manner.
 
 Algorand does not aim for the so-called eventual consensus. Instead it runs a
 full Byzantine Agreement protocol for each block before moving to the next
-block, hence blocks are immediately finalized. Consider a setting with $\MC$
-and $\SC$ both running Algorand. The main difficulty to address when
+block, hence blocks are immediately finalized. Consider a setting with $\Mainchain$
+and $\Sidechain$ both running Algorand. The main difficulty to address when
 constructing pegged ledgers is the continuous  authentication of the
-sidechain certificate constructed by $\SC$-maintainers for $\MC$ (other aspects,
-such as deposits from $\MC$ to $\SC$ work analogously to what we
+sidechain certificate constructed by $\Sidechain$-maintainers for $\Mainchain$ (other aspects,
+such as deposits from $\Mainchain$ to $\Sidechain$ work analogously to what we
 described above).
 %
 As Algorand does not have epochs, and creating and processing a sidechain
 certificate for each block is overly demanding, a natural choice is to
 introduce a parameter $R$ and execute this process only once every $R$ blocks.
-Namely, every $R$ blocks, the $\SC$-maintainers produce a certificate that
-the $\MC$-maintainers insert into the mainchain. This certificate most
+Namely, every $R$ blocks, the $\Sidechain$-maintainers produce a certificate that
+the $\Mainchain$-maintainers insert into the mainchain. This certificate most
 importantly contains:
 \begin{enumerate}
 \item
@@ -163,7 +163,7 @@ a Merkle commitment to the list of withdrawals in the most recent $R$-block
     period;
 \item
 a Merkle commitment to the full, most recent stake distribution $\SDb_j$ on
-    $\SC$;
+    $\Sidechain$;
 \item
 a sufficient number of signatures from a separate committee
 %that would be elected via the
@@ -182,7 +182,7 @@ Note that the sortition mechanism also allows for a succinct proof of membership
 in the committee.
 The members of the committee then
 insert their individual signatures (signing the first two items in the
-certificate above) into the $\SC$ blockchain during the period of $R$ blocks
+certificate above) into the $\Sidechain$ blockchain during the period of $R$ blocks
 preceding the construction of the certificate.
 %
 All the remaining mechanics of the pegged ledgers are a direct analogy of

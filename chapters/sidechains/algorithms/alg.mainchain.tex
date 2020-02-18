@@ -1,5 +1,5 @@
 \begin{algorithm}%[htb]
-    \caption{\label{alg.mainchain-tx}The $\MC$ transaction verifier.}
+    \caption{\label{alg.mainchain-tx}The $\Mainchain$ transaction verifier.}
     \begin{algorithmic}[1]
         \Function{$\verifierMCtx$}{$\vec\tx$}
             \State{$\balances \gets \text{initial stake}$;
@@ -90,9 +90,9 @@
 \end{algorithm}
 
 \begin{algorithm}%[htb]
-    \caption{\label{alg.mainchain}The $\MC$ chain verifier.}
+    \caption{\label{alg.mainchain}The $\Mainchain$ chain verifier.}
     \begin{algorithmic}[1]
-        \Function{\textsc{verifier}$_\MC$}{$\Chainmc$}
+        \Function{\textsc{verifier}$_\Mainchain$}{$\Chainmc$}
             \Let{\vec\tx}{\emptyset}
             \For{$B \in \Chainmc$}
                 \For{$\tx \in B$}
