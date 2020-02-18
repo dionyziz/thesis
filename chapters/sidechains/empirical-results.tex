@@ -1,4 +1,4 @@
-\section{Empirical Results}
+\subsection{Empirical Results}
 In order to evaluate our consumption mechanisms, we implement the federated consumption mechanism in Solidity. We provide a concrete implementation of the \textsf{burn-verifier} contract described in Algorithm~\ref{alg.burn-verifier}. We implement the \textsf{crosschain} parent contract from~\cite{pow-sidechains}. We verify transaction data by making use of the open source bitcoin-spv library~\cite{bitcoin-spv-library}. Finally, the federation mechanism for verifying block connection is employed. The members of the federation can vote on their computed checkpoints using the \textsf{vote} function.
 
 We release our implementation as open source software under the MIT license\footnote{\url{https://github.com/decrypto-org/burn-paper/tree/master/experiment}}.

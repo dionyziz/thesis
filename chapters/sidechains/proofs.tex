@@ -1,16 +1,18 @@
-\section{Full proofs}\label{sec:proofs}
+\subsection{Full proofs}\label{sec:proofs}
+
+\todo{Merge these into main body in previous subsections}
 
 In this section, we give the full proofs of our claims.
-Appendix~\ref{sec:proofs:comp-ind} proves some facts about
+Section~\ref{sec:proofs:comp-ind} proves some facts about
 computationally indistinguishable distributions. In
-Appendix~\ref{sec:proofs:unpred-dist}, we introduce unpredictable distributions
-and show that public keys are unpredictable. In Appendix~\ref{sec:proofs:ro},
+Section~\ref{sec:proofs:unpred-dist}, we introduce unpredictable distributions
+and show that public keys are unpredictable. In Section~\ref{sec:proofs:ro},
 we prove some facts about the statistical properties of random oracles,
 including Lemma~\ref{lem.perturbation} from which the unspendability of our
 scheme follows and Lemma~\ref{lem:ro-unpredictability} from which the
 uncensorability of our scheme follows.
 
-\subsection{Computational indistinguishability}\label{sec:proofs:comp-ind}
+\subsubsection{Computational indistinguishability}\label{sec:proofs:comp-ind}
 
 \import{./}{./chapters/sidechains/algorithms/alg.dist-game.tex}
 
@@ -54,7 +56,7 @@ indistinguishable distributions preserves indistinguishability.
   As $\Pr[\distattack_{\mathcal{A}^*}(\kappa) = \true] \leq \frac{1}{2} + \negl$, therefore $\Pr[\distattack_{\mathcal{A}}(\kappa) = \true] \leq \frac{1}{2} + \negl$.
 \end{proof}
 
-\subsection{Unpredictable distributions}\label{sec:proofs:unpred-dist}
+\subsubsection{Unpredictable distributions}\label{sec:proofs:unpred-dist}
 
 We call a distribution ensemble \emph{unpredictable} if no
 polynomial-time adversary can guess its output. The cryptographic
@@ -131,7 +133,7 @@ be unpredictable.
   unpredictable.
 \end{proof}
 
-\subsection{Random Oracle properties}\label{sec:proofs:ro}
+\subsubsection{Random Oracle properties}\label{sec:proofs:ro}
 
 In this section, we state some statistical properties of the Random
 Oracle, which are useful for the proofs of our main results.

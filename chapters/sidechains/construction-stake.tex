@@ -1,4 +1,4 @@
-\section{Implementing Pegged Ledgers}
+\subsection{Implementing Pegged Ledgers}
 \label{sec:construction}
 
 \todo{Clean up this section}
@@ -7,7 +7,7 @@
 
 \import{chapters/sidechains/}{adalang.tex}
 
-\subsection{The Sidechain Construction}
+\subsubsection{The Sidechain Construction}
 \label{sec:const}
 
 We now describe the procedures for running a sidechain in the configuration
@@ -49,7 +49,7 @@ is given in Figure~\ref{fig:sidechain}.
   \label{fig:sidechain}
 \end{figure}%}}}
 
-\subsubsection{Notation}
+\paragraph{Notation}
 Where applicable, we denote the analogues of the mainchain objects on the
 sidechain with an additional overline.
 %For instance, while $\SD_j$ denotes the
@@ -79,7 +79,7 @@ viewed by the party executing the protocol. Similarly, we denote by $\ChainMC$
 $\MC$ (resp. $\SC$). Hence, for example $\stateMC$ always represents the state
 stored in the stable part of the chain $\ChainMC$.
 
-\subsubsection{Helper Transactions and Data}
+\paragraph{Helper Transactions and Data}
 The construction uses a set of \textit{helper transactions}
 which can be included in both blockchains, but do not get reported
 in the respective ledgers. These helper transactions store the appropriate
@@ -94,7 +94,7 @@ transactions with additional information (such as Merkle-tree inclusion proofs)
 that are, for convenience, understood to be stripped off these transactions when
 the blockchain is interpreted as a ledger.
 
-\subsubsection{Initialisation}
+\paragraph{Initialisation}
 
 The creation of a new sidechain~$\SC$ starts by any of the stakeholders of the
 mainchain adopting the code that implements the sidechain. This action does not
@@ -303,7 +303,7 @@ Algorithm~\ref{alg.init}).
 
 %\newpage
 
-\subsubsection{Maintenance}
+\paragraph{Maintenance}
 
 Once the sidechain is created, both the mainchain and the sidechain need to be
 maintained by their respective set of stakeholders (detailed below) running
@@ -417,7 +417,7 @@ $\sigma_{\sccert_{j+1}}=\Sig_{sk}(\sccert_{j+1})$ and $j$ is the current epoch i
 
 %\newpage
 
-\subsubsection{Depositing to $\SC$}
+\paragraph{Depositing to $\SC$}
 
 Once $\SC$ is initialized, cross-chain transfers to it can be made from $\MC$.
 A cross-chain transfer operation in this
@@ -505,7 +505,7 @@ Algorithm~\ref{alg.deposit}.
 \import{chapters/sidechains/}{algorithms/alg.depositing}
 
 
-\subsubsection{Withdrawing to $\MC$}
+\paragraph{Withdrawing to $\MC$}
 
 The withdrawal operation is more cumbersome than the depositing
 operation since not all nodes of $\MC$ have adopted (i.e., are aware of and follow) the
@@ -590,7 +590,7 @@ Algorithm~\ref{alg.withdraw}.
 \import{chapters/sidechains/}{algorithms/alg.withdraw}
 
 %\newpage
-\subsubsection{The certificate transaction}
+\paragraph{The certificate transaction}
 \label{sec:sccert}
 
 We now describe the construction of the $\sccert$ transaction, also called the
@@ -718,7 +718,7 @@ $\sccert_{j+1}$ and serve it to the maintainers of $\MC$ for inclusion.
 %follow.
 
 %\noindent\textbf{Transitioning trust.}
-\subsubsection{Transitioning trust}
+\paragraph{Transitioning trust}
 \label{sec:trust}
 
 As already outlined above, our construction uses ATMS

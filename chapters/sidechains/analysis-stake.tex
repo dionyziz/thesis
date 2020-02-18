@@ -1,4 +1,4 @@
-\section{Security of Sidechains}
+\subsection{Security of Sidechains}
 \label{sec:security}
 
 In this section we give a formal argument
@@ -10,7 +10,7 @@ construction from Section~\ref{sec:construction} achieves
 pegging security of
 Definition~\ref{def:security}.
 
-\subsection{Assumptions}
+\subsubsection{Assumptions}
 
 Let $\Assum_{\hm}(\Ledger)[t]$ denote the honest-majority assumption for an
 Ouroboros ledger $\Ledger$. Namely, $\Assum_{\hm}(\Ledger)[t]$ postulates that
@@ -48,7 +48,7 @@ weaning slot and the two chains will become sidechains of each other.
     in~\cite{ouroboros}.
 \end{remark}
 
-\subsection{Proof Overview}
+\subsubsection{Proof Overview}
 
 Proving our construction secure requires some case analysis. We summarize the
 intuition behind this endeavour before we proceed with the formal treatment.
@@ -100,7 +100,7 @@ collision resistance of the underlying hash function.
 %assumption that both the ATMS scheme is secure and the hash function
 %collision-resistant, the security of the sidechains protocol follows.
 
-\subsection{Liveness and Persistence}
+\subsubsection{Liveness and Persistence}
 
 We begin by stating the persistence and liveness guarantees of our
 construction, they both follow directly from the guarantees shown for the
@@ -127,7 +127,7 @@ lines of~\cite{ouroboros}.
   that $\Chain_2[:|\Chain_1[:-k]|] = \Chain_1[:-k]$.
 \end{definition}
 
-\subsection{The Firewall Property and $\MC$-Receiving Transactions}
+\subsubsection{The Firewall Property and $\MC$-Receiving Transactions}
 
 Recall that the transactions in $\Trans_\ada$ can be partitioned into several classes with
 different validity-checking procedures. First, there are
@@ -281,7 +281,7 @@ a certain situation, it must be an $\MC$-receiving transaction.
   transaction exists.
 \end{proof}
 
-\subsection{Firewall Property During Sidechain Failure}
+\subsubsection{Firewall Property During Sidechain Failure}
 
 %Now that we have studied what happens to direct observation transactions when
 %both chains are secure, i.e., at slots $t$ such that $\Secure_t = \{\MC, \SC\}$,
@@ -478,7 +478,7 @@ Lemma~\ref{lem:plausibility}.
   \not\in \LState$ have $\llid(\tx) = \SC$ and so are excluded from the projection.
 \end{proof}
 
-\subsection{General Firewall Property}
+\subsubsection{General Firewall Property}
 
 In preparation for establishing the full firewall property, we state the
 following simple technical lemma.

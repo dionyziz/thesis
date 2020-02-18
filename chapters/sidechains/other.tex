@@ -1,4 +1,4 @@
-\section{Adaptation to Other Proof-of-Stake Blockchains}
+\subsection{Adaptation to Other Proof-of-Stake Blockchains}
 \label{section:other}
 
 \todo{Move this section into Proof-of-Stake chapter}
@@ -15,7 +15,7 @@ details.
 %defer a more self-contained discussion of these
 %adaptations to the full version of this paper.
 
-\subsection{Ouroboros Praos and Ouroboros Genesis}
+\subsubsection{Ouroboros Praos and Ouroboros Genesis}
 
 These protocols~\cite{praos,genesis} are strongly related and differ from each
 other only in the chain-selection
@@ -130,7 +130,7 @@ extensively in~\cite{genesis}.
 %epoch randomness in this way instead of reusing the mainchain randomness,
 %opening doors to a greater separation of the two chains.
 
-\subsection{Snow White}
+\subsubsection{Snow White}
 
 The high-level structure of Snow White execution is similar to the protocols we have
 already discussed: it contains epochs, committees that are sampled for each
@@ -140,7 +140,7 @@ values included in previous blocks. Hence, our construction can be adapted to
 work with Snow White-based blockchains in a straightforward manner.
 
 
-\subsection{Algorand}
+\subsubsection{Algorand}
 
 Algorand does not aim for the so-called eventual consensus. Instead it runs a
 full Byzantine Agreement protocol for each block before moving to the next

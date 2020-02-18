@@ -1,8 +1,8 @@
-\section{Smart Contract Construction}
+\subsection{Smart Contract Construction}
 
 \todo{Clean up this section}
 
-\subsection*{Cross-chain certificates}
+\subsubsection{Cross-chain certificates}
 For our construction, we use a primitive called Non-Interactive Proofs of
 Proof-of-Work recently introduced in~\cite{nipopows}.
 Non-Interactive Proofs of Proofs-of-Work are cryptographic protocols which
@@ -112,7 +112,7 @@ containing the NIPoPoW. Blockchain agnosticism allows users to initiate
 cross-chain relationships between different blockchains \emph{dynamically}, as
 long as the blockchains in question satisfy the above prerequisites.
 
-\subsection*{Cross-chain events}
+\subsubsection{Cross-chain events}
 
 We give our \textsf{crosschain} construction in Algorithm~\ref{alg.crosschain}.
 Initially, our communication will be unidirectional. In the next section, we
@@ -201,7 +201,7 @@ blocks.
     \label{fig.contestation}
 \end{figure}
 
-\subsection*{Two-way pegged sidechains}
+\subsubsection{Two-way pegged sidechains}
 Having created the generic crosschain contract, we now build two-way pegged
 sidechains on top. For concreteness, we use the example of transferring ether
 (ETH), the native currency of the Ethereum blockchain, to the Ethereum Classic
