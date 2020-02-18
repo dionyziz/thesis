@@ -1,4 +1,4 @@
-SOURCES := $(shell find . -iname '*.tex')
+SOURCES := $(shell find . -iname '*.tex' -or -iname '*.bib')
 
 .PHONY: all clean
 
