@@ -1,9 +1,34 @@
 \chapter{Sidechains}\label{chapter:sidechains}
 
+\todo{Re-read this chapter and clean up}
+
+We now have all the required tools and primitives to build sidechains. In this chapter we construct full blockchain interoperability.
+We begin in Section~\ref{section:sidechains:stake} by giving the definition of what sidechains are and a construction for stake-based blockchains first, making use of the ATMS primitive defined and constructed in Chapter~\ref{chapter:stake}.
+In Section~\ref{section:sidechains:work} we show how one can construct sidechains for work-based blockchains using the NIPoPoWs primitive which was discussed in Chapter~\ref{chapter:work}. These two sidechain constructions are bidirectional.
+In Section~\ref{section:sidechains:burn} we explore how money can be destroyed on one system and re-created in another, giving rise to unidirectional sidechains.
+
 % stake
-\section{Bidirectional Sidechains with Stake Sources}
+\section{Bidirectional Sidechains with Stake Sources}\label{section:sidechains:stake}
+In this section we give the first formal definition of security desiderata for
+a system of pegged ledgers (popularly often called sidechains).
+We start by conveying its intuition and then proceed to the formal treatment. We will first present a generic framework defining sidechain security upon which we will build a solution for stake-based blockchains. In the later sections of this chapter, we will explore how this can be instantiated for proof-of-work.
+
+To prove any meaningful security
+guarantees for the executed protocol without further restrictions (as it, for
+example, does not prevent the adversary from corrupting all the participating
+parties), we will consider such additional
+assumptions, and will only
+provide security guarantees as long as such assumptions are satisfied.
+These assumptions will be specific to the protocol in consideration, and will be an
+explicit part of our statements.\footnote{As an example, we will be assuming that a
+majority of a certain pool of stake is controlled by uncorrupted parties.}
+
+Without loss of generality, we give a detailed presentation of our construction on a generic PoS protocol
+ based on Ouroboros PoS~\cite{ouroboros} (see Chapter~\ref{chapter:background} for an overview of Ouroboros). We give an overview of our construction for other proof-of-stake schemes in Section~\ref{section:other}, in particular for Ouroboros
+Praos~\cite{praos}, Ouroboros Genesis~\cite{genesis}, Snow
+White~\cite{snowwhite}, and Algorand~\cite{algorand}.
+
 \input{chapters/sidechains/introduction-stake}
-\input{chapters/sidechains/preliminaries}
 \input{chapters/sidechains/definitions}
 \input{chapters/sidechains/construction-stake}
 \input{chapters/sidechains/analysis-stake}
@@ -11,14 +36,14 @@
 \input{chapters/sidechains/other}
 
 % work
-\section{Bidirectional Sidechains with Work Sources}
+\section{Bidirectional Sidechains with Work Sources}\label{section:sidechains:work}
 \input{chapters/sidechains/introduction-work}
 \input{chapters/sidechains/overview}
 \input{chapters/sidechains/construction-work}
 \input{chapters/sidechains/security}
 
 % burn
-\section{Unidirectionality with Proof-of-Burn}
+\section{Unidirectionality with Proof-of-Burn}\label{section:sidechains:burn}
 \input{chapters/sidechains/introduction-burn}
 \input{chapters/sidechains/definition-burn}
 \input{chapters/sidechains/construction-burn}
