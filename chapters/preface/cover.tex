@@ -11,3 +11,28 @@
 	\vfill
 	{\large Athens\\\today\par}
 \end{titlepage}
+
+\ifuniversity
+\begin{titlepage}
+  \centering
+  \includegraphics[width=\textwidth]{chapters/preface/figures/uoa-greek.pdf}\par\vspace{1cm}
+  {\scshape\Large
+  \ifuniversity
+  Σχολή Θετικών Επιστημών\\
+  \fi
+  Τμήμα Πληροφορικής και Τηλεπικοινωνιών
+  \ifuniversity
+  \\
+  Πρόγραμμα Μεταπτυχιακών Σπουδών
+  \fi
+  \par}
+  \vspace{1cm}
+  {\scshape Διδακτορική Διατριβή\par}
+  \vspace{1cm}
+  {\huge\bfseries Decentralized Blockchain Interoperability\par}
+  \vspace{2cm}
+  {\Large\itshape Διονύσης \ifuniversity Σ. \fi Ζήνδρος\par}
+	\vfill
+	{\large Αθήνα\\\today\par}
+\end{titlepage}
+\fi
