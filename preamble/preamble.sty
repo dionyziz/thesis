@@ -15,7 +15,11 @@
 \setsansfont{CMU Sans Serif}
 \newfontfamily{\greekfont}{CMU Serif}
 \newfontfamily{\greekfontsf}{CMU Sans Serif}
+\usepackage[Greek,Latin]{ucharclasses}
 \usepackage{polyglossia}
+\setdefaultlanguage{english}
+\setotherlanguage{greek}
+\setTransitionsForGreek{\selectlanguage{greek}}{\selectlanguage{english}}
 
 % Formatting
 \usepackage{color}
