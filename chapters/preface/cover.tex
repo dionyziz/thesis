@@ -11,9 +11,11 @@
 	\vfill
 	{\large Athens\\\today\par}
 \end{titlepage}
+\newpage\null\thispagestyle{empty}\newpage
 
 \ifuniversity
 \begin{titlepage}
+  \setcounter{page}{3}
   \centering
   \includegraphics[width=\textwidth]{chapters/preface/figures/uoa-greek.pdf}\par\vspace{1cm}
   {\scshape\Large
@@ -29,10 +31,11 @@
   \vspace{1cm}
   {\scshape Διδακτορική Διατριβή\par}
   \vspace{1cm}
-  {\huge\bfseries Decentralized Blockchain Interoperability\par}
+  {\huge\bfseries Αποκεντρωμένη Blockchain Διαλειτουργικότητα \par}
   \vspace{2cm}
   {\Large\itshape Διονύσης \ifuniversity Σ. \fi Ζήνδρος\par}
 	\vfill
-	{\large Αθήνα\\\today\par}
+	{\large Αθήνα\\\textgreek{\today}\par}
 \end{titlepage}
+\newpage\null\thispagestyle{empty}\newpage
 \fi
