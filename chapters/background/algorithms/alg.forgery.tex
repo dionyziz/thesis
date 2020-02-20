@@ -4,9 +4,14 @@
              experiment $\textsf{sig-forge}_{\Pi,\mathcal{A}}$.}
     \begin{algorithmic}[1]
         \Function{\sf sig-forge$_{\Pi,\mathcal{A}}$}{$\lambda$}
-            \Let{(pk, sk)}{\textsf{Gen}(1^\lambda)}
-            \Let{(m, \sigma)}{\mathcal{A}^{Sig_{sk}}(pk)}
-            \If{$Ver(pk, m, \sigma)$}
+            \Let{(pk, sk)}{\Gen(1^\lambda)}
+            \Let{M}{\emptyset}
+            \Function{\sf $\Sig$O}{$m$}
+                \Let{M}{M \cup \{m\}}
+                \State\Return{$\Sig_{sk}(m)$}
+            \EndFunction
+            \Let{(m, \sigma)}{\mathcal{A}^{{\Sig}O(\cdot)}(pk)}
+            \If{$Ver(pk, m, \sigma) \land m \not\in M$}
                 \State\Return{true}
             \EndIf
             \State\Return{false}
