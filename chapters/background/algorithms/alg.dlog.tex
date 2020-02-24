@@ -1,0 +1,15 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.dlog} The \textsc{DLOG} problem.}
+    \begin{algorithmic}[1]
+        \Function{\sf DLOG$_{\mathcal{G},\mathcal{A}}$}{$\lambda$}
+            \Let{(\mathbb{G}, G, |\mathbb{G}|)}{\mathcal{G}(1^\lambda)}
+            \State$a \getsrandomly \mathbb{Z}_{|\mathbb{G}|}$
+            \Let{A}{aG}
+            \Let{a^*}{\mathcal{A}(\mathbb{G}, G, |\mathbb{G}|, A)}
+            \State\Return{$a^*G = A$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
