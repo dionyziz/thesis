@@ -195,10 +195,10 @@ signatures. This is captured in the game-based definition of Algorithm~\ref{alg.
 \input{./chapters/background/algorithms/alg.forgery.tex}
 
 \begin{definition}[Security]
-  A signature scheme $\Pi = (\Gen, \Sig, \Ver)$ is \emph{secure} if for all PPT adversaries $\mathcal{A}$ there is a negligible function $\negl$ such that:
+  A signature scheme $\Pi = (\Gen, \Sig, \Ver)$ is \emph{secure} if for all PPT adversaries $\mathcal{A}$ there is a negligible function $\negl$ such that
 
   \[
-  \Pr[\textsc{sig-forge}_{\Pi,\mathcal{A}}(\lambda)] < \negl(\lambda)
+  \Pr[\textsc{sig-forge}_{\Pi,\mathcal{A}}(\lambda)] < \negl(\lambda)\,.
   \]
 \end{definition}
 
@@ -209,7 +209,7 @@ and Ethereum both make use of the \texttt{secp256k1} curve~\cite{secp256k1}.
 \begin{remark}
 We remark that, perhaps contrary to popular belief, blockchain protocols
 do not depend at all on encryption primitives. Therefore, we choose not to
-treat them at all in the present work.
+treat encryption at all in the present work.
 \end{remark}
 
 % elliptic curves, secp256k1
