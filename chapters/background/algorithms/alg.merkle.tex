@@ -1,0 +1,39 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.merkle} The Merkle Tree construction for $|S| = 2^k$ for
+                                some $k$.}
+    \begin{algorithmic}[1]
+        \Function{\sf heapify$^H$}{$S$}
+            \Let{Z[|S|{:}]}{\textsf{map}(H, S)}
+            \For{$i \gets |S| - 1 \text{ down to } 1$}
+                \Let{Z[i]}{H(Z[2i] \concat Z[2i + 1])}
+            \EndFor
+            \State\Return{$Z$}
+        \EndFunction
+        \Function{\sf compress$^H$}{$S$}
+            \State\Return{$\textsf{heapify}^H(S)$[1]}
+        \EndFunction
+        \Function{\sf prove$^H$}{$S, i$}
+            \Let{Z}{\textsf{heapify}^H(S)}
+            \Let{i}{|S| + i}
+            \Let{\pi}{[\,]}
+            \While{$i > 1$}
+                \Let{b}{i \mod 2}
+                \Let{\pi}{\pi \concat (b, Z[i \xor 1])}
+                \Let{i}{\lfloor i / 2\rfloor}
+            \EndWhile
+            \State\Return$\pi$
+        \EndFunction
+        \Function{\sf verify$^H$}{$\pi, s_i, s$}
+            \Let{s_i}{H(s_i)}
+            \For{$(b, h) \in \pi$}
+                \If{$b$}
+                    \Let{s_i}{H(s_i \concat h)}
+                \Else
+                    \Let{s_i}{H(h \concat s_i)}
+                \EndIf
+            \EndFor
+            \State\Return{$s_i = s$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}

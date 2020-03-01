@@ -1,0 +1,12 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.authenticated} The authenticated data structure challenger.}
+    \begin{algorithmic}[1]
+        \Function{\sf AUTH$_{\Pi,\mathcal{A}}$}{$\lambda$}
+            \Let{(S, s_i, \pi)}{\mathcal{A}(1^\lambda)}
+            \State\Return{$s_i \not\in S \land \textsc{verify}(\textsc{compress}(S), s_i, \pi)$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

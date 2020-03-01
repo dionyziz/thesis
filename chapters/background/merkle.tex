@@ -1,0 +1,103 @@
+\subsection{Merkle Trees}
+Consider a set $S = \{s_1, s_2, \cdots, s_n\}$ of strings
+$s_i \in \{0, 1\}^*$. At some initial time, this set is compressed into a
+\emph{root} string $s$ which is short ($|s| = \lambda$). This compressed string
+is produced honestly and is given to a party called the \emph{verifier}. Given
+this short trusted root string, the verifier receives claims from untrusted
+\emph{provers} which claim that a certain piece of data $s_i$ existed in $S$.
+The verifier's job is to decide whether such claims are truthful or fraudulent.
+
+This protocol is an \emph{authenticated data structure}. It consists of
+four algorithms $\mathcal{G}$, $\textsc{compress}$, $\textsc{prove}$,
+$\textsc{verify}$. At the beginning of the execution, $\mathcal{G}(1^\lambda)$
+is invoked to initialize the protocol parameters. These parameters can be shared
+among multiple invocations of the protocol. As these parameters are fixed by the
+protocol in its concrete implementations, we will make them implicit from now
+on. A set $S$ is compressed by invoking $\textsc{compress}(S)$
+which produces the root $s$. When an honest prover wishes to prove that some
+$s_i$ exists in $S$, they produce an \emph{inclusion proof} $\pi =
+\textsc{prove}(S, s_i)$. When the verifier receives an element $s_i$ together
+with a proof of inclusion $\pi$, they check its veracity by invoking
+$\textsc{verify}(\pi, s_i, s)$, which returns $\true$ or $\false$.
+
+Authenticated data structure protocols must be correct. This means that honest
+executions should always work.
+
+\begin{definition}[Correctness]
+  Consider an authenticated data structure protocol
+  $\Pi = (\textsc{compress}, \textsc{prove}, \textsc{verify})$.
+  We say that $\Pi$ is
+  \emph{correct} if
+
+  \[\forall S:
+    \forall s_i \in S:
+    \textsc{verify}(\textsc{prove}(S, s_i), s_i, \textsc{compress}(S))\,.\]
+\end{definition}
+
+Such protocols are useful when $s$ and $\pi$ are short.
+
+\begin{definition}[Succinctness]
+  Consider an authenticated data structure protocol
+  $\Pi = (\textsc{compress}, \textsc{prove}, \textsc{verify})$.
+  We say that $\Pi$ is
+  \emph{succinct} if
+  for all $S$ it holds that
+
+  \[|\textsc{compress}(S)| \in \bigO(polylog(|S|))
+    \land
+    \forall s_i \in S:
+    |\textsc{prove}(S, s_i)| \in \bigO(polylog(|S|))
+    \,.\]
+\end{definition}
+
+In the protocols we will explore, we will have $|s| = \lambda \in \bigO(1)$ and
+$\pi \in \bigO(\log(|S|))$. Furthermore, $|S|$ will be polynomial in $\lambda$.
+
+An authenticated data structure protocol is \emph{secure} if no adversary can
+convince a verifier about the inclusion of an element which is not in the
+set. This is made formal in the game illustrated in
+Algorithm~\ref{alg.authenticated}.
+
+\input{chapters/background/algorithms/alg.authenticated}
+
+\begin{definition}[Security]
+  An authenticated data structure protocol $\Pi = (\textsc{compress},\allowbreak \textsc{prove},\allowbreak \textsc{verify})$ is \emph{secure} if for all PPT adversaries $\mathcal{A}$
+  there is a negligible function $\negl$ such that
+
+  \[
+    \Pr[\textsf{AUTH}_{\Pi,\mathcal{A}}(\lambda)] < negl(\lambda)\,.
+  \]
+\end{definition}
+
+A construction that solves this problem which is used extensively in blockchain
+protocols is the \emph{Merkle Tree}~\cite{merkle}. This construction is
+illustrated in Algorithm~\ref{alg.merkle}. It is parameterized by a collision
+resistant hash funciton $H$. The construction presented works for $|S|$ equal to
+a power of $2$ and assumes the domain of values in $S$ is disjoint from the
+domain of $H$.
+
+\input{chapters/background/algorithms/alg.merkle}
+
+It treats $S$ as a sequence and organizes it into a complete binary tree $Z$
+using the $\textsf{heapify}$ routine. The routine places the hashes of the
+elements of $S$ on the leafs of $Z$ stored at locations $Z[|S|{:}]$. The value
+of each internal node is the hash of the concatenation of the values of its
+children. The $\textsf{compress}$ function returns the value of the root which
+resides at $Z[1]$. To create a proof $\pi$, the $\textsf{prove}$ routine takes
+an index of an element $i$ and finds its position in the binary tree, namely the
+leaf stored at $Z[|S| + i]$. It then traverses the path from that leaf up to the
+root, maintaining the index of the current node in the variable $i$. In every
+iteration, it includes a bit indicating whether the current node is a left child
+($b = 0$) or a right child ($b = 1$). For each node, it includes the value $Z[i
+\xor 1]$ of the node's sibling. To verify a proof, the verifier successively
+hashes the element whose inclusion is proven with the hashes $h$ of the siblings
+provided in the proof $\pi$ on the correct side indicated by $b$. In the end, it
+checks whether it has arrived at the trusted root $s$ and this determines the
+result of the verification.
+
+Correctness is achieved because the hash function is deterministic and the
+\textsc{verify} applies hashes in the same manner as \textsc{heapify} does.
+Succinctness follows because $|s| = \lambda$. Furthermore, the tree contains
+$2|S| - 1$ elements and the height of the tree is $\Theta(\log(|S|))$, making
+$|\pi| \in \Theta(\log(|S|))$. Lastly, security follows by a direct
+computational reduction from the collision resistance of $H$.
