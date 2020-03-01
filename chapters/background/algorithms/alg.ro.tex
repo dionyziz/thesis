@@ -1,0 +1,16 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.ro} The Random Oracle model parameterized by security
+             parameter $\lambda$.}
+    \begin{algorithmic}[1]
+        \Let{T}{\emptyset}
+        \Function{\sf H}{$x$}
+            \If{$x \not\in T$}
+                \State$T[x] \getsrandomly \{0, 1\}^\lambda$
+            \EndIf
+            \State\Return$T[x]$
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
