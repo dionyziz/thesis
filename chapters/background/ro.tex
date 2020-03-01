@@ -1,0 +1,71 @@
+\subsection{The Random Oracle}
+
+Real protocols are instantiated using real hash functions. However, as concrete
+mathematical objects, these are not possible to analyze cryptographically, as
+they do not have a security parameter. For example, \texttt{SHA256} is a
+function with a fixed size of $256$ bits. In these terms, one cannot talk about
+negligible probability of failure. Keyed hash functions in which the function
+depends on the security parameter are possible to analyze in this manner, but
+their use is limited in practice. Additionally, many of the guarantees provided
+by keyed hash functions discussed above are insufficient for more elaborate
+protocols. In particular, collision and preimage resistance are not enough for
+our needs. Nevertheless, our intuition is that practical concrete hash functions
+behave nicely, and we wish to include this notion in our model.
+
+To bypass these limitations, we model our hash functions in the Random Oracle
+model~\cite{ro}. In this model, the hash function behaves like an ideal random
+function. This is helpful, because we can argue all of its outputs will be
+unbiased and independent. This abstraction also signifies that we are interested
+in working in the realm of \emph{protocol design}, and the intricacies of
+practical hash function design and implementation, which stands in the realm of
+efficient symmetric cryptography, are beyond the scope of our work.
+
+In the Random Oracle model, we assume the existence of a global oracle machine
+$H$ to which every party, adversarial or honest, has access to. The machine
+models the hash function and hence allows parties to ask for its evaluation at
+any input. The Random Oracle machine receives any input in $\{0, 1\}^*$ and
+returns an output in $\{0, 1\}^\lambda$.
+
+\input{./chapters/background/algorithms/alg.ro.tex}
+
+The output is chosen as illustrated in Algorithm~\ref{alg.ro}. In detail, the
+Random Oracle is parameterized by the security parameter $\lambda$. Upon
+receiving some input $x$, if the input has not been encountered before, then it
+produces a fresh uniformly random $\lambda$-bit string which it stores in a
+dictionary $T$ and returns. If on the other hand it receives an input it has
+seen before, it answers consistently with its previous answer, giving the same
+answer for the same query by consulting the dictionary $T$. Hence, this
+functionality is stateful.
+
+It is imperative that the instance of the machine that all parties communicate
+with is the same. Hence, if a party makes a particular query $x$ to the oracle
+and then another party asks the same query, the answer will be the same. If the
+random oracle is modelled as a stateful functionality, communication between the
+parties and the Random Oracle machine can be modelled as Interactive Turing
+Machines communicating.
+
+Alterantively but equivalently, the Random Oracle can be defined as a shared
+oracle which answers queries according to a function selected uniformly at
+random at the beginning of the execution. As a random function can neither be
+sampled in polynomial time nor represented in polynomial space, this latter
+formulation means that, when the oracle is treated that way, it cannot be
+modelled as an Interactive Turing Machine, but must remain an oracle. In this
+formulation, at the beginning of the execution, the random oracle $H$ is sampled
+uniformly at random from the function space $(\{0, 1\}^\lambda)^{\{0, 1\}^*}$,
+and the adversary and honest parties are invoked with oracle access to this same
+$H$. As all parties will be polynomial in our treatment, this sampling can also
+be understood to be done uniformly at random from the function space $(\{0,
+1\}^\lambda)^{\{0, 1\}^{p(\kappa)}}$ where $p(\kappa)$ denotes the polynomial
+bounding the total execution of all parties together.
+
+An important feature of the Random Oracle model is that the adversary cannot
+compute $H$ locally, but must invokve the oracle to do so. This means that, in
+our mathematical treatment, we are allowed to speak of the queries the adversary
+has made, count them, look at their responses, and so on. This ability, termed
+\emph{random oracle observability} will be critical in our analyses. On the
+other hand, we will not make use of the ability of a computational reduction to
+modify the outputs of the random oracle at will, termed \emph{random oracle
+programmability}, which is at the heart of many security proofs in cryptography.
+Our results are therefore stronger, as we only assume a \emph{non-programmable}
+Random Oracle~\cite{nielsen2002separating,fischlin2010random}, which is a weaker
+assumption than usually made.
