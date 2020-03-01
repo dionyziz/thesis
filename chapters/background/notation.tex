@@ -1,0 +1,78 @@
+\section{Notation}
+We use standard mathematical notation throughout this work. We define all the
+non-standard or unusual notation in this section. We use standard cryptographic
+notation, which is also introduced here for reference. The reader unfamiliar
+with this notation can consult some reference book in the subject such
+as~\cite{katz} for a more complete treatment.
+
+Given a distribution $\mathcal{M}$, we denote by $m \gets \mathcal{M}$ the experiment by which the random variable $m$ is chosen according to the distribution $\mathcal{M}$. Given a finite set $M$, we use $\uniform(M)$ to denote the uniform distribution which assigns probability $1 / 2^{|M|}$ to each element $m \in M$. We will use $m \getsrandomly M$ to denote the experiment in which $m$ is sampled from $\uniform(M)$.
+
+As a shorthand for probabilities and to avoid excessive subscripting, we will write the experimental set up (such as the sampling of random variables) within the $\Pr[\cdot]$ prior to the predicate of interest and separated by $;\,$. For example, $\Pr[x \gets \mathcal{D}_1, y \gets \mathcal{D}_2; x + y = 1]$ denotes the experiment of independently sampling two random variables, $x$ and $y$, from the distributions $\mathcal{D}_1$ and $\mathcal{D}_2$ respectively, summing their values, and observing whether their sum is equal to $1$.
+
+\subsection{Asymptotic probabilistic security}
+Following the extended Church--Turing definition, we consider the class of
+problems in $\textsc{P}$ to be \emph{easy}, and we call \emph{hard} those which
+are not easy~\cite{sipser}. It is assumed that all honest parties and the adversary have polynomial available time. Both the honest parties and the adversary have access to true randomness and are thus probabilistic Turing Machines.
+The shorthand \emph{PPT} is used to denote a probabilistic polynomial-time
+Turing machine.
+
+Our theorems are by computational reduction, in which we show that bad
+events happen only with negligible probability in some security parameter, which
+we will denote $\lambda \in \mathbb{N}$. This parameter allows all our
+cryptographic primitives to be instantiated with the required level of security;
+for example, it provides the number of bits in the output of our hash function.
+
+\begin{definition}[Negligible]
+  A function $f: \mathbb{N} \longrightarrow \mathbb{R}^+$ is
+  \emph{negligible} if for all $k \in \mathbb{N}$ it holds that
+  $f \in \mathcal{O}(\frac{1}{\lambda^k})$.
+\end{definition}
+
+We will use the notation $\negl$ to denote any negligible function.
+
+\begin{definition}[Overwhelming]
+  A function $f: \mathbb{N} \longrightarrow \mathbb{R}^+$ is
+  \emph{overwhelming} if it can be written as $f(n) = 1 - \negl(n)$ for
+  some negligible function $\negl$.
+\end{definition}
+
+We will define the \emph{security} of various cryptographic protocols by making use of challenger-adversary games in which the challenger is a known Turing Machine defined by us, but the adversary is an \emph{arbitrary} Turing Machine. Herein lies the beauty of cryptography as a science; it allows us to create protocols which we prove secure against \emph{any} adversary, even those we cannot conceive. A protocol will be considered \emph{secure} if no PPT adversary can win the respective game, except with negligible probability.
+
+\subsection{Sequences}
+We use $[n]$ to denote the set of natural numbers from $0$ up to and including
+$n$. We also use $[\mathcal{M}]$ to denote the support of a distribution
+$\mathcal{M}$; the distinction between the two notations will be clear from
+context.
+We use $\epsilon$ to denote the empty sequence (or empty string). We write
+one sequence next to another to denote string concatenation. Likewise, we
+concatenate sequences to symbols by juxtaposition.
+
+Our sequences are indexed starting at $0$. Given a sequence $\chain$, we use
+$|\chain|$ to denote its length. We use Python notation to denote sequence
+addressing. For $i \in [n - 1]$, we denote the $i^\text{th}$ element from the
+beginning as $\chain[i]$. The first element of the sequence is thus $\chain[0]$.
+For $i \in [n] \setminus \{0\}$, we denote the $i^\text{th}$ element from the
+end as $\chain[-i]$. The last element of the sequence is thus $\chain[-1]$. We
+call this the \emph{tip} of the sequence. Given $i \in \mathbb{Z},
+j \in \mathbb{Z}$ with $i \leq j$, we denote $\chain[i{:}j]$ the subsequence from
+$i$ (inclusive) to $j$ (exclusive), that is the sequence which contains exactly
+the elements $\chain[i], \chain[i + 1], \dots, \chain[j - 1]$. If $i > j$, then
+by convention we set $\chain[i{:}j] = \epsilon$. We allow this \emph{range}
+notation to be used with negative indices as well, indicating ranges starting or
+ending (or both) in indices considered from the end of the sequence, hence
+allowing for $\chain[-i{:}j], \chain[i{:}-j]$, and $\chain[-i{:}-j]$. The left end of
+a range can omitted if it is $i = 0$. The right end of a range can be omitted if
+it is $j = |\chain|$. For example, $\chain[:-k]$ is the sequence $\chain$ with
+the last $k$ elements excluded. In this example, if $|\chain| < k$, then
+$\chain[:-k] = \epsilon$.
+
+If an element $A$ is a member of a sequence $\chain$ we will use the notation $A
+\in \chain$ to denote this, i.e. that there exist words $w, v$ such that $\chain
+= wAv$. It will be clear from the context whether we are speaking about sequence
+or sets. Given $A, Z \in \chain$ such that $A$ and $Z$ exist only once in
+$\chain$, we denote by $\chain\{A{:}Z\}$ the subsequence of $\chain$ starting from
+$A$ (inclusive) and ending in $Z$ (exclusive). If $A = \chain[0]$, it can be
+omitted. Omitting $Z$ denotes the sequence starting with $A$ and containing all
+subsequent elements until the end of the sequence.
+
+% TODO: \chain\{A:Z\} notation (inclusive, exclusive). But how to include Z?
