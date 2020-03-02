@@ -3,9 +3,12 @@
                                 some $k$.}
     \begin{algorithmic}[1]
         \Function{\sf heapify$^H$}{$S$}
+            \For{$i \gets 0 \text{ to } |S| - 1$}
+                \Let{Z[|S| + i]}{\text{``h:''} \concat H(\text{``c:''} \concat S[i])}
+            \EndFor
             \Let{Z[|S|{:}]}{\textsf{map}(H, S)}
             \For{$i \gets |S| - 1 \text{ down to } 1$}
-                \Let{Z[i]}{H(Z[2i] \concat Z[2i + 1])}
+                \Let{Z[i]}{\text{``h:''} \concat H(Z[2i] \concat Z[2i + 1])}
             \EndFor
             \State\Return{$Z$}
         \EndFunction
@@ -23,16 +26,16 @@
             \EndWhile
             \State\Return$\pi$
         \EndFunction
-        \Function{\sf verify$^H$}{$\pi, s_i, s$}
-            \Let{s_i}{H(s_i)}
+        \Function{\sf verify$^H$}{$\pi, e, s$}
+            \Let{e}{H(\text{``c:''} \concat e)}
             \For{$(b, h) \in \pi$}
                 \If{$b$}
-                    \Let{s_i}{H(s_i \concat h)}
+                    \Let{e}{\text{``h:''} \concat H(e \concat h)}
                 \Else
-                    \Let{s_i}{H(h \concat s_i)}
+                    \Let{e}{\text{``h:''} \concat H(h \concat e)}
                 \EndIf
             \EndFor
-            \State\Return{$s_i = s$}
+            \State\Return{$e = s$}
         \EndFunction
         \vskip8pt
     \end{algorithmic}
