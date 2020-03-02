@@ -1,0 +1,42 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.sparse-merkle-prover} The prover of the Sparse Merkle Tree
+             construction for dictionaries of polynomial size $p(\lambda)$.}
+    \begin{algorithmic}[1]
+        \Function{\sf heapify$^H$}{$f$}
+            \Let{Q}{[\,]}
+            \For{$(k, v) \in f$}
+                \Let{Z[k]}{H(\text{``c:''} \concat v)}
+                \Let{Q}{Q \concat k}
+            \EndFor
+            \Let{N}{[H(\epsilon)]}
+            \For{$i \gets 1 \text{ to } p(\lambda)$}
+                \Let{N[i]}{H(N[i - 1] \concat N[i - 1])}
+            \EndFor
+            \While{$Q \neq [\,]$}
+                \Let{k}{Q[0]}
+                \Let{Q}{Q[1{:}]}
+                \If{$Z[k \xor 1] = \bot$}
+                    \Let{Z[k \xor 1]}{N[|k|]}
+                \EndIf
+                \Let{k}{k[1{:}]}
+                \If{$k \neq \epsilon$}
+                    \Let{Q}{Q \concat k}
+                \EndIf
+            \EndWhile
+            \State\Return{$Z$}
+        \EndFunction
+        \Function{\sf compress$^H$}{$f$}
+            \State\Return{$\textsf{heapify}^H(f)[\epsilon]$}
+        \EndFunction
+        \Function{\sf prove$^H$}{$f, k$}
+            \Let{Z}{\textsf{heapify}^H(S)}
+            \Let{\pi}{[\,]}
+            \While{$k \neq \epsilon$}
+                \Let{\pi}{\pi \concat Z[k \xor 1]}
+                \Let{k}{k[1{:}]}
+            \EndWhile
+            \State\Return$\pi$
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}

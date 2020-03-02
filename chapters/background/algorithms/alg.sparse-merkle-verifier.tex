@@ -1,0 +1,27 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.sparse-merkle-verifier} The verifier of the Sparse Merkle Tree
+             construction for dictionaries of polynomial size $p(\lambda)$.}
+    \begin{algorithmic}[1]
+        \Function{\sf verify$^H$}{$s, \pi, k, v$}
+            \If{$|\pi| \neq k$}
+                \State\Return{$\false$}
+            \EndIf
+            \If{$v = \bot$}
+                \Let{v}{\epsilon}
+            \Else
+                \Let{v}{\text{``c:''} \concat v}
+            \EndIf
+            \Let{e}{H(v)}
+            \For{$h \in \pi$}
+                \If{$k \mod 2 = 0$}
+                    \Let{e}{H(e) \concat h}
+                \Else
+                    \Let{e}{h \concat H(e)}
+                \EndIf
+                \Let{k}{k[1{:}]}
+            \EndFor
+            \State\Return{$e = s$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}

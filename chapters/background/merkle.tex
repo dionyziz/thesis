@@ -7,7 +7,7 @@ this short trusted root string, the verifier receives claims from untrusted
 \emph{provers} which claim that a certain piece of data $e$ existed in $S$.
 The verifier's job is to decide whether such claims are truthful or fraudulent.
 
-This protocol is an \emph{authenticated data structure}. It consists of
+This protocol is an \emph{authenticated set}. It consists of
 four algorithms $\mathcal{G}$, $\textsc{compress}$, $\textsc{prove}$,
 $\textsc{verify}$. At the beginning of the execution, $\mathcal{G}(1^\lambda)$
 is invoked to initialize the protocol parameters. These parameters can be shared
@@ -20,12 +20,12 @@ element $e$ exists in $S$, they produce an \emph{inclusion proof} $\pi =
 with a proof of inclusion $\pi$, they check its veracity by invoking
 $\textsc{verify}(\pi, e, s)$, which returns $\true$ or $\false$.
 
-Authenticated data structure protocols must be correct. This means that honest
+Authenticated set protocols must be correct. This means that honest
 executions should always work.
 
 \begin{definition}[Correctness]
-  Consider an authenticated data structure protocol
-  $\Pi = (\textsc{compress}, \textsc{prove}, \textsc{verify})$.
+  Consider an authenticated set protocol
+  $\Pi = (\textsc{compress},\allowbreak \textsc{prove},\allowbreak \textsc{verify})$.
   We say that $\Pi$ is
   \emph{correct} if
 
@@ -37,8 +37,8 @@ executions should always work.
 Such protocols are useful when $s$ and $\pi$ are short.
 
 \begin{definition}[Succinctness]
-  Consider an authenticated data structure protocol
-  $\Pi = (\textsc{compress}, \textsc{prove}, \textsc{verify})$.
+  Consider an authenticated set protocol
+  $\Pi = (\textsc{compress},\allowbreak \textsc{prove},\allowbreak \textsc{verify})$.
   We say that $\Pi$ is
   \emph{succinct} if
   for all $S$ it holds that
@@ -53,7 +53,7 @@ Such protocols are useful when $s$ and $\pi$ are short.
 In the protocols we will explore, we will have $|s| = \lambda \in \bigO(1)$ and
 $\pi \in \bigO(\log(|S|))$. Furthermore, $|S|$ will be polynomial in $\lambda$.
 
-An authenticated data structure protocol is \emph{secure} if no adversary can
+An authenticated set protocol is \emph{secure} if no adversary can
 convince a verifier about the inclusion of an element which is not in the
 set. This is made formal in the game illustrated in
 Algorithm~\ref{alg.authenticated}.
@@ -61,7 +61,7 @@ Algorithm~\ref{alg.authenticated}.
 \input{chapters/background/algorithms/alg.authenticated}
 
 \begin{definition}[Security]
-  An authenticated data structure protocol $\Pi = (\textsc{compress},\allowbreak \textsc{prove},\allowbreak \textsc{verify})$ is \emph{secure} if for all PPT adversaries $\mathcal{A}$
+  An authenticated set protocol $\Pi = (\textsc{compress},\allowbreak \textsc{prove},\allowbreak \textsc{verify})$ is \emph{secure} if for all PPT adversaries $\mathcal{A}$
   there is a negligible function $\negl$ such that
 
   \[
@@ -127,7 +127,7 @@ collision resistant hash function.}, we include our own version here.
 \begin{theorem}[Security]
   Let $H$ be a collision resistant hash function. The Merkle Tree
   construction of Algorithm~\ref{alg.merkle} parameterized by $H$ is a secure
-  Authenticated Data Structure for sets of size $|S| = 2^k$.
+  authenticated set protocol for sets of size $|S| = 2^k$.
 \end{theorem}
 \begin{proof}
 Consider an arbitrary adversary $\mathcal{A}$ against \textsf{AUTH}. We
@@ -214,3 +214,83 @@ find $k$.
 Once the marking of nodes as leaves or internal nodes
 has been established, the limitation that $|S| = 2^k$ can also be relaxed by
 working with an incomplete binary tree instead of a complete binary tree.
+
+\subsection{Sparse Merkle Trees}
+Merkle Trees allow \emph{proofs of inclusion}, but not
+\emph{proofs of exclusion}, i.e, proving that an element $e$ is \emph{not} in
+the $S$ that was used to construct the tree root $s$. We can extend the
+authenticated set protocol to support such proofs of exclusion. To
+do this, we allow the data structure to store key-value pairs. This generalizes
+the previous construction, as keys can be taken to be the indices within the
+sequence $S$. As $|S|$ is polynomial in $\lambda$, we can treat this new
+authenticated data structure as a means to encode a partial function
+$f: \{0, 1\}^{p(\lambda)} \Rightarrow \{0, 1\}^*$ for some fixed polynomial $p$.
+We will only concern ourselves with such functions defined only in a polynomial
+number of inputs, $|f| = p(\lambda)$.
+We call this primitive an \emph{authenticated dictionary}.
+
+The new protocol consists firstly of $\textsf{compress}$ which takes some function $f$
+and returns a succinct root $s$. Secondly, of a function $\textsc{prove}$ which
+takes a key $k$ and a function $f$ and produces a proof $\pi$ that $f(k)$ is the
+value of $f$ for $k$, or that $f(k) = \bot$. Lastly, $\textsc{verify}$ takes a
+root $s$, a proof $\pi$, a key $k$ and a value $v$ (which can be $\bot$) and
+returns $\true$ or $\false$ indicating whether the proof is correct.
+Correctness, succinctness are defined as before. Security is also similar,
+keeping in mind that no adversary should be able to prove that the function is
+defined where it is not, or that the function is undefined where it is.
+
+\emph{Sparse Merkle Trees}, also known as \emph{Merkle--Patricia Tries}
+\footnote{The two terms have a different interpretation based on implementation
+details. The term \emph{Merkle--Patricia Trie} is used when the base of the
+Sparse Merkle Tree is $16$ and the keys are treated as strings, while the term
+\emph{Sparse Merkle Tree} is used when the base is $2$ and the keys are treated
+as integers. The two data structures are identical.} are an authenticated
+dictionary construction.
+
+The prover construction is illustrated in
+Algorithm~\ref{alg.sparse-merkle-prover}. The \textsf{heapify} algorithm
+generates a Merkle Tree with $2^{p(\lambda)}$ leaves. At the leaf of location
+$k$, it places the value $H(\text{``c:''} \concat f(k))$ if $f$ is defined at
+$k$; otherwise, it places the value $H(\epsilon)$. This is done to distinguish
+the function $f$ being defined and having the empty string as its value versus
+being undefined. We force keys to have a
+length of exactly $p(\lambda)$, so internal nodes are represented using shorter
+keys. Internal nodes are
+evaluated as before, noting that the internal node with key $k$ has two
+children with keys $k0$ and $k1$. As the size of the tree is now fixed, there is
+no need to prefix internal nodes with ``h:''. The root is the internal node
+keyed with the empty string $\epsilon$, and so \textsf{compress} returns
+$Z[\epsilon]$.
+
+\input{chapters/background/algorithms/alg.sparse-merkle-prover}
+
+This tree has an exponential number of nodes. The trick to make this
+evaluation possible in polynomial time is to observe that $f$ is only defined
+in a polynomial number $p(\lambda)$ of values and hence most of the leaves will
+have a value of $H(\epsilon)$. The root of any subtree of the same size whose
+leaves are all empty will have the same hash value, and so these can be
+precomputed. These are evaluated and cached in the array $N[i]$ which stores the
+hash of the empty subtree with height $i$. The computation is polynomial
+because, for each non-empty leaf, the number of nodes that need to be filled in
+is at most $p(\lambda)$, and the number of non-empty leaves is $p(\lambda)$,
+bounding the number of nodes that need to be filled in by $p^2(\lambda)$. The
+precomputed values $N$ are used to fill in any direct children of those nodes
+which correspond to empty subtrees of a particular height.
+
+\input{chapters/background/algorithms/alg.sparse-merkle-verifier}
+
+The verifier is illustrated in Algorithm~\ref{alg.sparse-merkle-verifier}. It is
+identical to the simple Merkle Tree verifier, with the exception that it can now
+look at the bits of the key $k$ to obtain the path it must follow from the leaf
+to the root.
+
+Correctness follows because the evaluation is deterministic. For succinctness,
+note that proofs $\pi$ have size $\Theta(\log(p(\lambda)))$. Lastly, security
+is similar to standard Merkle Trees and reduces from the collision resistance
+of $H$. One aspect that makes the security proof easier is that the size of
+Sparse Merkle Trees is known to be $2^{p(\lambda)}$, which means that the
+verifier can always check that $|\pi| = k = p(\lambda)$ prior to verification.
+As such, no cases need to be taken for $|\pi| \neq k$. Lastly, for the detail
+of the special value $\bot$, we note that any fraudulent claim of inclusion for
+points where the function is undefined or vice versa will cause a collision
+because $\text{``c:''} \concat v \neq \epsilon$ for any $v$.
