@@ -1,5 +1,56 @@
-\subsection{Synchrony and Adaptivity}
+\subsection{The Environment}
 
+In our setting, we will study executions of protocols in which some parties
+are \emph{honest} while others are \emph{adversarial}. All the honest parties
+typically run the same code termed \emph{the honest protocol} (which is the
+protocol we will design), while the adversary can run any code she wishes, but
+is bounded by polynomial time bounds. Both the honest parties and the adversary
+are probabilistic Turing Machines. As we are working in distributed settings,
+our protocols will be long-lived and involve multiple parties running
+simultaneously and communicating over the network while maintaining local state.
+Among the parties in our execution, we will denote by $n$ the total number of
+parties and with $t$ the number of parties that are adversarial. To strengthen
+our adversary, we assume all the adversarial parties \emph{collude} and are
+controlled by a single adversary. The situation where multiple adversaries are
+not colluding is also captured by our stronger model (this can be captured by a
+single adversary which simulates the multiple non-colluding adversaries).
+
+To model the distributed setting, we must speak of executions concretely.
+Towards this purpose, we conjure an \emph{environment} $\mathcal{Z}$ which is an
+Interactive Turing Machine~\cite{interactive-tm} and is responsible for
+orchestrating the whole execution. An Interactive Turing Machine is a Turing
+Machine which models interactive computation by employing additional input and
+output tapes that can be written to by external machines. The machine can decide
+to pause computation by entering a special state and its computation is resumed
+by writing to its input tape.
+
+The environment spawns $n$ honest parties running the honest protocol $\Pi$ as
+$n$ different Interactive Turing Machines. The environment also spawns one
+adversarial Interactive Turing Machine $\mathcal{A}$. The honest parties and the
+adversary can pass messages to the environment and receive messages from it by
+writing and/or reading from their interactive tapes. The environment takes as
+input the security parameter $1^\lambda$ and functions as an operating system
+scheduler to activate the honest parties and the adversary according to some
+schedule. The environment halts after polynomial time. The Interactive Turing
+Machine model is equivalent to having the environment faithfully simulate the
+execution of the honest parties and the adversary and correctly maintaining
+their state across pausing and resumption.
+
+We study an execution by observing its transcript (the messages exchanged by the
+parties) as well as the internal state of the parties throughout the execution.
+This transcript, which we will denote $\view_{\Pi,\mathcal{A}}^{n,t}$, is a
+random variable which is a function of the coins of the probabilistic
+Interactive Turing Machines that form the execution, namely the environment
+itself, the adversary, the honest parties, and the Random Oracle. We remark that
+this treatment is similar to the setting of Universal Composability~\cite{uc}.
+Despite the similarities on the surface, we do not fully employ it and neither
+are our protocols composable, nor are our security proofs simulation-based. On
+the contrary, we use a direct property-based approach in our proofs instead of
+employing universally composable functionalities.
+
+\subsection{The Network}
+
+\subsection{Synchrony and Adaptivity}
 \todo{Expand this subsection}
 
 \subsubsection{The Synchronous and Bounded Delay Setting}
@@ -54,7 +105,6 @@ party $\party_i$.
 
 \subsubsection{(Semi-)Synchronous Communication}
 \label{sec:prelim-comm}
-
 
 We employ the ``Delayed Diffuse'' functionality $\DelDiff_\Delta$ given in~\cite{praos} to
 model (semi-)synchronous communication among the parties. It allows each party
