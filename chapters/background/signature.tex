@@ -1,5 +1,5 @@
 \subsection{Signatures}
-A \emph{digital signature} allows parties to authenticate the origin of a
+A \emph{digital signature}\index{Signature} allows parties to authenticate the origin of a
 message as well as its integrity~\cite{katz}. If Alice signs a message $m$, she generates a
 signature $\sigma$ which is uniquely associated with that message. That
 signature can then only be used to verify that particular message. In a secure signature scheme, an adversary
@@ -32,7 +32,7 @@ Signature schemes must be \emph{correct}.
 \end{definition}
 
 A \emph{secure} signature scheme requires that no adversary is able to forge
-signatures. This is captured in the game-based definition of Algorithm~\ref{alg.forgery}. In this game, the challenger first generates a public/private key pair by invoking $\Gen(1^\lambda)$. Subsequently, the challenger asks the adversary $\mathcal{A}$ to attempt to find a signature forgery. The adversary is allowed to ask the challenger to have any messages signed by invoking the ${\Sig}O$ oracle with messages of her choice. The adversary is allowed to make multiple adaptive queries to the oracle. When the adversary is ready, she presents a message $m$, which she must not have requested from the oracle ${\Sig}O$ and a signature $\sigma$. The adversary is successful if the signature verifies.
+signatures. This is captured in the game-based definition of Algorithm~\ref{alg.forgery}\index{Existential Forgery}. In this game, the challenger first generates a public/private key pair by invoking $\Gen(1^\lambda)$. Subsequently, the challenger asks the adversary $\mathcal{A}$ to attempt to find a signature forgery. The adversary is allowed to ask the challenger to have any messages signed by invoking the ${\Sig}O$ oracle with messages of her choice. The adversary is allowed to make multiple adaptive queries to the oracle. When the adversary is ready, she presents a message $m$, which she must not have requested from the oracle ${\Sig}O$ and a signature $\sigma$. The adversary is successful if the signature verifies.
 
 \input{./chapters/background/algorithms/alg.forgery.tex}
 
@@ -50,7 +50,7 @@ The problem of finding $a$ from $A$ is made formal in Algorithm~\ref{alg.dlog}. 
 
 \input{./chapters/background/algorithms/alg.dlog.tex}
 
-\begin{definition}[Discrete Logarithm Problem]
+\begin{definition}[Discrete Logarithm Problem]\index{Discrete Logarithm}
   The \emph{discrete logarithm problem} is hard in the family of groups $\{\mathcal{G}(1^\lambda)\}_{\lambda \in \mathbb{N}}$ if for all PPT adversaries $\mathcal{A}$ there is a negligible function $\negl$ such that
 
   \[
@@ -60,7 +60,7 @@ The problem of finding $a$ from $A$ is made formal in Algorithm~\ref{alg.dlog}. 
 
 The particular instantiation of signature schemes in the context of
 cryptocurrencies makes use of elliptic curves~\cite{ec} in which the discrete logarithm problem is believed to be hard. More specifically, Bitcoin
-and Ethereum both use the \texttt{secp256k1} curve~\cite{secp256k1}.
+and Ethereum both use the \texttt{secp256k1} curve~\cite{secp256k1}\index{secp256k1}.
 
 \begin{remark}
 We remark that, perhaps contrary to popular belief, blockchain protocols
