@@ -11,7 +11,8 @@ $x \in \{0, 1\}^*$ to a fixed-length bitstring $\{0, 1\}^\lambda$. Hash
 functions are easy to compute, but hard to invert. In applications, it is
 assumed that a hash uniquely represents its preimage (it is \emph{binding}) and
 that the preimage cannot be discovered from the image given sufficient entropy
-(it is \emph{hiding}).
+(it is \emph{hiding}). This makes them ideal for constructing \emph{commitment
+schemes}\index{Commitment Scheme}.
 
 These intuitive ideas are captured by the difficulty of finding
 collisions in hash functions. This is formalized in the next definition.
