@@ -4,10 +4,11 @@
     \begin{algorithmic}[1]
         \Function{\sf heapify$^H$}{$S$}
             \For{$i \gets 0 \text{ to } |S| - 1$}
+                \Comment{Fill in the tree leaves}
                 \Let{Z[|S| + i]}{\text{``h:''} \concat H(\text{``c:''} \concat S[i])}
             \EndFor
-            \Let{Z[|S|{:}]}{\textsf{map}(H, S)}
             \For{$i \gets |S| - 1 \text{ down to } 1$}
+                \Comment{Fill in the tree internal nodes}
                 \Let{Z[i]}{\text{``h:''} \concat H(Z[2i] \concat Z[2i + 1])}
             \EndFor
             \State\Return{$Z$}
@@ -20,14 +21,14 @@
             \Let{i}{|S| + i}
             \Let{\pi}{[\,]}
             \While{$i > 1$}
-                \Let{b}{i \mod 2}
+                \Let{b}{i \bmod 2}
                 \Let{\pi}{\pi \concat (b, Z[i \xor 1])}
                 \Let{i}{\lfloor i / 2\rfloor}
             \EndWhile
             \State\Return$\pi$
         \EndFunction
         \Function{\sf verify$^H$}{$\pi, e, s$}
-            \Let{e}{H(\text{``c:''} \concat e)}
+            \Let{e}{\text{``h:''} \concat H(\text{``c:''} \concat e)}
             \For{$(b, h) \in \pi$}
                 \If{$b$}
                     \Let{e}{\text{``h:''} \concat H(e \concat h)}
