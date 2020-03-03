@@ -16,8 +16,10 @@ not colluding is also captured by our stronger model (this can be captured by a
 single adversary which simulates the multiple non-colluding adversaries).
 
 To model the distributed setting, we must speak of executions concretely.
-Towards this purpose, we conjure an \emph{environment} $\mathcal{Z}$ which is an
-Interactive Turing Machine~\cite{interactive-tm} and is responsible for
+Towards this purpose, we conjure an \emph{environment} $\mathcal{Z}$
+\index{Environment} which is an
+Interactive Turing Machine~\cite{interactive-tm} (ITMs) \index{Interactive
+Turing Machine} and is responsible for
 orchestrating the whole execution. An Interactive Turing Machine is a Turing
 Machine which models interactive computation by employing additional input and
 output tapes that can be written to by external machines. The machine can decide
