@@ -22,7 +22,7 @@ we will denote $\lambda \in \mathbb{N}$. This parameter allows all our
 cryptographic primitives to be instantiated with the required level of security;
 for example, it provides the number of bits in the output of our hash function.
 
-\begin{definition}[Negligible]
+\begin{definition}[Negligible]\index{Negligible}
   A function $f: \mathbb{N} \longrightarrow \mathbb{R}^+$ is
   \emph{negligible} if for all $k \in \mathbb{N}$ it holds that
   $f \in \mathcal{O}(\frac{1}{\lambda^k})$.
@@ -30,7 +30,7 @@ for example, it provides the number of bits in the output of our hash function.
 
 We will use the notation $\negl$ to denote any negligible function.
 
-\begin{definition}[Overwhelming]
+\begin{definition}[Overwhelming]\index{Overwhelming}
   A function $f: \mathbb{N} \longrightarrow \mathbb{R}^+$ is
   \emph{overwhelming} if it can be written as $f(n) = 1 - \negl(n)$ for
   some negligible function $\negl$.
