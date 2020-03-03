@@ -95,6 +95,60 @@ total execution time is polynomial.
 
 \subsection{The Network}
 
+When an honest party is activated, it is given messages from the network to
+\emph{read}, which are written to a special location within its input tape by
+the environment. Here, we denote the network messages received by party $i$ as
+$\overline{C}[i]$ and pass them as input to the \textsf{execute} method. The
+party can then \emph{write} messages to the network during the round, which we
+denote by the \textsf{execute} method returning a value. We say that such
+messages are \emph{diffused}\index{Diffuse} to the network. At the end of the
+round, the adversary can see all the messages $C$ that have been diffused by the
+honest parties during the same round. The adversary can then decide what will
+appear in the network tape of every honest party at the beginning of the next
+round by outputting an array $\overline{C}$ that contains a list of messages
+$\overline{C}[i]$ for every party $i$. The adversary can reorder the messages and
+insert as many of her own as she wishes. That is, it is possible that
+$\overline{C}[i]$ will contain more messages than $\overline{C}$ and that the
+messages in $\overline{C}[i]$ will appear in a different order than in
+$\overline{C}$.
+
+However, she must ensure that all messages diffused by any honest party
+during the previous round appear in the network tape of every other honest party
+at the beginning of the next round. This is ensured by the assertion in Line~\ref{alg.environment.connectivity}. This means that no messages can be dropped
+by the adversary. This \emph{connectivity} assumption is equivalent to assuming
+that each honest party is not \emph{eclipsed}~\cite{eclipse,eclipse-ethereum}\index{Eclipse}
+from the rest of the network. In practice, this is achieved by ensuring that
+every honest party is connected to every other honest party through some path,
+although not necessarily directly. Practical peer-to-peer protocols use
+gossiping~\cite{gossip}\index{Gossip} to ensure messages reach every participant of the network. The network
+model abstracts out such details and treats a round as the unit time which is
+needed for a message to reach from every honest party to every other honest
+party.
+
+Crucially, because the adversary can reorder messages and inject as many
+additional messages as she pleases, she is a
+\emph{sybil adversary}~\cite{sybil}\index{Sybil Attack}. This means that the adversary can fake
+multiple identities and pretend to produce messages by multiple parties,
+potentially more than $t$. It will be the job of our honest protocol to produce
+a \emph{sybil resilient} mechanism in which such attacks have no impact on the
+protocol's security. Furthermore, the adversary can \emph{split} the view of the
+honest parties because she can communicate different messages to different
+honest parties and have $C[i] \neq C[j]$ for $i \neq j$ on the same round. For example, the order in which messages are delivered can be
+different for every honest party and the adversary may inject different messages
+of her own for every honest party.
+
+The requirement that messages diffused at the end of one round are delivered at
+the beginning of the next is the \emph{synchronous model}\index{Synchronous}. A
+large part of our analysis will be made there.
+
+A relaxation of the synchronous model is the $\Delta$-synchronous model. In this
+model, the adversary may delay messages up to $\Delta$ rounds.
+
+Chapters~\ref{chapter:work},
+\ref{chapter:stake}, \ref{chapter:superlight}, \ref{chapter:sidechains} are
+explored in the synchronous model. Our results extend to the $\Delta$-bounded
+delay model. We explore these extensions in Chapter~\ref{chapter:variable}.
+
 \subsection{Synchrony and Adaptivity}
 \todo{Expand this subsection}
 
@@ -104,24 +158,6 @@ We employ the model from~\cite{praos}, which is in turn based
 on~\cite{ouroboros} and~\cite{backbone}.
 The formalization we use below captures both synchronous and semi-syn\-chronous
 communication; as well as both semi-adaptive and fully adaptive corruptions.
-
-\subsubsection{Protocol Execution}
-\label{sec:prelim-exec}
-
-We divide time into discrete units called
-\emph{slots}. %, as detailed later. % in Section~\ref{sec:comm}.
-Players are equipped with (roughly) synchronized clocks that
-indicate the current slot: we assume that any clock drift is subsumed in the
-slot length.  Each slot $\slot_r$ is indexed by an integer $r \in \{1,2,\ldots
-\}$.
-We consider a UC-style~\cite{uc} execution of a protocol~$\Pi$,
-involving an environment~$\env$, a number of
-parties~$\party_i$, functionalities that these parties can access while running
-the protocol (such as the $\DelDiff$ used for communication, described below), and
-an adversary~$\adv$. All these entities are interactive algorithms.  The
-environment controls the execution by activating parties via inputs it provides
-to them. The parties, unless corrupted, respond to such activations by following
-the protocol~$\Pi$ and invoking the available functionalities as needed.
 
 \subsubsection{(Semi-)Adaptive Corruptions}
 \label{sec:prelim-corr}
