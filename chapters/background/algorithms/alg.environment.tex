@@ -1,0 +1,36 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.environment} The environment and network model running
+             for a polynomial number of rounds $p(\lambda)$.}
+    \begin{algorithmic}[1]
+        \Function{$\mathcal{Z}^{n,t}_{\Pi,\mathcal{A}}$}{$1^\lambda$}
+            \For{$i \gets 1 \text{ to } n - t$}
+                \Comment{Boot honest ITMs}
+                \Let{P_i}{\Pi.\textsf{init}(1^\lambda)}
+            \EndFor
+            \Let{A}{\mathcal{A}.\textsf{init}(1^\lambda, n, t)}
+            \Comment{Boot adversarial ITM}
+            \Let{\overline{C}}{[\,]}
+            \For{$i \gets 1 \text{ to } n - t$}
+                \Let{\overline{C}[i]}{[\,]}
+            \EndFor
+            \For{$r \gets 1 \text{ to } p(\lambda)$}
+                \Let{C}{\emptyset}
+                \For{$i \gets 1 \text{ to } n - t$}
+                    \Let{C}{C \cup \{P_i.\textsf{execute}(\overline{C}[i])\}}
+                    \Comment{Execute honest party $i$ for round $r$}
+                \EndFor
+                \Let{\overline{C}}{A.\textsf{execute}(C)}
+                \Comment{Execute rushing adversary for round $r$}
+                \For{$c \in C$}\Comment{Ensure all parties will receive message $c$}
+                    \For{$i \gets 1 \text{ to } n - t$}
+                        \label{alg.environment.connectivity}
+                        \State{$\textsf{assert}(c \in \overline{C}[i])$}
+                    \EndFor
+                \EndFor
+            \EndFor
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

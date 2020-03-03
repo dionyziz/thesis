@@ -26,7 +26,7 @@ output tapes that can be written to by external machines. The machine can decide
 to pause computation by entering a special state and its computation is resumed
 by writing to its input tape.
 
-The environment spawns $n$ honest parties running the honest protocol $\Pi$ as
+The environment spawns $n - t$ honest parties running the honest protocol $\Pi$ as
 $n$ different Interactive Turing Machines. The environment also spawns one
 adversarial Interactive Turing Machine $\mathcal{A}$. The honest parties and the
 adversary can pass messages to the environment and receive messages from it by
@@ -49,6 +49,49 @@ Despite the similarities on the surface, we do not fully employ it and neither
 are our protocols composable, nor are our security proofs simulation-based. On
 the contrary, we use a direct property-based approach in our proofs instead of
 employing universally composable functionalities.
+
+A skeleton for the environment is illustrated in Algorithm~\ref{alg.envirnment}.
+
+\input{chapters/background/algorithms/alg.environment}
+
+At the beginning of the execution, all the ITMs are booted by invoking their
+\textsf{init} method. The environment spins up $n - t$ honest machines that run
+the protocol $\Pi$ and one adversarial machine that runs the protocol
+$\mathcal{A}$ and represents the $t$ adversarial parties. These machines are
+stateful, and so we denote the respective ITM (which can be paused and resumed)
+by $P_i$ for the honest parties (running protocol $\Pi$) and by $A$ for the
+adversary (running protocol $\mathcal{A}$). The machines are given time
+polynomial in $\lambda$ by invoking their initialization with the parameter
+$1^\lambda$. During initialization, the adversary
+learns of the number of honest parties $n - t$ and adversarial parties $t$.
+Importantly, the honest parties do not have this privilege. We
+call this setting \emph{permissionless setting}\index{Permissionless} (also
+known as the \emph{anonymous byzantine} or \emph{open setting}), because honest
+parties are not informed of each others' identities nor their count. Contrary to
+our treatment throughout this thesis, there also exists a
+\emph{permissioned}~\cite{consensus-sok} setting in the blockchain literature.
+In that setting, the $n$ nodes are given authenticated channels between each
+other and the quantity $n$ is known to all parties. We will not make this
+assumption here. The fact that we are working in the permissionless setting
+gives rise to the \emph{decentralized}\index{Decentralized} title of this
+thesis.
+
+Time is quantized into discrete \emph{rounds}\index{Round}\index{Slot} (or \emph{slots}) numbered $r = 1, 2, 3, \cdots$.
+The
+environment contains a main loop which executes one iteration per round $r$ for
+a total polynomial number of rounds $p(\lambda)$. During
+every round, it first activates every honest party $P_i$ by invoking its
+\textsf{execute} method. Subsequently, at the end of
+the round, it actives the adversary $A$. The fact that the adversary is activated at
+the end of every round is an advantage for the adversary. We call such an
+adversary a \emph{rushing adversary}\index{Rushing Adversary}, because it can use its computational power
+for the round after it has observed what the honest parties have done during the
+same round. Both the honest party and the adversary can know the index of the
+current round by counting how many times they have been activated so far in
+their persistent state. Because both the honest parties and the
+adversary are PPT machines, they will run for polynomial time every time they
+are activated. Additionally, we assume $n$ is polynomial, thus ensuring the
+total execution time is polynomial.
 
 \subsection{The Network}
 
