@@ -6,19 +6,21 @@
             \Let{Q}{[\,]}
             \For{$(k, v) \in f$}
                 \Let{Z[k]}{H(\text{``c:''} \concat v)}
-                \Let{Q}{Q \concat k}
+                \Let{Q}{Q \concat k}\Comment{Queue key for upward propagation}
             \EndFor
             \Let{N}{[H(\epsilon)]}
             \For{$i \gets 1 \text{ to } p(\lambda)$}
+                \Comment{Compute hashes of empty subtree with height $i$}
                 \Let{N[i]}{H(N[i - 1] \concat N[i - 1])}
             \EndFor
             \While{$Q \neq [\,]$}
                 \Let{k}{Q[0]}
                 \Let{Q}{Q[1{:}]}
                 \If{$Z[k \xor 1] = \bot$}
-                    \Let{Z[k \xor 1]}{N[|k|]}
+                    \Let{Z[k \xor 1]}{N[p(\lambda) - |k|]}
                 \EndIf
-                \Let{k}{k[1{:}]}
+                \Let{k}{k[{:}-1]}\Comment{Consume the last bit of the key}
+                \Let{Z[k]}{H(Z[k0] \concat Z[k1])}
                 \If{$k \neq \epsilon$}
                     \Let{Q}{Q \concat k}
                 \EndIf
@@ -33,7 +35,7 @@
             \Let{\pi}{[\,]}
             \While{$k \neq \epsilon$}
                 \Let{\pi}{\pi \concat Z[k \xor 1]}
-                \Let{k}{k[1{:}]}
+                \Let{k}{k[{:}-1]}
             \EndWhile
             \State\Return$\pi$
         \EndFunction

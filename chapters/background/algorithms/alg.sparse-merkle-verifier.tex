@@ -13,12 +13,12 @@
             \EndIf
             \Let{e}{H(v)}
             \For{$h \in \pi$}
-                \If{$k \mod 2 = 0$}
+                \If{$k \bmod 2 = 0$}
                     \Let{e}{H(e) \concat h}
                 \Else
                     \Let{e}{h \concat H(e)}
                 \EndIf
-                \Let{k}{k[1{:}]}
+                \Let{k}{k[{:}-1]}
             \EndFor
             \State\Return{$e = s$}
         \EndFunction
