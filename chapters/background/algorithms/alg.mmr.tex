@@ -1,0 +1,19 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.mmr} The Merkle Mountain Range construction.}
+    \begin{algorithmic}[1]
+        \Function{\sf peaks$^H$}{$S$}
+            \Let{v}{\epsilon}
+            \While{$S \neq \epsilon$}
+                \Let{p}{2^{\lfloor \log|S| \rfloor}}
+                \Let{L}{S[{:}p]}
+                \Let{S}{S[p{:}]}
+                \Let{v}{v \concat \textsf{compress-MT}^H(L)}
+            \EndWhile
+            \State\Return{$v$}
+        \EndFunction
+        \Function{\sf compress$^H$}{$S$}
+            \State\Return{$H(\textsf{peaks}^H(S))$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}

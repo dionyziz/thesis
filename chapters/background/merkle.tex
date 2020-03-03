@@ -332,4 +332,76 @@ discussed above, this same size can also be achieved in Sparse Merkle Trees with
 the appropriate optimizations.
 \end{remark}
 
-\todo{Merkle Mountain Ranges}
+\subsection{Merkle Mountain Ranges}
+It is useful to use authenticated sequences as an append-only
+log. In that case, it becomes necessary to succinctly prove to verifiers who only hold
+a root that the underlying sequence has only been appended to and not altered.
+
+Authenticated sequences can be augmented with an additional \emph{extend} operation.
+The primitive is extended by two additional methods, $\textsf{prove-extend}$ and
+$\textsf{ver-extend}$. The method $\textsf{prove-extend}(S_1, U)$ takes two sequences
+$S_1$, $U$ and produces a proof $\pi$. The method $\textsf{ver-extend}(s_1, s_2,
+\pi, U)$ takes two roots $s_1$ and $s_2$ corresponding to sequences $S_1$ and $S_2 =
+S_1 \concat U$ respectively, a proof $\pi$, and a sequence $U$ and returns a boolean.
+Given a verifier who has a trusted root $s_1$ which corresponds to a sequence $S_1$,
+the prover wants to prove to the verifier that a new root $s_2$ corresponds to
+the sequence $S_2$. Succinctness here mandates that $|\pi| \in \bigO(|U| +
+polylog(|S_1|))$ and correctness and security as defined as expected.
+
+An additional variant allows equipping authenticated sequences with a \emph{prefix}
+operation. This is similar to \emph{extend}, but the sequence $U$ is unknown to the
+verifier. More specifically, the primitive is extended by two methods,
+$\textsf{prove-prefix}$ and $\textsf{ver-pref}$. The method
+$\textsf{prove-prefix}(S_1, S_2)$ takes two sequences $S_1$ and $S_2$ and produces a
+proof $\pi$. The method $\textsf{ver-pref}(s_1, s_2, \pi)$ takes two roots
+$s_1$ and $s_2$ corresponding to sequences $S_1$ and $S_2$ respectively and returns a
+boolean. Here, the prover claims that there \emph{is} some sequence $U$ which extends
+the previous sequence $S_1$, but the verifier is indifferent as to what it is, beyond
+the fact that $s_1$ corresponds to a prefix of the sequence that $s_2$ corresponds
+to. Note that in this case, $U$ can be $\bigO(\Theta)$, but succinctness
+requires that $|\pi| \in \bigO(polylog(S_2))$, and so $U$ cannot be made part of
+the proof.
+
+These two extensions to authenticated sets can be achieved by Merkle Mountain
+Ranges\index{Merkle Mountain Range}, which were introduced by Laurie, Langley
+and Kasper in the context of Certificate Transparency~\cite{ct} and named by
+Todd~\cite{mmr}.
+
+The Merkle Mountain Range construction is illustrated in
+Algorithm~\ref{alg.mmr}. The $\textsf{compress}$ algorithm makes use of the
+$\textsf{compress-MT}$ function of a standard Merkle Tree. It takes as input a
+sequence $S$ to compress. In each step, it
+takes the longest prefix of $S$ which is a power of $2$ and calculates its
+Merkle Tree Root using the standard Merkle Tree compression function
+$\textsf{compress-MT}$ which is called a \emph{peak}. It does this with
+successively smaller prefixes until the whole sequence is consumed. It then
+collects all of these peaks by concatenating them together and hashies them to
+produce the final root. The number of peaks produced will be equal to the number
+of ones in the bit representation of the number $|S|$ and so are
+$\bigO(\log|S|)$.
+
+\input{chapters/background/algorithms/alg.mmr}
+
+It is possible to implement $\textsf{prove}$ and $\textsf{verify}$ akin to
+Merkle Trees. The implementations are almost identical, with the only difference
+being that, at the level of the peaks, all $\bigO(\log|S|)$ peaks must be
+included in $\pi$ to be able to arrive at the final root. The construction
+remains succinct.
+
+To prove that a particular element $e$ has been added to the Merkle Mountain
+Range, it is sufficient to only present the peaks to the verifier, a
+logarithmically sized proof. This allows the verifier to produce the new Merkle
+Mountain Range root as well as the new peaks. Therefore, to show extension by a
+sequence $U$, $\textsf{prove-extend}$ suffices to send the peaks to the verifier
+and allow the verifier calculate the new peaks and root for every element in $U$
+in order.
+
+On the other hand, to show prefix, it suffices to show the peaks as
+well as a logarithmic number of elements corresponding to $U$. More
+specifically, $U$ is consumed in successively larger portions, each used to
+match one of the outstanding peaks of $S$. For each portion of $U$, only the
+root of the corresponding Merkle Tree that matches the peak in $S$ needs to be
+sent in the proof. Once $U$ has been consumed sufficiently to match all the
+peaks of $S$ (for which $\bigO(\log|S|)$ hashes are needed), the remaining elements of
+$U$ are consumed in powers of two (for which $\bigO(\log|U|)$ hashes are
+needed). Hence, $\textsf{prove-prefix}$ is also succinct.
