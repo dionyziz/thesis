@@ -17,7 +17,7 @@ on. A set $S$ is compressed by invoking $\textsc{compress}(S)$
 which produces the root $s$. When an honest prover wishes to prove that some
 element $e$ exists in $S$, they produce an \emph{inclusion proof}\index{Inclusion Proof} $\pi =
 \textsc{prove}(S, e)$. When the verifier receives an element $e$ together
-with a proof of inclusion $\pi$, they check its veracity by invoking
+with an inclusion proof $\pi$, they check its veracity by invoking
 $\textsc{verify}(\pi, e, s)$, which returns $\true$ or $\false$.
 
 Authenticated set protocols must be correct. This means that honest
@@ -216,10 +216,10 @@ has been established, the limitation that $|S| = 2^k$ can also be relaxed by
 working with an incomplete binary tree instead of a complete binary tree.
 
 \subsection{Sparse Merkle Trees}
-Merkle Trees allow \emph{proofs of inclusion}, but not
-\emph{proofs of exclusion}, i.e, proving that an element $e$ is \emph{not} in
+Merkle Trees allow \emph{inclusion proofs}, but not
+\emph{exclusion proofs}, i.e, proving that an element $e$ is \emph{not} in
 the $S$ that was used to construct the tree root $s$. We can extend the
-authenticated set protocol to support such proofs of exclusion. To
+authenticated set protocol to support such exclusion proofs. To
 do this, we allow the data structure to store key-value pairs. This generalizes
 the previous construction, as keys can be taken to be the indices within the
 sequence $S$. As $|S|$ is polynomial in $\lambda$, we can treat this new
