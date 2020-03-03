@@ -215,6 +215,15 @@ Once the marking of nodes as leaves or internal nodes
 has been established, the limitation that $|S| = 2^k$ can also be relaxed by
 working with an incomplete binary tree instead of a complete binary tree.
 
+Due to the way the Merkle Tree construction works, it can also be used to work
+with \emph{authenticated sequences}\index{Authenticated Sequence} in which positions are significant. To make
+this explicit, the $\textsf{verify}$ function can be extended to also accept a
+positional argument $i$. Correctness and succinctness are defined as before.
+The security definition must then be altered to mandate that no
+polynomial adversary can produce arguments $S, e, i, \pi$ such that
+$\textsf{verify}(S, e, i, \pi) \land S[i] \neq e$, except with negligible
+probability. The construction and proof of security remain the same.
+
 \subsection{Sparse Merkle Trees}
 Merkle Trees allow \emph{inclusion proofs}, but not
 \emph{exclusion proofs}, i.e, proving that an element $e$ is \emph{not} in
