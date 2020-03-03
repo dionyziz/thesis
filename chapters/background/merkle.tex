@@ -86,11 +86,11 @@ namely the leaf stored at $Z[|S| + i]$. It then traverses the path from that
 leaf up to the root, maintaining the index of the current node in the variable
 $i$. In every iteration, it includes a bit indicating whether the current node
 is a left child ($b = 0$) or a right child ($b = 1$). For each node, it includes
-the value $Z[i \xor 1]$ of the node's sibling. To verify a proof, the verifier
-successively hashes the element whose inclusion is proven with the hashes $h$ of
-the siblings provided in the proof $\pi$ on the correct side indicated by $b$.
-In the end, it checks whether it has arrived at the trusted root $s$ and this
-determines the result of the verification.
+the value $Z[i \xor 1]$ of the node's sibling, which has index $i \xor 1$. To
+verify a proof, the verifier successively hashes the element whose inclusion is
+proven with the hashes $h$ of the siblings provided in the proof $\pi$ on the
+correct side indicated by $b$. In the end, it checks whether it has arrived at
+the trusted root $s$ and this determines the result of the verification.
 
 Correctness is achieved because the hash function is deterministic and
 \textsc{verify} applies hashes in the same manner as \textsc{heapify} does.
