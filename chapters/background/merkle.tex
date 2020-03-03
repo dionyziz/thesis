@@ -249,12 +249,8 @@ keeping in mind that no adversary should be able to prove that the function is
 defined where it is not, or that the function is undefined where it is.
 Exclusion proofs\index{Exclusion Proof} for some key $k$ are constructed by showing that $f(k) = \bot$.
 
-\emph{Sparse Merkle Trees}\index{Sparse Merkle Tree}, also known as \emph{Merkle--Patricia Tries}\index{Merkle--Patricia Trie}
-\footnote{The two terms have a different interpretation based on implementation
-details. The term \emph{Merkle--Patricia Trie} is used when the base of the
-Sparse Merkle Tree is $16$ and the keys are treated as strings, while the term
-\emph{Sparse Merkle Tree} is used when the base is $2$ and the keys are treated
-as integers. The two data structures are identical.} are an authenticated
+\emph{Sparse Merkle Trees}\index{Sparse Merkle Tree}, introduced by Laurie
+and Kasper~\cite{revocation-transparency}, are an authenticated
 dictionary construction.
 
 The prover construction is illustrated in
@@ -274,7 +270,7 @@ $Z[\epsilon]$.
 
 \input{chapters/background/algorithms/alg.sparse-merkle-prover}
 
-This tree has an exponential number of nodes. The trick to make this
+This tree has an exponential number of nodes. The trick~\cite{sparse-mt} to make this
 evaluation possible in polynomial time is to observe that $f$ is only defined
 in a polynomial number $p(\lambda)$ of values and hence most of the leaves will
 have a value of $H(\epsilon)$. The root of any subtree of the same size whose
@@ -304,5 +300,36 @@ As such, no cases need to be taken for $|\pi| \neq k$. Lastly, for the detail
 of the special value $\bot$, we note that any fraudulent claim of inclusion for
 points where the function is undefined or vice versa will cause a collision
 because $\text{``c:''} \concat v \neq \epsilon$ for any $v$.
+
+Sparse Merkle Tree proof sizes are $|k|\lambda$ where $|k|$ denotes the size of
+the key and $|\lambda|$ denotes the output of the hash function $H$. They can be
+optimized by leaving out hashes $N$ corresponding to empty subtree siblings,
+which can be computed locally by the verifier, bringing the proof size down to
+$|k| + \lambda\log{n}$.
+
+Sparse Merkle Trees support a wide range of useful operations, among others
+succinctly proving that an \emph{assignment} has been made~\cite{edrax}. The
+authenticated dictionary primitive can include a
+$\textsf{prove-assign}(f_1, k, v)$ which produces a proof $\pi$ and a
+$\textsf{ver-assign}(s_1, s_2, \pi, k, v)$
+method which returns a boolean. Given a trusted root $s_1$ that the verifier
+knows about which corresponds to some function $f_1$, the prover can prove that a
+new root $s_2$ corresponds to the function $f_2$ which is identical to $f_1$,
+except with some key $k$ assigned to value $v$ (the value $v$ can be $\bot$
+if $f_2$ is now undefined at point $k$). Correctness and security are defined as
+expected. To implement proofs of assignment, the prover shows that it has
+replaced the log-sized path corresponding to $k$ with the correct values by
+presenting all sibling hashes.
+
+\begin{remark}[Merkle--Patrcia Tries]
+\emph{Merkle--Patricia Tries}\index{Merkle--Patricia Trie} are Sparse Merkle
+Trees which apply path compression akin to Patricia Tries~\cite{patricia}.
+However, despite increased implementation complexity, they do not achieve any
+improvement in performance that cannot be achieved in standard Sparse Merkle
+Trees. Proofs in Patricia Tries are
+$|k| + \lambda\log{n}$ bits long (and $\log{n}$ is $\bigO(|k|)$), but, as
+discussed above, this same size can also be achieved in Sparse Merkle Trees with
+the appropriate optimizations.
+\end{remark}
 
 \todo{Merkle Mountain Ranges}
