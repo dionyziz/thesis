@@ -1,4 +1,4 @@
-\subsection{Hash Functions}
+\subsection{Hash Functions}\index{Hash}
 A hash function $H^s: \mathcal{M} \longrightarrow \{0, 1\}^\lambda$ is a function
 parameterized by the security parameter $\lambda$ which takes any string from the distribution of input strings $\mathcal{M}$ and
 outputs a string of constant size $\lambda$. To capture the fact that the hash
@@ -18,7 +18,7 @@ collisions in hash functions. This is formalized in the next definition.
 
 \input{./chapters/background/algorithms/alg.collision-resistance.tex}
 
-\begin{definition}[Collision resistance]
+\begin{definition}[Collision resistance]\index{Collision Resistance}
   A hash function $H: \{0, 1\}^* \longrightarrow \{0, 1\}^\lambda$ is called
   \emph{collision resistant} if for all PPT adversaries $\mathcal{A}$ there is a
   negligible function $\negl$ such that
