@@ -7,7 +7,7 @@ this short trusted root string, the verifier receives claims from untrusted
 \emph{provers} which claim that a certain piece of data $e$ existed in $S$.
 The verifier's job is to decide whether such claims are truthful or fraudulent.
 
-This protocol is an \emph{authenticated set}. It consists of
+This protocol is an \emph{authenticated set}\index{Authenticated Set}. It consists of
 four algorithms $\mathcal{G}$, $\textsc{compress}$, $\textsc{prove}$,
 $\textsc{verify}$. At the beginning of the execution, $\mathcal{G}(1^\lambda)$
 is invoked to initialize the protocol parameters. These parameters can be shared
@@ -15,7 +15,7 @@ among multiple invocations of the protocol. As these parameters are fixed by the
 protocol in its concrete implementations, we will make them implicit from now
 on. A set $S$ is compressed by invoking $\textsc{compress}(S)$
 which produces the root $s$. When an honest prover wishes to prove that some
-element $e$ exists in $S$, they produce an \emph{inclusion proof} $\pi =
+element $e$ exists in $S$, they produce an \emph{inclusion proof}\index{Inclusion Proof} $\pi =
 \textsc{prove}(S, e)$. When the verifier receives an element $e$ together
 with a proof of inclusion $\pi$, they check its veracity by invoking
 $\textsc{verify}(\pi, e, s)$, which returns $\true$ or $\false$.
@@ -70,7 +70,7 @@ Algorithm~\ref{alg.authenticated}.
 \end{definition}
 
 A construction that solves this problem which is used extensively in blockchain
-protocols is the \emph{Merkle Tree}~\cite{merkle}. This construction is
+protocols is the \emph{Merkle Tree}~\cite{merkle}\index{Merkle Tree}. This construction is
 illustrated in Algorithm~\ref{alg.merkle}. It is parameterized by a hash
 function $H$. The construction presented works for $|S|$ equal to a power of
 $2$.
@@ -227,7 +227,7 @@ authenticated data structure as a means to encode a partial function
 $f: \{0, 1\}^{p(\lambda)} \Rightarrow \{0, 1\}^*$ for some fixed polynomial $p$.
 We will only concern ourselves with such functions defined only in a polynomial
 number of inputs, $|f| = p(\lambda)$.
-We call this primitive an \emph{authenticated dictionary}.
+We call this primitive an \emph{authenticated dictionary}\index{Authenticated Dictionary}.
 
 The new protocol consists firstly of $\textsf{compress}$ which takes some function $f$
 and returns a succinct root $s$. Secondly, of a function $\textsc{prove}$ which
@@ -238,8 +238,9 @@ returns $\true$ or $\false$ indicating whether the proof is correct.
 Correctness, succinctness are defined as before. Security is also similar,
 keeping in mind that no adversary should be able to prove that the function is
 defined where it is not, or that the function is undefined where it is.
+Exclusion proofs\index{Exclusion Proof} for some key $k$ are constructed by showing that $f(k) = \bot$.
 
-\emph{Sparse Merkle Trees}, also known as \emph{Merkle--Patricia Tries}
+\emph{Sparse Merkle Trees}\index{Sparse Merkle Tree}, also known as \emph{Merkle--Patricia Tries}\index{Merkle--Patricia Trie}
 \footnote{The two terms have a different interpretation based on implementation
 details. The term \emph{Merkle--Patricia Trie} is used when the base of the
 Sparse Merkle Tree is $16$ and the keys are treated as strings, while the term
