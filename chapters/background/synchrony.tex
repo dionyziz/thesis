@@ -153,6 +153,14 @@ The requirement that messages diffused at the end of one round are delivered at
 the beginning of the next is the \emph{synchronous model}\index{Synchronous}. A
 large part of our analysis will be made there.
 
+In addition to the details specified in the environment of
+Algorithm~\ref{alg.environment}, we allow the honest parties to receive
+auxiliary \emph{input}, distinguished from the network tape. This input is
+adversarially chosen and can influence the decisions of the honest parties. Once
+these notions have been defined, such input will correspond to
+\emph{transactions} that the honest parties will wish to include in their
+blockchains.
+
 \input{chapters/background/algorithms/alg.delta-environment}
 
 A relaxation of the synchronous model is the $\Delta$-bounded
