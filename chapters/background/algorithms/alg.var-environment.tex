@@ -1,0 +1,52 @@
+\begin{figure}[!ht]
+\begin{algorithm}[H]
+    \caption{\label{alg.var-environment} The \emph{variable difficulty}
+             environment in the $\Delta$-bounded delay setting.}
+    \begin{algorithmic}[1]
+        \Function{$\mathcal{Z}_{\Pi,\mathcal{A}}$}{$1^\lambda$}
+            \Comment{Boot adversarial ITM}
+            \Let{A}{\textsf{new } \mathcal{A}(1^\lambda)}
+            \Let{(n_1, t_1)}{A.\textsf{init}()}
+            \Let{I}{\emptyset}
+            \For{$i \gets 1 \text{ to } n_1 - t_1$}
+                \Comment{Boot honest ITMs}
+                \Let{P_i}{\textsf{new } \Pi(1^\lambda)}
+                \Let{I}{I \cup \{i\}}
+            \EndFor
+            \Let{\overline{C}}{[\,]}
+            \For{$i \in I$}
+                \Let{\overline{C}[i]}{[\,]}
+            \EndFor
+            \Let{\textsf{seen}}{[\,]}
+            \Let{\textsf{diffused}}{[\,]}
+            \For{$r \gets 1 \text{ to } p(\lambda)$}
+                \Let{C}{\emptyset}
+                \For{$i \in I$}
+                    \Let{\textsf{seen}[i]}{\textsf{seen}[i] \cup \overline{C}[i]}
+                    \Let{C}{C \cup \{P_i.\textsf{execute}(\overline{C}[i])\}}
+                    \Comment{Execute honest party $i$ for round $r$}
+                \EndFor
+                \Let{\textsf{diffused}[r]}{C}
+                \Let{(\overline{C}, \textsf{kill}, \textsf{spawn}, t_r)}{A.\textsf{execute}(C)}
+                \For{$(i, j) \in \textsf{spawn}$}\Comment{Spawn new honest parties as clones of old ones}
+                    \State{$\textsf{assert}(P_j \neq \bot)$}
+                    \Let{P_i}{P_j}
+                    \Let{\textsf{seen}[i]}{\textsf{seen}[i]}
+                    \Let{I}{I \cup \{i\}}
+                \EndFor
+                \For{$i \in \textsf{kill}$}\Comment{Kill honest parties of the adversary's choice}
+                    \Let{P_i}{\bot}
+                    \Let{I}{I \setminus \{i\}}
+                \EndFor
+                \Let{n_r}{|I| + t_r}
+                \For{$c \in \bigcup_{1 \leq r' \leq r - \Delta}\textsf{diffused}[r']$}\Comment{Ensure $\Delta$-delay}
+                    \For{$i \in I$}
+                        \State{$\textsf{assert}(c \in \textsf{seen}[i])$}
+                    \EndFor
+                \EndFor
+            \EndFor
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

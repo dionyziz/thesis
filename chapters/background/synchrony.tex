@@ -162,17 +162,32 @@ Chapters~\ref{chapter:work},
 explored in the synchronous model. We extend our protocol to the $\Delta$-bounded
 delay model in Chapter~\ref{chapter:variable}.
 
-\subsection{Synchrony and Adaptivity}
-\todo{Expand this subsection}
+\subsection{Evolving Population}
+So far, we have defined the environment for executions in which $n$ and $t$ are
+fixed throughout the execution. We call this setting the
+\emph{static difficulty}\index{Static Difficulty}~\cite{backbone,backbone-new}
+setting. The model can be relaxed to allow the population to evolve with time.
+This gives rise to the
+\emph{variable difficulty}\index{Variable Difficulty}~\cite{varbackbone}
+model.
+Instead of two fixed values $n$ and $t$, we instead consider two
+\emph{sequences} of values
+$\{n_r\}_{r \in [p(\lambda)]}$ and $\{t_r\}_{r \in [p(\lambda)]}$.
+At round $r$, when $n_r - t_r < n_{r-1} - t_{r-1}$, the number of honest
+parties has decreased and $(n_{r-1} - t_{r-1}) - (n_r - t_r)$ honest ITM
+instances are killed by the environment. The choice of which instances will be
+killed is made by the adversary. When
+$n_r - t_r > n_{r-1} - t_{r-1}$, the number of honest parties has increased and
+$(n_r - t_r) - (n_{r-1} - t_{r-1})$ new honest instances are spawned up by
+cloning the state of some existing honest instances. The choice of which
+instances to clone is made by the adversary. An increasing or decreasing $t_r$
+does not affect the spawned instances. Finally, the choice of how $n_r$
+and $t_r$ evolve is made \emph{adaptively} by the adversary~\cite{variable-new}
+based on the execution so far.
 
-\subsubsection{The Synchronous and Bounded Delay Setting}
+\input{chapters/background/algorithms/alg.var-environment}
 
-We employ the model from~\cite{praos}, which is in turn based
-on~\cite{ouroboros} and~\cite{backbone}.
-The formalization we use below captures both synchronous and semi-syn\-chronous
-communication; as well as both semi-adaptive and fully adaptive corruptions.
-
-\subsubsection{(Semi-)Adaptive Corruptions}
+\subsection{Adaptive Corruption}
 \label{sec:prelim-corr}
 
 The adversary  influences the protocol execution by interacting
