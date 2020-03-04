@@ -55,14 +55,14 @@ A skeleton for the environment is illustrated in Algorithm~\ref{alg.environment}
 \input{chapters/background/algorithms/alg.environment}
 
 At the beginning of the execution, all the ITMs are booted by invoking their
-\textsf{init} method. The environment spins up $n - t$ honest machines that run
+constructors. The environment spins up $n - t$ honest machines that run
 the protocol $\Pi$ and one adversarial machine that runs the protocol
 $\mathcal{A}$ and represents the $t$ adversarial parties. These machines are
 stateful, and so we denote the respective ITM (which can be paused and resumed)
 by $P_i$ for the honest parties (running protocol $\Pi$) and by $A$ for the
 adversary (running protocol $\mathcal{A}$). The machines are given time
-polynomial in $\lambda$ by invoking their initialization with the parameter
-$1^\lambda$. During initialization, the adversary
+polynomial in $\lambda$ by invoking their constructors with the parameter
+$1^\lambda$. During construction, the adversary
 learns of the number of honest parties $n - t$ and adversarial parties $t$.
 Importantly, the honest parties do not have this privilege. We
 call this setting \emph{permissionless setting}\index{Permissionless} (also

@@ -6,9 +6,9 @@
         \Function{$\mathcal{Z}^{n,t}_{\Pi,\mathcal{A}}$}{$1^\lambda$}
             \For{$i \gets 1 \text{ to } n - t$}
                 \Comment{Boot honest ITMs}
-                \Let{P_i}{\Pi.\textsf{init}(1^\lambda)}
+                \Let{P_i}{\textsf{new } \Pi(1^\lambda)}
             \EndFor
-            \Let{A}{\mathcal{A}.\textsf{init}(1^\lambda, n, t)}
+            \Let{A}{\textsf{new } \mathcal{A}(1^\lambda, n, t)}
             \Comment{Boot adversarial ITM}
             \Let{\overline{C}}{[\,]}
             \For{$i \gets 1 \text{ to } n - t$}
