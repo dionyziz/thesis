@@ -76,7 +76,7 @@ assumption here. The fact that we are working in the permissionless setting
 gives rise to the \emph{decentralized}\index{Decentralized} title of this
 thesis.
 
-Time is quantized into discrete \emph{rounds}\index{Round}\index{Slot} (or \emph{slots}) numbered $r = 1, 2, 3, \cdots$.
+Time is quantized into discrete \emph{rounds}~\cite{backbone}\index{Round}\index{Slot} (or \emph{slots}~\cite{ouroboros}) numbered $r = 1, 2, 3, \cdots$.
 The
 environment contains a main loop which executes one iteration per round $r$ for
 a total polynomial number of rounds $p(\lambda)$. During
@@ -110,7 +110,7 @@ $\overline{C}[i]$ for every party $i$. The adversary can reorder the messages an
 insert as many of her own as she wishes. That is, it is possible that
 $\overline{C}[i]$ will contain more messages than $\overline{C}$ and that the
 messages in $\overline{C}[i]$ will appear in a different order than in
-$\overline{C}$.
+$\overline{C}$. As such, communication is not authenticated.
 
 However, she must ensure that all messages diffused by any honest party
 during the previous round appear in the network tape of every other honest party
