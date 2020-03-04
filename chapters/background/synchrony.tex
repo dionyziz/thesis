@@ -210,23 +210,25 @@ based on the execution so far.
 \subsection{Adaptive Corruption}
 \label{sec:prelim-corr}
 
-The adversary influences the protocol execution by corrupting parties.
-The adversary can only corrupt a party $\party_i$ if it is given
-permission by the environment $\env$ running the protocol execution (captured as
-a special message from $\env$ to $\adv$).
-%The
-%permission is in the form of a message $(\mathsf{Corrupt}, \party_i)$ which is
-%provided to the adversary by the environment.
-Upon receiving permission from the environment, the adversary
-corrupts $\party_i$ after a certain delay of $\cordelay$ slots, where $\cordelay$ is
-a parameter of our model. In particular, if $\cordelay=0$ we talk about
-\emph{fully adaptive corruptions} and the corruption is immediate.
-The model with $\cordelay>0$ is
-referred to as allowing \emph{$\cordelay$-semi-adaptive corruptions} (as opposed to the
-\emph{static corruptions model}, where parties can only be corrupted before the
-start of the execution).
-%
-A corrupted
-party $\party_i$ relinquishes its entire state to~$\adv$;
-from this point on, the adversary will be activated in place of the
-party $\party_i$.
+The environment already allows the adversary to control a certain number
+of parties. If the identities of these parties are fixed at the beginning of
+the execution, as presented before, we speak of
+\emph{static corruption}\index{Static Corruption}. This is sufficient to treat
+Proof-of-Work blockchains (Chapters~\ref{chapter:work}, \ref{chapter:variable}
+and \ref{chapter:superlight}), but a more nuanced model is required for
+Proof-of-Stake (Chapters~\ref{chapter:stake} and \ref{chapter:sidechains}).
+In Proof-of-Stake protocols, just \emph{which} parties are
+corrupted will be significant, because the corrupted parties will be maintaining
+important secrets in their local state (namely, keys controlling money). As
+such, it is not sufficient to capture the notion that $t$ of $n$ parties are
+corrupted, but the model will require the adversary to specify which parties are
+corrupted. At the point of corruption, the honest party $\party_i$ relinquishes
+its entire state to the adversary and is killed, while $t$ is incremented by
+$1$. In this more detailed model, the adversary first attempts to corrupt an
+honest party $P_i$ by requesting to do so from the environment. This permission
+is granted after a certain delay of $\cordelay$ rounds, where $\cordelay$ is a
+parameter of our model (and can be different from the network delay $\Delta$).
+In particular, if $\cordelay=0$ we talk about \emph{fully adaptive
+corruptions}\index{Fully Adaptive Corruption} and the corruption is immediate.
+The model with $\cordelay>0$ is referred to as allowing \emph{semi-adaptive
+corruptions}\index{Semi-Adaptive Corruption}.
