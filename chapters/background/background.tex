@@ -57,6 +57,30 @@ parties and the adversary.
 \subsection{Blockchain Backbone}
 \todo{Restore old NIPoPoWs paper backbone overview section}
 
+\begin{remark}[Impossibility of full semi-synchrony]
+Revisiting the $\Delta$-bounded delay model, a folklore observation that has not appeared in
+the litature is that blockchain protocols are impossible to obtain in the fully
+semi-synchronous setting where \emph{no} conditions are imposed on $\Delta$,
+because of the anonymous nature of the model. This impossibility stems from the
+fact that $n$ is unknown to the honest parties. To see this, consider an
+honest majority execution in which an adversary controls $t = (1 - \delta)(n -
+t)$ parties for some $\delta > 0$. If the honest parties take a decision of
+transaction acceptance within some time $\Delta$, then that $\Delta$ can be used
+as network delay in which the messages of a percentage larger than $\delta$ of
+the honest parties are delayed. That setting is then indistinguishable to the
+honest parties from a setting in which the adversary controls the majority of
+the parties $t > n - t$, as there is an honest percentage which is effectively
+eclipsed. This is the case regardless of which solution is used to approach the
+problem of consensus -- whether it is through blockchains or other means.
+Standard dishonest majority attacks therefore become possible avenues to break
+the protocol. Hence, the $\Delta$-bounded delay setting in which $\Delta$ is
+unknown but some conditions are imposed on it is the best possible model we can
+hope for, as further relaxation would not allow for a solution, as long as
+dishonest majority breaks the protocol. The model can only be improved by
+relaxing the conditions.
+\end{remark}
+
+
 % Honest Majority Assumption
 % Chain Growth
 % Common Prefix
