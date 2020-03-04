@@ -1,5 +1,15 @@
 \subsection{The Environment}
 
+We will begin with a simple model and make it successively more nuanced until it
+is sufficiently sophisticated to satisfactorily capture the real world. First,
+we describe the simple environment in which the network is \emph{synchronous}
+and the execution is with \emph{static difficulty}. We then relax the synchrony
+assumption by introducing a $\Delta$-bounded delay network. Subsequently, we
+relax the static assumption by introducing executions of
+\emph{variable difficulty} in which populations can be adversarially evolved.
+Last, we give the adversary even more power by allowing her to adaptively
+corrupt parties of her choice. We now introduce these models in order.
+
 In our setting, we will study executions of protocols in which some parties
 are \emph{honest} while others are \emph{adversarial}. All the honest parties
 typically run the same code termed \emph{the honest protocol} (which is the
