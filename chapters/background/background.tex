@@ -54,6 +54,43 @@ parties and the adversary.
 \input{chapters/background/math}
 \section{Blockchain Protocols}
 
+In our treatment, we deal with the \emph{consensus layer}\index{Consensus Layer}
+of the protocol. Transactions are part of the
+\emph{application layer}\index{Application Layer}. As we will not concern
+ourselves about their format, we will allow the application layer to specify any
+transaction format it wishes. Therefore, transactions can be any strings that
+are deemed valid by the application layer.
+
+\begin{definition}[Transaction]\index{Transaction}
+  A predefined language $\mathcal{L}_{tx}$ of strings in $\{0, 1\}^*$ is called
+  a \emph{transaction language}. Elements $tx \in \mathcal{L}_{tx}$ are called
+  \emph{transactions}.
+\end{definition}
+
+While specific applications such as Bitcoin or Ethereum mandate that
+transactions follow a certain format and must include, for example, signatures,
+we will not impose such requirements on our protocol. As there are
+preconceptions about what constitutes a transaction, we feel the need to give
+some examples of transaction languages. The set of valid transactions could be
+the empty set, the set of natural numbers, or the set of triplets of a message,
+a public key, and a digital signature that pass verification under a certain
+signature scheme. While the latter corresponds more closely to practical
+protocols such as Bitcoin, our treatment is quite general and has no
+requirements to remain within this strict format.
+
+Once the set of valid transactions $\mathcal{L}_{tx}$ has been defined by the
+application layer, it can now specify a \emph{validity language} which specifies
+which \emph{sequences} of transactions are valid. This captures what is deemed
+to be a valid transaction given a previous history of transactions in the
+system and allows the application layer to specify, for example, that double
+spending is not allowed.
+
+\begin{definition}[Validity Language]\index{Validity Language}
+  Given a transaction language $\mathcal{L}_{tx}$, a predifined set of finite
+  transaction sequences $\ValLang \subseteq \mathcal{L}_{tx}^*$ is called its
+  \emph{validity language}.
+\end{definition}
+
 \subsection{Blockchain Backbone}
 \todo{Restore old NIPoPoWs paper backbone overview section}
 
