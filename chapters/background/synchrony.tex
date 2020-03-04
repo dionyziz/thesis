@@ -141,13 +141,26 @@ The requirement that messages diffused at the end of one round are delivered at
 the beginning of the next is the \emph{synchronous model}\index{Synchronous}. A
 large part of our analysis will be made there.
 
-A relaxation of the synchronous model is the $\Delta$-synchronous model. In this
-model, the adversary may delay messages up to $\Delta$ rounds.
+\input{chapters/background/algorithms/alg.delta-environment}
+
+A relaxation of the synchronous model is the $\Delta$-bounded
+delay\index{$\Delta$-bounded Delay} model and is illustrated in Algorithm~\ref{alg.delta-environment}. In this model, the adversary may
+delay messages up to $\Delta$ rounds before finally delivering them. Any message
+diffused by any honest party at round $r$ must appear in the network tapes of
+all other honest parties prior to round $r + \Delta$. This $\Delta$ is unknown
+to the honest parties, although the security of the protocol requires that
+$\Delta$, together with other protocol parameters, satisfies a number of
+conditions. As such, this model stands between the \emph{synchronous} setting
+(where $\Delta$ is known by all honest parties beforehand or, equivalently,
+$\Delta = 1$) and the \emph{semi-synchronous} setting (where $\Delta$ is
+completely unknown) in that, while $\Delta$ itself is unknown, it is governed by
+equations which express a trade-off between $\Delta$ and other quantities, and
+these equations are known.
 
 Chapters~\ref{chapter:work},
 \ref{chapter:stake}, \ref{chapter:superlight}, \ref{chapter:sidechains} are
-explored in the synchronous model. Our results extend to the $\Delta$-bounded
-delay model. We explore these extensions in Chapter~\ref{chapter:variable}.
+explored in the synchronous model. We extend our protocol to the $\Delta$-bounded
+delay model in Chapter~\ref{chapter:variable}.
 
 \subsection{Synchrony and Adaptivity}
 \todo{Expand this subsection}
@@ -180,23 +193,6 @@ referred to as allowing \emph{$\cordelay$-semi-adaptive corruptions} (as opposed
 start of the execution).
 %
 A corrupted
-party $\party_i$ will relinquish its entire state to~$\adv$;
+party $\party_i$ relinquishes its entire state to~$\adv$;
 from this point on, the adversary will be activated in place of the
 party $\party_i$.
-
-\subsubsection{(Semi-)Synchronous Communication}
-\label{sec:prelim-comm}
-
-We employ the ``Delayed Diffuse'' functionality $\DelDiff_\Delta$ given in~\cite{praos} to
-model (semi-)synchronous communication among the parties. It allows each party
-to diffuse a message once per round, with the guarantee that it will be
-delivered to all other parties in at most $\Delta$ slots (the delay within this
-interval is under adversarial control). The adversary can also read and reorder
-all messages that are in transit, as well as inject new messages.
-We provide a detailed description of the functionality $\DelDiff_\Delta$ in
-Appendix~\ref{app:diffuse} for completeness.
-
-We refer to the setting where honest parties communicate via $\DelDiff_\Delta$
-as the \emph{$\Delta$-semi-synchronous setting} and sometimes omit $\Delta$ if
-it is clear from the context. The special case of $\Delta=0$ is referred to as
-the \emph{synchronous setting}.

@@ -1,0 +1,39 @@
+\begin{figure}[!ht]
+\begin{algorithm}[H]
+    \caption{\label{alg.delta-environment} The environment and network model in
+             the $\Delta$-bounded delay setting.}
+    \begin{algorithmic}[1]
+        \Function{$\mathcal{Z}^{n,t}_{\Pi,\mathcal{A}}$}{$1^\lambda$}
+            \For{$i \gets 1 \text{ to } n - t$}
+                \Comment{Boot honest ITMs}
+                \Let{P_i}{\textsf{new } \Pi(1^\lambda)}
+            \EndFor
+            \Let{A}{\textsf{new } \mathcal{A}(1^\lambda, n, t)}
+            \Comment{Boot adversarial ITM}
+            \Let{\overline{C}}{[\,]}
+            \For{$i \gets 1 \text{ to } n - t$}
+                \Let{\overline{C}[i]}{[\,]}
+            \EndFor
+            \Let{\textsf{seen}}{[\,]}
+            \Let{\textsf{diffused}}{[\,]}
+            \For{$r \gets 1 \text{ to } p(\lambda)$}
+                \Let{C}{\emptyset}
+                \For{$i \gets 1 \text{ to } n - t$}
+                    \Let{\textsf{seen}[i]}{\textsf{seen}[i] \cup \overline{C}[i]}
+                    \Let{C}{C \cup \{P_i.\textsf{execute}(\overline{C}[i])\}}
+                    \Comment{Execute honest party $i$ for round $r$}
+                \EndFor
+                \Let{\textsf{diffused}[r]}{C}
+                \Let{\overline{C}}{A.\textsf{execute}(C)}
+                \Comment{Execute rushing adversary for round $r$}
+                \For{$c \in \bigcup_{1 \leq r' \leq r - \Delta}\textsf{diffused}[r']$}\Comment{Ensure $\Delta$-delay}
+                    \For{$i \gets 1 \text{ to } n - t$}
+                        \State{$\textsf{assert}(c \in \textsf{seen}[i])$}
+                    \EndFor
+                \EndFor
+            \EndFor
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
