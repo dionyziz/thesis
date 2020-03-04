@@ -111,7 +111,9 @@ the environment. Here, we denote the network messages received by party $i$ as
 $\overline{C}[i]$ and pass them as input to the \textsf{execute} method. The
 party can then \emph{write} messages to the network during the round, which we
 denote by the \textsf{execute} method returning a value. We say that such
-messages are \emph{diffused}\index{Diffuse} to the network. At the end of the
+messages are \emph{diffused}\index{Diffuse} to the network and we will use
+the \textsf{Diffuse} notation within the implementation of honest protocols to
+signify that a message needs to be diffused to the rest of the parties. At the end of the
 round, the adversary can see all the messages $C$ that have been diffused by the
 honest parties during the same round. The adversary can then decide what will
 appear in the network tape of every honest party at the beginning of the next
