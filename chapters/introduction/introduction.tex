@@ -4,6 +4,34 @@
 
 \section{Motivation}
 \subsection{Superlight Clients}
+
+\todo{continuity}
+
+Given an honestly adopted chain, consensus security is based on the premise that
+it is difficult to create a competing chain which deviates significantly and has
+more proof-of-work than the existing honestly adopted chain. To determine which
+financial history is the valid one, a \emph{verifier} node connected anew to the
+network must download.
+
+ convince a node
+that a chain is the longest one, the proof-of-work of every block in the chain
+must be presented and verified. This chain $\chain$ grows linearly with time.
+The first problem we concern ourselves with
+
+\todo{continuity}
+
+Proof-of-work blockchain clients such as mobile wallets today are based on the
+Simplified Payment Verifications (SPV) protocol, which was described in the
+original Bitcoin paper~\cite{bitcoin}, and allows them to sychronize with the
+network by downloading only block headers and not the entire blockchain with
+transactions. However, such initial synchronization still requires receiving all
+the block headers. In this work, we study the question of whether better
+protocols exist and in particular if downloading fewer block headers is
+sufficient to securely synchronize with the rest of the blockchain network. Our
+requirement is that the system remains decentralized and that useful facts about
+the blockchain (such as the Merkle root of current account balances in
+Ethereum~\cite{wood,buterin}) can be deduced from the downloaded data.
+
 \subsection{Interoperability}
 \section{Our Contributions}
 \subsection{Superblocks}

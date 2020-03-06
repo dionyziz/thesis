@@ -1,17 +1,5 @@
 \section{Introduction}
 
-Proof-of-work blockchain clients such as mobile wallets today are based on the
-Simplified Payment Verifications (SPV) protocol, which was described in the
-original Bitcoin paper~\cite{bitcoin}, and allows them to sychronize with the
-network by downloading only block headers and not the entire blockchain with
-transactions. However, such initial synchronization still requires receiving all
-the block headers. In this work, we study the question of whether better
-protocols exist and in particular if downloading fewer block headers is
-sufficient to securely synchronize with the rest of the blockchain network. Our
-requirement is that the system remains decentralized and that useful facts about
-the blockchain (such as the Merkle root of current account balances in
-Ethereum~\cite{wood,buterin}) can be deduced from the downloaded data.
-
 \noindent\textbf{Our contributions.}
 We put forth a cryptographic security definition for
 Non-Interactive Proofs of Proof-of-Work\index{NIPoPoW} protocols which describes what such a
