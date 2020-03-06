@@ -33,6 +33,47 @@ the blockchain (such as the Merkle root of current account balances in
 Ethereum~\cite{wood,buterin}) can be deduced from the downloaded data.
 
 \subsection{Interoperability}
+Since the invention of Bitcoin in 2009, numerous other cryptocurrencies have
+followed, improving upon Bitcoin on several aspects. The most prolific of these
+is \emph{Ethereum}~\cite{buterin}, which introduces the concept of \emph{smart
+contracts}. These Turing-complete programs enable developers to define complex
+conditions which must be satisfied to spend money, beyond the simple signatures
+that Bitcoin allows as conditions for spending. They are programmed in
+specialized programming languages such as Solidity and run on top of the
+Ethereum Virtual Machine~\cite{wood}. Each contract is a sovereign entity that
+can own money and define the rules under which this money can be spent. These
+contracts execute autonomously. Their correct execution is verified by miners on
+the network, in a similar way that signatures are verified in Bitcoin's case.
+
+Other cryptocurrencies that include significant contributions and
+experimentation are \emph{Litecoin}~\cite{litecoin} which aims to be more
+egalitarian~\cite{egalitarianism}; \emph{Monero}~\cite{cryptonote} and
+\emph{ZCash}~\cite{zerocoin,zcash}, which improve upon the generally
+poor~\cite{fistful,quantitative-bitcoin-analysis,tumblebit} privacy of
+Bitcoin; \emph{Namecoin}~\cite{namecoin} which was a first attempt at creating a
+decentralized DNS alternative; \emph{Dogecoin}~\cite{dogecoin}, which experiments with
+inflationary economics in contrast to Bitcoin's deflationary nature;
+\emph{Bitcoin Cash}~\cite{btcVSbch}, which experiments with larger block sizes; and
+\emph{Cardano}~\cite{ouroboros}, which uses proof-of-stake instead of proof-of-work.
+
+It is possible to \emph{trade} one coin for the other. For example, if one
+wishes to exchange Bitcoin for Ethereum, they need to find a counterparty who
+wishes to exchange Ethereum for Bitcoin (this is generally easy to do through
+centralized services). However, each of these blockchain systems remains
+isolated. The concept of a \emph{cryptocurrency} and its respective \emph{chain}
+remains intertwined: A Bitcoin lives in the Bitcoin chain, while an Ether lives
+in the Ethereum chain. The \emph{interoperability} problem pertains to the
+ability to move a cryptocurrency from its native chain to a remote chain,
+a one-way peg\index{One-way Peg}, and then back, a two-way
+peg\index{Two-way Peg}. If Bitcoin and Ethereum were interoperating, it would be
+possible to move one Bitcoin from the Bitcoin chain to the Ethereum chain and
+back. In a properly interoperating system, the Bitcoin would retain its nature
+during its lifespan within the Ethereum chain. For example, it would maintain
+the same exchange rate against other currencies as a Bitcoin living in the
+Bitcoin chain. While on the Ethereum chain, it would also enjoy the benefits of
+the Ethereum ecosystem. For example, it would make itself subject to smart
+contracts.
+
 \section{Our Contributions}
 \subsection{Superblocks}
 
