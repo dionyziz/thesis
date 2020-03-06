@@ -2,31 +2,6 @@
 
 \todo{Clean up this section}
 
-Bitcoin~\cite{bitcoin} is the most successful \emph{cryptocurrency} to
-date. It introduced \emph{blockchains}, a
-cryptographic consensus protocol in which \emph{transactions} are organized
-into \emph{blocks} which are put in a mutually agreed sequence despite the
-presence of adversaries. Consensus is achieved via
-\emph{proof-of-work}~\cite{pow} which is the precondition for block
-validity.  Transactions moving value within blockchains have been proven to
-be secure and that consensus is eventually achieved, cf.
-\cite{backbone,pass-asynchronous,varbackbone}.
-
-Ethereum~\cite{buterin} extends Bitcoin's functionality introducing
-Turing-complete \emph{smart contracts} programmed in
-languages like Solidity which run on top of the Ethereum Virtual
-Machine~\cite{wood}. These contracts execute autonomously. The smart contracts
-are confined to access data only within the blockchain itself, such as previous
-transactions and blocks. Access to external data requires a trusted
-third party or group thereof to vouch for the data validity~\cite{towncrier}.
-
-Sidechains~\cite{sidechains} are a mechanism for cross-chain communication in
-blockchains. They allow smart contracts on one blockchain to receive and
-react to \textit{events} taking place on another blockchain without the need
-of trusted parties. Despite their widely agreed usefulness
-there exist no constructions that are decentralised and efficient at the same
-time.
-
 \todo{Move to contributions in introduction}
 
 \noindent\textbf{Our contributions. } In this paper, we introduce the first
