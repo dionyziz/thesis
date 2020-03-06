@@ -124,6 +124,23 @@ spending is not allowed.
   \emph{validity language}.
 \end{definition}
 
+\begin{definition}[Ledger]\index{Ledger}
+\end{definition}
+
+\begin{description}
+  \item[Persistence.]\index{Persistence}
+    For any two honest parties $\party_1,\party_2$ and two rounds $r_1\leq r_2$,
+    it holds  $\LView{\Ledger}{\party_1}{r_1} \preceq
+    \LView{\check{\Ledger}}{\party_2}{r_2}$.
+
+  \item[Liveness.]\index{Liveness}
+    If all honest parties in the system attempt to include a  transaction
+    then, at any round $t$ after $u$ rounds (called the
+    liveness parameter), any honest party $\party$, if queried,
+    will report $\tx \in \LView{\Ledger}{\party}{r}$.
+\end{description}
+
+
 \subsection{Blockchain Backbone}
 \todo{Restore old NIPoPoWs paper backbone overview section}
 
