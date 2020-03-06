@@ -177,18 +177,18 @@ To solve this problem, nodes must place transactions in chronological order. As
 Eve can lie about the timestamps of her transactions or broadcast them at a
 delayed time, timestamps cannot be trusted.
 
-Transactions on the network are collected by every node into bundles called
-\emph{candidate blocks}. Each node on the network then attempts to \emph{mine}
-the candidate block it has created, turning it into a \emph{block}. Mining
-involves solving a moderately hard problem and has a small probability of
-success. When the problem is successfully solved, we say that a block has been
-\emph{found} or \emph{mined}. The moderate hardness of mining ensures blocks are
-created at a predetermined expected rate. For Bitcoin, this rate is $10$
-minutes. Once a block is found, it is broadcast to the rest of the network. A
-transaction is considered \emph{confirmed} once it has been included in a block.
-Transactions inside blocks are placed in an arbitrary order determined by the
-party creating the block. Block validity mandates that no double spends appear
-within the same block.
+Transactions on the network are collected by nodes into bundles called
+\emph{candidate blocks}. These nodes are known as \emph{miners}. Each miner
+attempts to \emph{mine} the candidate block it has created, turning it into a
+\emph{block}. Mining involves solving a moderately hard problem and has a small
+probability of success. When the problem is successfully solved, we say that a
+block has been \emph{found} or \emph{mined}. The moderate hardness of mining
+ensures blocks are created at a predetermined expected rate. For Bitcoin, this
+rate is $10$ minutes. Once a block is found, it is broadcast to the rest of the
+network. A transaction is considered \emph{confirmed} once it has been included
+in a block. Transactions inside blocks are placed in an arbitrary order
+determined by the party creating the block. Block validity mandates that no
+double spends appear within the same block.
 
 A block includes a pointer to the most recent block seen by the node. This
 creates a \emph{chain of blocks} or \emph{blockchain}. The validity of the
@@ -196,6 +196,15 @@ blockchain requires that the transactions in the new block do not conflict with
 transactions in the previous chain. Whenever a node receives a blockchain from
 the network, if it is longer than its own blockchain in the number of blocks it
 contains, then it abandons its own blockchain and adopts the longer one.
+
+\begin{figure}[h]
+    \caption{
+    A blockchain with some temporary forks. Squares depict blocks.
+    }
+    \centering
+    \includegraphics[width=0.7\columnwidth,keepaspectratio]{chapters/introduction/figures/blockchain.pdf}
+    \label{fig.blockchain}
+\end{figure}
 
 Surprisingly, this simple rule solves the consensus problem. Because blocks are
 broadcast once every $10$ minutes on average, this leaves a sufficient window of
@@ -206,28 +215,44 @@ new block is found, one of the two chains will grow longer and the population
 will migrate to the longest chain, abandoning the shorter chain and reaching
 consensus. These are known as \emph{temporary forks}\index{Temporary Fork}. The
 chance of two blocks being found simultaneously again and again is small, and
-hence eventually the network will converge to a common view. The honest parties
-may have some small disagreement about which few blocks are at the end of the
-blockchain. However, they will share a large \emph{common prefix}. As such, a
-transaction is considered safe once it has been buried under a sufficient number
-of blocks.
+hence eventually the network will converge to a common view. This is illustrated
+in Figure~\ref{fig.blockchain}. The honest parties may have some small
+disagreement about which few blocks are at the end of the blockchain. However,
+they will share a large \emph{common prefix}. As such, a transaction is
+considered safe once it has been buried under a sufficient number of blocks.
 
 Once a transaction $\tx$ is confirmed by becoming included in some block $b$ and
 that block is buried under a sufficiently large number of blocks, it
 becomes difficult for the adversary to double spend using a conflicting
-transaction $\tx'$. As blockchains extending $b$ do not validate if they
+transaction $\tx'$. Consider the execution in Figure~\ref{fig.adversary-race}.
+As blockchains extending $b$ do not validate if they
 contain $\tx'$, the adversary must \emph{fork} the blockchain and start mining
-on top of the parent of $b$. This becomes a mining race between the honest
-parties, who are mining on top of the longest chain confirming $\tx$, and the
-adversary who is mining a new chain on top of the parent of $b$. If we assume
-the honest parties control the majority of the computational power on the
-network, the chain that the honest parties mine will grow faster than the one
-extended by the adversary. This is known as the
-\emph{honest majority assumption}.
+on top of the parent of $b$. Consider the first block $b'$ of that fork in which
+$\tx'$ is confirmed. This becomes a mining race between the honest parties, who
+are mining on top of the longest chain extending $b$ and confirming $\tx$, and
+the adversary who is mining a new chain on top of $b'$ and confirming $\tx'$. If
+we assume the honest parties control the majority of the computational power on
+the network, the chain that the honest parties mine will grow faster than the
+one extended by the adversary. This is known as the \emph{honest majority
+assumption}.
 
-\todo{fast and slow blocks}
-\todo{hashes and $\leq T$}
-\todo{compressing consensus and SPV}
+\begin{figure}[h]
+    \caption{
+    A minority adversary fails to double spend a deeply burried transaction.
+    }
+    \centering
+    \includegraphics[width=0.7\columnwidth,keepaspectratio]{chapters/introduction/figures/adversary-race.pdf}
+    \label{fig.adversary-race}
+\end{figure}
+
+When a miner is asked to find a block, they collect the unconfirmed transactions
+into a string $\overline{x}$. They then attempt to find a $\textsf{nonce}$ such
+that $H(\overline{x} \concat \textsf{nonce}) \leq T$, where $T$ is a constant
+\emph{target} and $H$ is a cryptographically secure hash function. As the hash
+function has an unpredictable output, this problem becomes more difficult as $T$
+becomes smaller. The only known way to solve the problem is by brute forcing the
+$\textsf{nonce}$ until a suitable value is found. This process is known as
+\emph{proof-of-work}.
 
 \section{Motivation}
 \subsection{Superlight Clients}
