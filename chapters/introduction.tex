@@ -89,6 +89,88 @@ entity to issue a subpoena to and it will continue to operate as long as it has
 are users. This also makes the system uncensorable. Whether this elevated status
 is a desirable is disputed~\cite{egalitarianism}.
 
+\section{Coming to an agreement}
+Bitcoin is a peer-to-peer network. As such there are no servers and clients.
+Instead, similar to BitTorrent, there are simply nodes which connect to each
+other and exchange data. These form the global Bitcoin network, a connected
+graph of participants continuously exchanging financial data. They run open
+source code which can be inspected and modified by anyone, and are all
+treated as equal, none of them enjoying elevated privileges. Additionally, there
+is no implicit trust. It is assumed that some of them will behave adversarially
+and attempt to subvert the system by attempting to spend money they do not own,
+or by attempting to censor others.
+
+At a first glance, given that anyone can modify the code of their node, it seems
+that the situation is hopeless. Is it not possible for such a node to fake how
+much money they have? Additionally, even if they cannot conjure money out of
+nowhere, since money is represented as bits, is it not possible to simply
+duplicate their wallet and thus duplicate their money? In this setting, the
+consensus problem now becomes critical and particularly challenging. Bitcoin
+resolves such issues by making use of the \emph{blockchain}.
+Bitcoin's security, and in turn our analysis, is for \emph{arbitrary
+adversaries}. The powerful cryptographic setting gives us the tools not only to
+analyze particular adversarial strategies, but to prove our system can withstand
+\emph{any} adversary, even ones we cannot imagine. As such, our security
+theorems will begin ``For any adversary...''
+
+To solve the consensus problem, Bitcoin makes a radical shift compared to
+previous systems. To allow participants to verify whether a transaction is valid
+and whether the payer has sufficient money to execute it, it reveals to
+\emph{all}
+participants who owns how much money. This is done by dissemminating all
+transactions to all participants in the network in a gossiping fashion. These
+transactions are then stored by \emph{every} other node in perpetuity. Any
+synchronizing node downloads these historical transactions and stores them, too.
+By looking at these transactions, it can deduce whether a party's claim to spend
+money is legitimate. The financial privacy of the parties is not trivially
+violated, because money is received into \emph{public keys} instead of accounts
+corresponding to real names. Privacy can be significantly improved when a person
+employs a new public key for every transaction they are about to
+receive~\cite{bitcoin-dev-guide}.
+
+A transaction in Bitcoin is a payment order in the form of a string. It has a
+source, which corresponds to a previous transaction receiving the money, and a
+destination, which is a public key. In order for a transaction to be valid, the
+private key corresponding to the public key in source must digitally sign the
+transaction, including the public key of the new owner. If Alice wishes to pay
+Bob, she looks for a transaction which has paid her money that she has not yet
+spent. She then creates a payment order in which she writes down the amount she
+wishes to pay to Bob, as well as his public key, and signs the order with her
+private key. She then broadcasts this transaction on the peer-to-peer network.
+Bob, who is connected to the same network, receives the transaction through one
+of his peers, and verifies its validity as well as the fact that his own public
+key has been used in the payment and that the amount is correct.
+
+Each node organizes the transactions it sees on the network into a
+\emph{ledger}, which is a sequence of transactions. This ledger determines which
+party has how much money. The node can then evaluate the validity of a new
+incoming transaction by assessing whether there are sufficient funds. For the
+monetary system to function, the parties must globally agree on a \emph{common}
+ledger. If Alice receives a payment from Bob and her ledger depicts this, but
+Charlie's does not, then Alice's money received from Bob cannot be used to pay
+Charlie.
+
+A malicious node can attempt to \emph{double spend}. If Eve legitimately owns a
+coin, she can create a valid transaction $\tx$ paying Alice with that coin, as
+well as a valid transaction $\tx'$ paying Bob with that coin. If any of the two
+transactions are individually broadcast on the network, it will be considered
+valid. However, if both transactions are broadcast on the network, they cannot
+both be valid, because Eve only ever had one coin. As such, a strategy against
+double spending must be employed when such a sitatuation occurs.
+
+Simple strategies do not work. For example, observing that Eve must be malicious
+to have created a double spend, the nodes could reject \emph{both} of her
+transactions. However, this now enables Eve to first pay Alice for some service,
+but later invalidate that payment by also paying Bob. While Eve cannot profit
+from this, she can harm Alice. The alternative strategy of waiting a fixed time
+$\Delta$ to determine whether there have been any double spends prior to
+accepting a transaction also does not work. The reason is that Eve could
+broadcast her double spending transaction at a time just before $\Delta$ has
+elapsed. Because the network is not fully synchronized, some parties will
+receive the transaction prior to time $\Delta$, while others will receive it
+after time $\Delta$, causing the network to disagree about whether the first
+transaction is valid.
+
 
 \section{Motivation}
 % superlight clients
