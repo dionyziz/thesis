@@ -1,6 +1,7 @@
 \chapter{Introduction}\label{chapter:introduction}
 
-\section{Let there be Bitcoin}
+\section{The Setting}
+\subsection{Let there be Bitcoin}
 Before money, there was debt~\cite{debt}. Money is a yardstick for measuring
 it. Sometimes it takes the form of a gold coin. Not useful in itself, one
 accepts it because one assumes other people will. Modern \emph{fiat} money is
@@ -89,7 +90,7 @@ entity to issue a subpoena to and it will continue to operate as long as it has
 are users. This also makes the system uncensorable. Whether this elevated status
 is a desirable is disputed~\cite{egalitarianism}.
 
-\section{Coming to an agreement}
+\subsection{Coming to an agreement}
 Bitcoin is a peer-to-peer network. As such there are no servers and clients.
 Instead, similar to BitTorrent, there are simply nodes which connect to each
 other and exchange data. These form the global Bitcoin network, a connected
@@ -171,7 +172,7 @@ receive the transaction prior to time $\Delta$, while others will receive it
 after time $\Delta$, causing the network to disagree about whether the first
 transaction is valid.
 
-\section{Chains of blocks}
+\subsection{Chains of blocks}
 To solve this problem, nodes must place transactions in chronological order. As
 Eve can lie about the timestamps of her transactions or broadcast them at a
 delayed time, timestamps cannot be trusted.
@@ -227,6 +228,13 @@ extended by the adversary. This is known as the
 \todo{fast and slow blocks}
 \todo{hashes and $\leq T$}
 \todo{compressing consensus and SPV}
+
+\section{Motivation}
+\subsection{Superlight Clients}
+\subsection{Interoperability}
+\section{Our Contributions}
+\subsection{Superblocks}
+
 \todo{superblocks}
 \todo{NIPoPoWs}
 \todo{applications to superlight wallets}
@@ -234,11 +242,10 @@ extended by the adversary. This is known as the
 \todo{applications to logspace mining}
 \todo{the variable difficulty and $\Delta$-delay setting}
 \todo{proofs of stake}
+\todo{application: superlight clients}
+\todo{application: sidechains}
+\todo{application: logspace mining}
 
-\section{Motivation}
-% superlight clients
-% sidechains
-\section{Our Contributions}
 \section{Related Work}
 % KLS
 % other sidechains works
