@@ -171,6 +171,59 @@ receive the transaction prior to time $\Delta$, while others will receive it
 after time $\Delta$, causing the network to disagree about whether the first
 transaction is valid.
 
+\section{Chains of blocks}
+To solve this problem, nodes must place transactions in chronological order. As
+Eve can lie about the timestamps of her transactions or broadcast them at a
+delayed time, timestamps cannot be trusted.
+
+Transactions on the network are collected by every node into bundles called
+\emph{candidate blocks}. Each node on the network then attempts to \emph{mine}
+the candidate block it has created, turning it into a \emph{block}. Mining
+involves solving a moderately hard problem and has a small probability of
+success. When the problem is successfully solved, we say that a block has been
+\emph{found} or \emph{mined}. The moderate hardness of mining ensures blocks are
+created at a predetermined expected rate. For Bitcoin, this rate is $10$
+minutes. Once a block is found, it is broadcast to the rest of the network. A
+transaction is considered \emph{confirmed} once it has been included in a block.
+Transactions inside blocks are placed in an arbitrary order determined by the
+party creating the block. Block validity mandates that no double spends appear
+within the same block.
+
+A block includes a pointer to the most recent block seen by the node. This
+creates a \emph{chain of blocks} or \emph{blockchain}. The validity of the
+blockchain requires that the transactions in the new block do not conflict with
+transactions in the previous chain. Whenever a node receives a blockchain from
+the network, if it is longer than its own blockchain in the number of blocks it
+contains, then it abandons its own blockchain and adopts the longer one.
+
+Surprisingly, this simple rule solves the consensus problem. Because blocks are
+broadcast once every $10$ minutes on average, this leaves a sufficient window of
+silence between blocks so that honest parties will adopt the same chain. If it
+happens that two blocks are found almost simultaneously by chance, some parties
+will mine on top of one chain, while others will mine on top of another. Once a
+new block is found, one of the two chains will grow longer and the population
+will migrate to the longest chain, abandoning the shorter chain and reaching
+consensus. These are known as \emph{temporary forks}\index{Temporary Fork}. The
+chance of two blocks being found simultaneously again and again is small, and
+hence eventually the network will converge to a common view. The honest parties
+may have some small disagreement about which few blocks are at the end of the
+blockchain. However, they will share a large \emph{common prefix}. As such, a
+transaction is considered safe once it has been buried under a sufficient number
+of blocks.
+
+Once a transaction $\tx$ is confirmed by becoming included in some block $b$ and
+that block is buried under a sufficiently large number of blocks, it
+becomes difficult for the adversary to double spend using a conflicting
+transaction $\tx'$. As blockchains extending $b$ do not validate if they
+contain $\tx'$, the adversary must \emph{fork} the blockchain and start mining
+on top of the parent of $b$. This becomes a mining race between the honest
+parties, who are mining on top of the longest chain confirming $\tx$, and the
+adversary who is mining a new chain on top of the parent of $b$. If we assume
+the honest parties control the majority of the computational power on the
+network, the chain that the honest parties mine will grow faster than the one
+extended by the adversary. This is known as the
+\emph{honest majority assumption}.
+
 
 \section{Motivation}
 % superlight clients
