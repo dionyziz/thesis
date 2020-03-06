@@ -1,8 +1,94 @@
 \chapter{Introduction}\label{chapter:introduction}
 
-\todo{Fill in introduction...}
+\section{Let there be Bitcoin}
+Before money, there was debt~\cite{debt}. Money is a yardstick for measuring
+it. Sometimes it takes the form of a gold coin. Not useful in itself, one
+accepts it because one assumes other people will. Modern \emph{fiat} money is
+not backed by gold, but takes the form of pieces of paper bills or, more often,
+bits in the computer systems of banks. Regardless of their manifestation, all
+forms of money are debt, which is a social relation~\cite{critical-realism}.
 
-Bitcoin \index{Bitcoin}\cite{bitcoin}
+Money functions as a \emph{medium of exchange}, as a \emph{common measure of
+value} or \emph{unit of account}, as a \emph{standard of value} or
+\emph{standard of deferred payment}, and a \emph{store of
+value}~\cite{money-mechanism}. These functions of money rely on the relationship
+of the individual with the economic community that accepts money. Each monetary
+transaction between two parties is never a ``private matter'' between them,
+because it translates to a claim upon society~\cite{philosophy-of-money}.
+
+This gives rise to the need of \emph{consensus}. The economic community must be
+able to ascertain, in principle, whether a monetary transaction is \emph{valid}
+according to its rules. In a good monetary system, parties of the economic
+community must globally agree on the conclusions of such deductions. In simple
+words, when someone pays me, I must know that they have sufficient money to do
+so, and that this money given to me will be accepted by the economic community
+when I later decide to spend it. This judgement of validity consists of two
+parts: First, that the money in use has been minted legitimately in the first
+place. Secondly, that this money rightfully belongs to the party who is about to
+spend it, and has not been spent before, to protect against \emph{double spending}.
+
+The problem of consensus is solved differently in different monetary systems. Gold
+coins had stamps whose veracity could be checked, while paper bills have chemical
+features making them difficult to duplicate. Such physical features ensure the
+legitimacy of minting. The problem of double spending is trivial when it comes to
+physical matter: If I give a
+gold coin to someone, I no longer hold that gold coin and cannot also give it to
+someone else. When coins are digitized, the problem of \emph{who owns what}
+is solved by the private bank and payment processors.
+A private bank centrally maintains the balance of a bank account to ensure a
+corresponding debit card cannot spend more money than it has. In this case, a
+vendor's terminal connects to the bank's servers to check the validity of the
+payment (and security can only be ensured while the terminal is online). These
+cases involve a \emph{trusted third party}\index{Trusted Third Party}, the
+bank or the payment processor, to maintain a balance and make a judgement on
+whether a transaction is valid. The central bank is relied upon for the
+legitimacy of minting. Payment processors and banks who maintain account
+balances and make a judgement on whether a transaction is valid are relied upon
+to prevent double spending. The economic community depends on these third
+parties and trusts them for availability and truthfulness.
+
+The cypherpunk\index{Cypherpunks} political movement and the wave of
+cryptographers working on \emph{protocols} in general have an inherent hatred
+for trusted third parties. For the former, they amount to
+centralization of political power which they wish to see eliminated. For the
+latter group, it constitutes a technical challenge -- if the role of the trusted
+third party is fully algorithmizable, why not replace the party by a protocol
+ran by the economic community themselves? It is somewhere in intersection of the
+two that \emph{blockchain} protocols appeared.
+
+Bitcoin\index{Bitcoin} was invented by Satoshi Nakamoto\index{Satoshi Nakamoto}
+in 2008. In a paper titled
+\emph{A Peer-to-Peer Electronic Cash System}~\cite{bitcoin}, Satoshi introduced
+the first \emph{cryptocurrency} and the technology powering it, the
+\emph{blockchain}. The paper accompanied an implementation of what has come to
+be known as \emph{Bitcoin Core}\index{Bitcoin Core}, the first cryptocurrency
+wallet, which was written in C++. Satoshi, whose name was soon deified within
+the blockchain community, was nothing but a Japanese pseudonym, the
+physical identity and whereabouts of the author or authors still unknown. Never
+short on drama, the space was shaken again when Satoshi mysteriously disappeared
+without a trace in 2011, leaving the community leaderless, perhaps in an attempt
+to, in a sense, remove the last standing trusted third party from the picture.
+
+As an electronic currency, Bitcoin enjoys many advantages. The transmittance of
+a transaction takes a couple of seconds, while transactions become secure
+against chargebacks in about an hour. It is easy and cheap to move money across
+the world in large quantities, with transaction fees remaining constant
+regardless of amount moved (at the time of writing, approximately $\$0.05$). The
+ecosystem is open, the reference client open source, and the community can
+develop their own software to work with it without requesting permission from
+anyone.
+
+More interestingly, Bitcoin is the first \emph{decentralized} electronic
+currency. Unlike all previous electronic currencies, it does not require any
+trusted third party for its operation. There is no company or operator with
+privileged access over Bitcoin -- no CEO or corporate network. This makes
+the Bitcoin network \emph{sovereign}: It cannot be shut down by a traditional
+court of law regardless of the desires of world governments, unless drastic
+measures are employed such as shutting down the Internet. There is no central
+entity to issue a subpoena to and it will continue to operate as long as it has
+are users. This also makes the system uncensorable. Whether this elevated status
+is a desirable is disputed~\cite{egalitarianism}.
+
 
 \section{Motivation}
 % superlight clients
