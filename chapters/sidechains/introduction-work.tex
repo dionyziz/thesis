@@ -26,37 +26,3 @@ blockchains are secure individually.
 To our knowledge, we are the first to
 provide such a construction in
 full and prove its security.
-
-\todo{Move to related work section}
-
-\noindent\textbf{Related work. }
-Sidechains were introduced as a Bitcoin upgrade mechanism by Back et
-al.~\cite{sidechains}. They proposed introducing a new \emph{child} blockchain
-which implements a new protocol version, with which assets are \emph{2-way
-pegged}. The \emph{firewall} property was articulated. No complete construction
-of the protocol was given. Their paper hints at the need for ``\emph{efficient
-SPV proofs}'' (Appendix B) in future work, which we implemented here. We use the
-term \emph{sidechains} in a more general notion than in their work. Our
-sidechains allow communication between \emph{stand alone} blockchains and also
-convey \emph{any} information, not just transfers of value. In our work, a
-blockchain is a sidechain of another chain if it can react to events on that
-chain, and so the relationship can be symmetric.
-
-\emph{Polkadot}~\cite{polkadot}, \emph{Tendermint},
-\emph{Cosmos}~\cite{tendermint}, \emph{Liquid} and
-\emph{Interledger}~\cite{interledger} also build cross-chain transfers. Their
-validation relies on a trusted committees, federations or is left unspecified.
-\emph{Drivechains} and \emph{rootstock} are sidechain proposals which require
-miners of both chains to be aware of both networks. In our scheme, miners remain
-agnostic to the existence of other chains and connect only to one network.
-\emph{BTCRelay} is a trustless mechanism relaying information one-way from
-Bitcoin to Ethereum, in which miners are connected to their network only.
-BTCRelay requires the transmission of the entirety of the source blockchain
-headers into the target blockchain. Our proposal only requires data logarithmic
-in size of the source blockchain. This stems from the \emph{succinctness}
-property of the NIPoPoW scheme.
-None of the aforementioned constructions include
-proofs of security.
-Other related work includes Plasma~\cite{plasma},
-XCLAIM~\cite{xclaim}, PeaceRelay, COMIT~\cite{comit}, Plasma Cash~\cite{plasmacash},
-NOCUST~\cite{nocust} and Dogethereum~\cite{dogethereum}.

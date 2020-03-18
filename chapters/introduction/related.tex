@@ -98,18 +98,166 @@ attack which we prove works with overwhelming probability against their scheme,
 as well as to create a scheme which bypasses the issue for a $1/2$ adversary.
 Their initial construction can be proven secure against a $1/3$ adversary,
 albeit using a different proof strategy (leveraging our results in
-Chapter~\ref{chapter:variable}).
+Chapter~\ref{chapter:variable}). We also remark that our schemes are succinct
+against all possible adversaries and are not limited to optimistic succinctness.
 
 In addition to treating the above shortcomings, our results generalize in the
 more refined model of $\Delta$-bounded delay and variable difficulty. We also
 provide experimental results, simulations, concrete security parameters, and
 smooth upgrade recommendations.
 
-% - omniledger
-% - rootstock
-% - Todd sidechains
-% - xclaim
-% - rootstock
-% - polkadot
-% - truebit?
-% - flyclient
+The practical feasibility of superblock-based constructions and their empirical
+analysis has been studied by a series of other
+works~\cite{gtklocker,superblocks}.
+
+Our work has inspired a vibrant and challenging line of research by other
+groups. Following our NIPoPoW paradigm and bag-of-blocks-based approach, a
+different construction named FlyClient~\cite{flyclient} allows the succinct and
+secure construction of proofs. Instead of including an interlink vector
+which just contains links to the most recent superblock of every level, they
+make use of Merkle Mountain Ranges to reference the whole previous blockchain
+from every block. This enables them to create a probabilistic proof which is
+made non-interactive using the Fiat--Shamir~\cite{fiatshamir} heuristic. The
+structure of their scheme is inspired by similar probabilistic
+challenge-response protocols that exist in the zero knowledge
+setting~\cite{schnorr}. Their protocol is elegant and simple and has seen some
+adoption in practice. Additionally, they propose an extension to Merkle
+Mountain Ranges, namely Segment Merkle Mountain Ranges which are useful for
+variable difficulty constructions (a different approach to ours). While we are
+convinced their protocols are secure in principle, contrary to our work in this
+thesis, their security analysis so far is only done \emph{in expectation} and
+not \emph{with high probability}. A more complete analysis is pending. Lastly,
+because the construction of their NIPoPoWs is not superblock-based, but
+probabilistic, this means that these proofs are not \emph{online}. Therefore,
+if a full node has a proof and mines a block on top of it, they cannot create a
+new proof without holding the whole chain. This limitation is inherent in their
+construction and means that applications such as logspace mining which rely on
+online NIPoPoWs are not possible using their protocol.
+
+A different approach to our superblock-based constructions stems from leveraging
+SNARKs and their recursive composition~\cite{snarks,recursive-snarks} as a way
+to compress to polylogarithmic size and update a given blockchain.
+One such construction is Coda~\cite{coda}. This construction allows the
+compression of both proof-of-work and proof-of-stake consensus. A significant
+advantage and distinguishing feature of our approach is however the fact that it
+does not rely on a common reference string as SNARK-based protocols require, and
+so does not require a trusted setup. Moreover, no additional assumptions are
+introduced beyond those necessary for the security of the Bitcoin blockchain in
+the random oracle model. Lastly, we remark that our approach is simpler in its
+construction, as it makes use of only proof-of-work and hash primitives. We
+believe this is a great advantage for protocols that will be widely implemented
+multiple times. Additionally, it enables a wider audience to audit the
+implementation and has a smaller attack surface. We note, however, that our
+proof-of-stake construction (in Chapter~\ref{chapter:stake}) is
+$\Omega(|\chain|)$, while they achieve the exponentially better result of
+$\bigO(\log(|\chain|))$. We only achieve a comparable result in the
+proof-of-work case. However, it is unclear whether the Coda construction is
+practical. Although the proofs are indeed succinct, the constant factors in
+their sizes have not been calculated. As with many zero knowledge schemes, they
+can very quickly turn out to be prohibitively large. The practicality of this
+scheme remains to be illustrated.
+
+\subsection{Interoperability}
+Blockchain interoperability is a problem that has attracted a lot of interest in
+the space. Since 2011, the Namecoin~\cite{namecoin} blockchain used the concept
+of \emph{merged mining} in which proof-of-work is performed in a 2-for-1 fashion
+between the two chains. This mining scheme was later formally
+analyzed in 2014~\cite{backbone}. While this does not allow the exchange of
+blockchain application data (such as transactions), it constitutes the first
+instance of a chain co-existing with another in a symbiotic relationship.
+
+Proposals to allow blockchains to exchange application layer data were first
+discussed in 2014 in the work
+\emph{Enabling Blockchain Innovations with Pegged Sidechains}~\cite{sidechains}.
+This also constitutes the first occurrence of the term \emph{sidechain}. While
+they do not propose a concrete mechanism which allows for decentralized
+blockchain communication, they describe the need for interoperability among
+blockchains. An interesting observation in the work appears in Appendix B in
+which the authors discuss the need for secure compact Proofs of Proof-of-Work
+(which they call \emph{compact DMMS}) as a prerequisite for the construction of
+secure sidechains. The need for a Proofs of Proof-of-Work construction as a
+prerequisite for sidechains was pointed out earlier that year by
+Friedenbach in the Bitcoin Development mailing list~\cite{friedenbach}. Both of
+these mentions refer to superblock-based constructions. These references
+highlight that our work in this thesis solves a long-standing open problem with
+a multitude of previously known applications.  A significant
+contribution of their work is the introduction of the \emph{firewall} property,
+which we formalize in this thesis.
+
+These works explore one particular application of sidechains, the ability of a
+sidechain to offer smooth software upgrades. They propose that features can be
+trialed on a sidechain prior to being adopted in the main chain. Their
+definition of a \emph{sidechain} is limited to being a \emph{child} chain of a
+particular parent chain; as such, the sidechain's lifecycle fully depends on
+that of its parent. In our work, in addition to providing a concrete
+implementation of cross-chain proofs which are needed for parent-child-style
+sidechains, we generalize the notion of sidechains to allow pre-existing and
+stand alone blockchains to communicate as well (see
+Chapter~\ref{chapter:sidechains}). Additionally, their exchange of information
+is limited to the two-way pegged transfer of value. Our construction allows
+conveying \emph{any} information, not just transfers of value. This
+distinguishing property becomes more pronounced when applied to smart contract
+blockchains in which more generic information of interest can appear. In our
+work, a blockchain is a sidechain of another chain if it can generically react
+to events on that chain, and so the relationship can be symmetric. The events
+which we allow reacting to can be any of the generic predicates that lend
+themselves to succinct proofs-of-work or stake.
+
+The first practical implementation of cross-chain information transfer involves
+the use of \emph{atomic swaps}. Atomic swaps allow the exchange of two assets
+between a party on one chain and a counter-party on another chain atomically.
+Atomicity ensures that either both assets are exchanged, or neither. This makes
+atomic swaps useful for decentralized cross-chain trading and makes
+decentralized exchanges (DEXes) possible. Atomic swaps were first introduced by
+Tier Nolan~\cite{tiernolan}. Multi-asset atomic swaps were studied
+by Herlihy~\cite{herlihy2018atomic}. Contrary to atomic swaps, our cross-chain
+communication protocols allow the generic transfer of information and are not
+limited to asset swapping. Additionally, we do not require a counter-party.
+
+One construction which allows the generic transfer of information between chains
+without additional trust assumptions is called \emph{BTCRelay}. The premise is
+to copy all block headers of one chain into the other using a smart contract.
+While secure, this structure is not succinct. It has been implemented as a smart
+contract in production which allows the transfer of information from Bitcoin to
+Ethereum.
+
+\emph{Drivechains} and \emph{rootstock} are sidechain proposals which require
+miners of both chains to be aware of both networks. This follows our definition
+of \emph{direct observation} (Chapter~\ref{chapter:sidechains}). While
+challenging from an engineering point of view, mutual direct observation makes
+the problem theoretically trivial. In practice, mutual direct observation means
+that deploying these sidechain schemes on stand-alone chains would require
+modifying their miners and full nodes to connect to multiple networks, which
+would be unfeasible. In our scheme, miners remain agnostic to the
+existence of other chains and connect only to one network.
+
+Plasma~\cite{plasma} (of which Plasma Cash~\cite{plasmacash} is one instance)
+creates a child sidechain which is under the control of a centralized custodian
+account. The custodian is responsible for creating blocks on the sidechain. The
+custodian commits his blocks once every epoch to the parent chain, which
+implements a decentralized consensus mechanism. While the custodian is a
+centralized entitity, it is not trusted with security, as the construction
+allows the participants who hold money on the child sidechain to \emph{abandon
+ship} in case foul play is detected. Foul play includes any violation of
+\emph{common prefix} on the child sidechain; this means that participants must
+wait for the child chain to commit to the parent chain in order to trust that
+their transaction has been confirmed. Foul play also includes any
+\emph{violation of liveness} in which the custodian fails to create blocks. In
+the latter case, the parent chain allows the withdrawal of money from the stale
+child chain. One shortcoming of the scheme is that the commitments between the
+child chain and the parent chain grow linear in time. However, we believe this
+scheme is particularly interesting and practical, as linear cross-communication
+will always be necessary between chains that have active cross-chain activity.
+While this mechanism cannot connect stand-alone decentralized blockchains, it
+can be used to offload some of the burden from an overloaded parent chain,
+assisting in scalability.
+
+\emph{Polkadot}~\cite{polkadot}, \emph{Tendermint},
+\emph{Cosmos}~\cite{tendermint}, \emph{Liquid} and
+\emph{Interledger}~\cite{interledger} also build cross-chain transfers. Their
+validation relies on a trusted committees, federations or is left unspecified.
+None of the aforementioned constructions include proofs of security. Other
+related work includes XCLAIM~\cite{xclaim}, PeaceRelay, COMIT~\cite{comit},
+NOCUST~\cite{nocust} and Dogethereum~\cite{dogethereum}.
+
+\todo{summa}
