@@ -1,6 +1,110 @@
 \section{Related Work}
-% KLS
-% other sidechains works
+
+\subsection{Consensus Compression}
+Nakamoto's original Bitcoin whitepaper~\cite{bitcoin} anticipated the rising
+costs of an evergrowing blockchain, and proposed a protocol for lightweight
+clients, called ``Simplified Payment Verification'' (SPV). Unlike ``full nodes''
+which process and validate the entire blockchain (including all transactions and
+signatures), SPV clients only process the proof-of-work chain and transactions
+directly pertaining to them. SPV nodes only download the block headers (which in
+this thesis we denote $\chain$) of the blockchain and leave out transactions. An
+SPV node who has downloaded the chain with the most proof-of-work can validate
+the proof-of-work, as the headers are sufficient to do this.
+When an SPV client receives a
+payment, it requests a Merkle inclusion proof in
+order to confirm that the transaction is included in one of the blocks whose
+header is already stored by the client. This is possible because the block
+header contains a Merkle Tree Root of the transactions.
+This gives a significant improvement in communication
+complexity, the amount of data that an SPV node needs to download being
+$80|\chain|$ for $80$-byte headers in Bitcoin. While today a full node needs to
+download more than $250$ GB of data, an SPV node only needs to download $50$ MB
+of data. However, as the size of the block has a constant upper bound (currently
+about $1$ MB), SPV constitutes a constant improvement over full nodes. In
+particular, the amount of data that needs to be downloaded from the network
+grows linearly in both the full node and the SPV node cases. They both download
+$\bigO(|\chain|)$ data.
+Most widely used clients today, among others
+mobile wallets based on BitcoinJ, implement SPV.
+
+As an alternative to downloading all block headers at first startup, the SPV
+client software could embed a hardcoded checkpoint; blocks prior to which are
+ignored.\footnote{See \url{https://bitcoinj.github.io/speeding-up-chain-sync}}
+Although this approach is very efficient, it introduces
+additional trust assumptions on software maintainers.
+
+The first attempt to compress consensus state to something sublinear without
+additional trust assumptions was put
+forth in 2012 in a Bitcointalk forum post by Andrew Miller in which he proposes what he
+calls the \emph{High-Value-Hash Highway}~\cite{highway}. In that post,
+the idea of \emph{superblocks} is introduced and intuition is given about
+superchains that capture proof-of-work without presenting it. These ideas give
+rise to the first instance of Proofs of Proof-of-Work. Albeit incomplete, some
+first ideas are also discussed with regards to the interlink data structure.
+A follow up work in 2016 by
+Aggelos Kiayias, Nikolaos Lamprou and Aikaterini-Panagiota Stouka formalized
+these into a well-defined protocol in their paper
+\emph{Proofs of Proofs of Work with Sublinear Complexity}~\cite{popow}. The
+paper shows that such protocols can be succinct and presents a concrete protocol
+with complexity $\bigO(\log(|\chain|))$. That paper also properly introduces the
+superblocks structure, which we make heavy use of in our work. Both the
+\emph{highway} forum post and the \emph{PoPoW} paper have been important
+inspiration for our work. These ideas form the basis for the creation of
+superlight clients.
+
+The protocol defined in these works, the \emph{KLS} protocol, has some
+significant shortcomings. First, KLS is \emph{interactive}. This
+means that multiple network messages between the prover (a full node peer in the
+network) and the verifier (a superlight node or client attempting to
+synchronize) are required in order for the superlight node to arrive at a
+conclusion about which blockchain is the longest. In these interactions, the
+superlight node communicates with multiple provers, at least one of which is
+honest, and \emph{interrogates} them by asking questions which are adapted based
+on the other proofs that they have received. After sufficient interrogation, the
+verifier can draw the correct conclusion. The number of rounds in this
+interrogation process can grow to be $\bigO(\log(|\chain|))$. This has impact on
+the performance of the superlight client, but also limits the applicability of
+the scheme when it comes to applications such as cross-chain certification and
+logspace mining. In this thesis, our protocols improve upon theirs to achieve
+\emph{non-interactivity} (see Chapter~\ref{chapter:work}), enabling cross-chain
+and logspace mining applications in addition to superlight clients (see
+Chapter~\ref{chapter:superlight}).
+
+Secondly, while the KLS protocol allows a superlight client to deduce that most
+recent $k$ blocks (where $k$ denotes a configurable constant \emph{common prefix
+parameter}) of a chain which would be admitted by an honest full node, it gives
+no further ability to query the chain for information buried deep within it. In
+particular, it does not offer the ability to prove that a transaction took place
+in the past, unless $k$ is set to be large. In that case, if
+$k \in \Omega(|\chain|)$, the protocol ceases to be succinct. Therefore, the
+main application of a superlight client, which involves verifying whether a
+transaction took place, is not possible by the KLS protocol, except in limited
+circumstances. As such, it constitutes a \emph{suffix proof} protocol, but falls
+short of constructing \emph{infix proofs}. In this thesis, we generalize their
+construction to allow for the deduction of a quite \emph{generic} class of
+predicates about the chain, including old transaction confirmation (see
+Chapter~\ref{chapter:work}). Intuitively,
+we extend their work to allow any fact about the blockchain which depends on a
+polylogarithmic number of blocks to be decided.
+
+Lastly, the security treatment of the KLS construction is incorrect. More
+specifically, due to a subtle but critical mistake in the proof of the security
+theorem, their conclusion that their protocol achieves security for a $1/2$
+adversary with overwhelming probability is false. In fact, there exists a
+minority adversary which is able to break security with overwhelming
+probability. These issues are explored in this thesis in our development of
+\emph{superchain quality}. We subsequently use this property to both build an
+attack which we prove works with overwhelming probability against their scheme,
+as well as to create a scheme which bypasses the issue for a $1/2$ adversary.
+Their initial construction can be proven secure against a $1/3$ adversary,
+albeit using a different proof strategy (leveraging our results in
+Chapter~\ref{chapter:variable}).
+
+In addition to treating the above shortcomings, our results generalize in the
+more refined model of $\Delta$-bounded delay and variable difficulty. We also
+provide experimental results, simulations, concrete security parameters, and
+smooth upgrade recommendations.
+
 % - omniledger
 % - rootstock
 % - Todd sidechains
