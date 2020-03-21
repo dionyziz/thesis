@@ -525,9 +525,68 @@ $\overline{\tx}$ and is defined as follows.
 \subsection{The Consensus Problem}
 \subsection{Proof-of-Work}
 \cite{pow}\index{Proof-of-Work}
-The
-honest parties try to distinguish between messages diffused by the other honest
-parties and the adversary.
+In our decentralized systems in which the number of participants is unknown and
+their channels remain unauthenticated, we will assume that the \emph{majority}
+of the population is honest~\cite{backbone}. This assumption is summarized in
+the following equation:
+
+\begin{definition}[Honest Majority Assumption]\index{Honest Majority}\index{$\delta$}
+  We say that a population has \emph{honest majority} if
+
+  \[
+  t \leq \leq (1 - \delta)(n - t)
+  \]
+\end{definition}
+
+This mandates that the number of adversarial parties $t$ is less than the honest
+parties $n - t$ by a fraction determined by the parameter $\delta$, the
+\emph{honest advantage}\index{Honest Advantage}. We will refer to
+this model as the $\frac{1}{2}$-adversary. This assumption is generally
+necessary to solve the consensus problem in polynomial time~\cite{okun},
+although it can be temporarily relaxed~\cite{dishonest}. Throughout this
+work, we will assume that the honest majority holds during \emph{all} rounds.
+
+In some cases, most notably in our constructions of
+Chapter~\ref{chapter:variable}, our results will be limited to weaker
+adversaries that satisfy more stringent assumptions and are bounded by
+$\frac{1}{3}$ or $\frac{1}{4}$ as defined below:
+
+\begin{definition}[Bounded adversaries]
+  We say that a population has a $\phi$-bounded adversary (where $\phi$
+  typically takes the values of $\frac{1}{2}$, $\frac{1}{3}$, or $\frac{1}{4}$)
+  for some $0 < \phi \leq \frac{1}{2}$ if
+
+  \[
+  \frac{t}{n - t} \leq (1 - \delta)\phi
+  \]
+\end{definition}
+
+The honest majority assumption denotes a $\frac{1}{2}$-bounded adversary. If the
+number of parties changes from round to round, the respective assumption must be
+maintained throughout the whole execution.
+
+While theoretically the honest majority assumption discusses population counts,
+in practice this is translated into a majority in computational power. To
+achieve this in our model, we bound the number of Random Oracle queries which
+are allowed per party per round by some constant $q > 0$, which is the same for all
+parties. Limited computational power is then captured by the limited number of
+queries to the Random Oracle. As such, each honest party has $q$ available
+queries per round, for a total of $(n - t)q$ queries per round, while the
+adversary has $tq$ available queries per round. We call this model the
+\emph{$q$-bounded model}\index{$q$-bounded Model}.
+
+When working in the synchronous setting, we will set $q$ to be some polynomial
+of the security parameter. As the queries are counted \emph{per round}, the
+model captures the fact that up to $q$ queries can be made prior to an honest
+party being able to communicate the result of their query to the rest of the
+honest parties. In the $\Delta$-bounded delay setting, we will simplify by
+setting $q = 1$, as the number of queries allowed before a message reaches the
+rest of the network can be controlled by adjusting $\Delta$. Concretely, we note
+that a $\Delta$-bounded delay setting with $q > 1$ is captured by an equivalent
+model in which $\Delta' = \Delta + q$ and $q' = 1$.
+
+The honest parties try to distinguish between messages diffused by the other
+honest parties and the adversary.
 
 \subsection{Blocks}
 genesis
