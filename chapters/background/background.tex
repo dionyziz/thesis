@@ -423,6 +423,104 @@ $\overline{\tx}$ and is defined as follows.
   $\ValLang^{\textsf{extends}_{\textsc{UTXO}},\textsf{mints}}$.
 \end{definition}
 
+\subsection{The Account Model}\index{Account Model}
+A different approach to transactions is followed in the Account Model, which was
+first put forth by Ethereum. Instead of maintaining UTXOs, the Account Model
+maintains account balances. Transactions are instructions to transfer an amount
+from one account to another. Accounts are represented by addresses. A
+transaction therefore contains the source account, the target account, the
+amount, as well as a signature authorizing the transfer. The conservation
+principle here mandates that the source account must have sufficient balance to
+cover the amount a transaction wishes to spend.
+
+Contrary to the UTXO model where every UTXO is spent only once, here it is
+possible to have multiple transactions which spend from the same source account,
+pay into the same target account, and transmit the same amount. As such, these
+transactions require a nonce, or counter, which ensures they are unique. This
+counter is necessary. If such no such counter was present, the system needing to
+support a repeated transfer would accept the same transaction twice. But such
+admissibility of transaction duplication is problematic, as an adversary could
+replay an existing transaction, with the same signature, benefiting her account
+twice, even though no such intention was recorded by the sender. The counter is
+therefore required to signal the fact that the sender wishes to initiate yet
+another transfer.
+
+\begin{definition}[Account Transaction]
+  An \emph{account transaction} $\tx$ is a tuple
+  $(\textsf{from},\allowbreak
+   \textsf{to},\allowbreak
+   \textsf{amount},\allowbreak
+   ctr,\allowbreak
+   \sigma)$ such that $\textsf{from} \neq \textsf{to}$.
+  The signature $\sigma$ is a signature on
+  $(\textsf{from},\allowbreak
+    \textsf{to},\allowbreak
+    \textsf{amount},\allowbreak
+    ctr,\allowbreak
+    \epsilon)$. The set of all
+  syntactically valid account transactions is the account transaction language
+  $\Trans_\textsc{account}$.
+\end{definition}
+
+Balances can be obtained from a ledger by summing the amounts transfered. We
+will then make use of balances to define whether an account transaction validly
+extends a ledger.
+
+\begin{definition}[Account Balances]\index{Balance}
+  Let $\overline{\tx} \subseteq \Trans_\textsc{account}^*$ be an account
+  transaction sequence. We define the \emph{balance}
+  $\textsf{balance}_{\overline{\tx}}(\textsf{acc})$
+  of an account $\textsf{acc}$
+  at the end of the transaction sequence $\overline{\tx}$
+  as follows. If $\overline{\tx} = \epsilon$, then define
+  $\textsf{balance}_{\overline{\tx}}(\textsf{acc}) = 0$.
+  Otherwise, $\overline{\tx}$ is non-empty, so set
+  $\overline{\tx} = \overline{\tx}'\concat\tx$
+  and let $(\textsf{from}, \textsf{to}, \textsf{amount}, \sigma) = \tx$.
+  Recursively let
+  $\textsf{balance}' = \textsf{balance}_{\overline{\tx}'}(\textsf{acc})$.
+  \begin{itemize}
+    \item If $\textsf{from} = \textsf{acc}$, then define
+          $\textsf{balance}_{\overline{\tx}}(\textsf{acc}) = \textsf{balance}' - \textsf{amount}$.
+    \item If $\textsf{to} = \textsf{acc}$, then define
+          $\textsf{balance}_{\overline{\tx}}(\textsf{acc}) = \textsf{balance}' + \textsf{amount}$.
+    \item Otherwise
+          define $\textsf{balance}_{\overline{\tx}}(\textsf{acc}) = \textsf{balance}'$.
+\end{itemize}
+\end{definition}
+
+We are now ready to define the validity language for an account-based system.
+Again, we will
+define our validity language by extension according to
+Definition~\ref{def:lang-extension}.
+The $\textsf{extends}_{\textsc{account}}(\overline{\tx}, \tx)$ predicate checks that
+the transaction $\tx$ can be applied on top of the existing transaction ledger
+$\overline{\tx}$ and is defined as follows.
+
+\begin{definition}[Account validity]
+  Let $\overline{\tx} \in \Trans_\textsc{account}^*$ and $\tx \in \Trans_{\textsc{account}}$.
+  Let $\tx = (\textsf{from}, \textsf{to}, \textsf{amount}, \textsf{ctr}, \sigma)$
+  and let $\textsf{mint}$ be a \emph{minting predicate}.
+  Let $S = (\Gen, \Sig, \Ver)$ be a secure signature scheme.
+
+  We define $\textsf{extends}_{\textsc{account}}(\overline{\tx}, \tx)$ to be $\true$
+  if:
+
+  \begin{enumerate}
+    \item \textbf{Rightful.}
+          $\Ver(\textsf{from}, \tx', \sigma)$ where
+          and $\tx' = (\textsf{from}, \textsf{to}, \textsf{amount}, \textsf{ctr}, \epsilon)$.
+    \item \textbf{Conserving.}\index{Conservation Principle}
+          For all $\textsf{acc}$ it holds that
+          $\textsf{balances}_{\overline{\tx} \concat \tx}(\textsf{acc}) \geq 0$.
+  \end{enumerate}
+
+  The \emph{account validity language} $\ValLang_{\textsc{account}}$ with macroeconomic
+  policy $\textsf{mints}$ is defined as
+  $\ValLang^{\textsf{extends}_{\textsc{account}},\textsf{mints}}$.
+\end{definition}
+
+
 \section{Blockchains}
 \subsection{The Consensus Problem}
 \subsection{Proof-of-Work}
