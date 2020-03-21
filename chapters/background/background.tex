@@ -226,6 +226,203 @@ using special encodings such as base58\index{base58} or mixed-case~\cite{eip55}.
 These addresses can include checksums or other features which make them harder
 to miscommunicate or mistype.
 
+\subsection{The UTXO Model}\index{UTXO Model}
+
+The UTXO model was first introduced in Bitcoin. In the UTXO model, each
+transaction is a node in a \emph{weighted directed acyclic graph}. Despite being
+represented as graph nodes, transactions do not correspond to accounts or
+account holders, but denote a payment. An edge incoming to a transaction
+designates \emph{who is paying}, and an edge outgoing from a transaction denotes
+\emph{who is being paid}. The edge is annotated with two pieces of information:
+Its \emph{weight} that designates the \emph{amount} paid; and the \emph{address}
+of the payment receipient. The weights are integers denominated in the smallest
+denomination of the currency. In Bitcoin, this is the Satoshi\index{Satoshi},
+which equals $10^{-8}$ BTC. Denominating amounts in satoshis rather than
+bitcoins is helpful because it avoids rounding errors. The data of a transaction
+contains the collection of its input and output edges. The hash of that data
+gives the \emph{transaction id}, or \emph{txid}\index{txid}, which can be used
+to uniquely refer to a transaction. In the case of Bitcoin, the hash function
+used for this purpose is $\SHA$.
+
+A directed edge connecting two transactions denotes the transfer of money
+from one transaction to the other. It indicates that money was paid to a
+beneficiary through the first transaction, and that beneficiary subsequently
+spent the money they had received through the second transaction. As such,
+a \emph{coin is a chain of transactions}. Transactions can have \emph{dangling
+outgoing edges}, which are edges that are outgoing from a transaction but have
+not yet been connected as incoming edges into another transaction. These edges
+have not yet been spent and are available for spending. They are known as
+Unspent Transaction Outputs (UTXOs)\index{UTXO}. The collection of all UTXOs
+constitutes the available money in the system.
+
+The transaction DAG is known to all network participants. To determine how much
+money Alice owns, she collects the UTXOs of the transaction DAG and filters it
+according to the addresses that she is the owner of; that is, addresses that
+correspond to a public key for which she owns the corresponding private key. The
+sum of the amounts in these UTXOs is the total amount of money she owns. She
+does not look at \emph{spent} transaction outputs, because these have already
+been consumed and they cannot be spent again.
+
+To send money to Bob, Alice finds a UTXO $e_1$ she owns. She then creates a new
+transaction $\tx$ with one incoming edge $e_1$ and one outgoing edge $e_2$ and
+connects the UTXO $e_1$ as the incoming edge of $\tx$. As $e_1$ is no longer
+a dangling edge since it is now incoming to $\tx$, it is longer in the UTXO set.
+The outgoing edge of $\tx$ is now dangling, and so is now part of the UTXO set.
+Therefore, with the transaction, the UTXO set is updated so that $e_1$ is
+removed from it and $e_2$ is added to it. Edge $e_2$ is weighted by the amount
+that Alice wishes to pay and annotated by the address of the beneficiary to be
+paid, which is deduced from the public key of the receipient.
+
+To prove that she is the rightful owner of $e_1$, Alice produces a signature
+using the private key corresponding to the public key that corresponds to the
+address annotated in $e_1$. The contents signed by Alice's signature include the
+reference to $e_1$ so that it is clear \emph{which} coin Alice is spending. The
+contents also include $e_2$ and in particular the amount and new beneficiary.
+This ensures Alice's payment cannot be forged to be made payable to a different
+beneficiary.
+
+Alice then diffuses her transaction on the network, which is subsequently
+received by Bob.
+
+A transaction can have multiple inputs. This is useful if Alice has received
+multiple payments and she wants to make a larger payment. She creates one
+transaction with multiple inputs and a single output. The transaction consumes
+all inputs and pays them to the given output. A transaction can also have
+multiple outputs. Because every transaction fully consumes its inputs, if Alice
+has received a large payment in a single UTXO, she can consume it via a
+transaction that contains multiple outputs so that she can make multiple
+payments with it simultaneously. She can also consume a large UTXO by creating
+a transaction that contains two outputs: one output that pays out some amount to
+her desired beneficiary, and another that pays the rest of the money back to
+Alice. Outputs that pay back the original owner are known as change outputs.
+Change outputs are paid out to addresses created for this purpose that are known
+as \emph{change addresses}\index{Change Address} and are owned by the original
+owner. A typical transaction on a UTXO-based network consumes one or more inputs
+all owned by the same owner and contains two outputs: One which indicates the
+payment beneficiary, and another which indicates the change.
+
+An edge can be a dangling \emph{outgoing} edge from a transaction, in that it is
+not yet an \emph{incoming} edge to any other transaction. However, every edge
+must have a transaction from which it is outgoing. As such, every edge can be
+associated with a unique transaction that produced it. The outgoing edges of
+every transaction are ordered and indexed by the natural numbers. An edge can
+therefore be identified by the transaction that produced it together with its
+index among the outgoing edges of that transaction. This pair is known as an
+\emph{outpoint}.
+
+\begin{definition}[UTXO transaction]
+  A \emph{UTXO transaction} $\tx$ is a pair $(in, out)$ of inputs and outputs such
+  that $in$ is a sequence of outpoints $(in_1, in_2, \cdots)$ and $out$ is a
+  sequence of edges $(out_1, out_2, \cdots)$. It must hold that every input
+  $in_i$ is a tuple $(txid_i, j_i, \sigma_i)$ where the pair $(txid_i, j_i)$ is
+  an outpoint indicated by the transaction id $txid_i$ and an index $j_i$
+  which marks the output index within the transaction
+  identified by $txid_i$. The signature $\sigma_i$ is a signature on $\tx$
+  in which all $\sigma_k$ have been replaced by $\epsilon$. Additionally, it
+  must hold that every output $out_i$ is a pair $(amount, pk)$ indicating the
+  amount payable and the beneficiary address $pk$. The set of all syntactically
+  valid UTXO transactions is the UTXO transaction language
+  $\Trans_{\textsc{UTXO}}$.
+\end{definition}
+
+A transaction's signatures must be valid. They must sign the plaintext $\tx$ in
+which all $\sigma_k$ have been replaced by $\epsilon$. The replacement is made
+so that signatures do not have to sign themselves, which would be an impossible
+task. They must also pass the verification using the public key indicated by the
+respective outpoint. A transaction must follow the \emph{conservation
+principle} which mandates that the sum of output
+amounts cannot exceed the sum of input amounts.
+
+These rules define transaction validity inductively. When Alice receives a
+transaction from the network, whether it pertains to a payment to her or not,
+she needs to validate it. This require Alice to maintain a currently valid UTXO
+set against which she will compare the transaction and which she will use to
+update this UTXO set. Therefore, to verify a transaction, the procedure followed
+is thus. First, Alice already holds some valid UTXO set by the inductive
+hypothesis (she starts with the empty UTXO set). First, she checks that the
+inputs to the new transaction refer to outpoints that are in her existing UTXO
+set. She follows the outpoint pointers to check that the law of conservation
+holds for the new transaction. She also verifies all the signatures on the
+inputs of the new transaction using the public keys that appear in the
+outputs referenced by the outpoints. As long as everything is valid, she updates
+her UTXO to remove the outputs referenced by the outpoints and add the outputs
+of the new transaction.
+
+We are now ready to define transaction validity formally in the UTXO model.
+While the UTXO model should already be straightforward, we go through the
+exercise of presenting it precisely to illustrate the expressiveness of validity
+language formulations.
+
+First, we define outpoints.
+
+\begin{definition}[Outpoint]\index{Outpoint}
+  Consider the UTXO transactions language $\Trans_{\textsc{UTXO}}$ and the transaction id
+  hash function $H$.
+  Let $\overline{\tx} \in \Trans_{\textsc{UTXO}}^*$ be a transaction sequence
+  containing unique transactions.
+  Define the transaction lookup function
+  $\textsf{lookup-tx}_{\overline{\tx}}(txid)$ to equal $\tx$ if $H(\tx) = txid$ and
+  $\tx \in \overline{\tx}$, otherwise set $\textsf{lookup-tx}_{\overline{\tx}}(txid) = \bot$.
+  Define the \emph{outpoint lookup function}
+  $\textsf{outpoint}_{\overline{\tx}}(txid, j)$ to be the $j^\text{th}$ item of $out$ where
+  $(in, out) = \textsf{lookup-tx}(txid)$ if such a $j$ exists. Otherwise
+  set $\textsf{outpoint}_{\overline{\tx}}(txid, j) = \bot$.
+\end{definition}
+
+We can now define what the UTXO set of a transaction sequence is.
+
+\begin{definition}[UTXO set]
+  Consider the transaction language $\Trans_{\textsc{UTXO}}$ and the transaction
+  id hash function $H$. Let
+  $\overline{\tx} \in \Trans_{\textsc{UTXO}}^*$ be a transaction sequence containing
+  unique transactions.
+  The \emph{UTXO set} $\textsc{UTXO}(\overline{\tx})$ of $\overline{\tx}$ is defined as
+  the set which contains all outpoints $(txid, j)$ with the following properties:
+
+  \begin{enumerate}
+    \item \textbf{Unspent.}
+          There is no $\tx' \in \overline{\tx}$ with $\tx' = (in', out')$ such that
+          $(txid, j) \in in'$.
+    \item \textbf{Transaction output.}
+          There is some $\tx \in \overline{\tx}$ with $\tx = (in, out)$
+          such that $H(\tx) = txid$ and $1 \leq j \leq |out|$.
+  \end{enumerate}
+\end{definition}
+
+We are now ready to define the validity language for a UTXO system. We will
+define our validity language by extension according to
+Definition~\ref{def:lang-extension}.
+The $\textsf{extends}_{\textsc{UTXO}}(\overline{\tx}, \tx)$ predicate checks that
+the transaction $\tx$ can be applied on top of the existing transaction ledger
+$\overline{\tx}$ and is defined as follows.
+
+\begin{definition}[UTXO validity]
+  Let $\overline{\tx} \in \Trans_{\textsc{UTXO}}^*$ and $\tx \in \Trans_{\textsc{UTXO}}$ with
+  $\tx = (in, out)$ and let $\textsf{mint}$ be a \emph{minting predicate}.
+  Let $S = (\Gen, \Sig, \Ver)$ be a secure signature scheme.
+
+  We define $\textsf{extends}_{\textsc{UTXO}}(\overline{\tx}, \tx)$ to be $\true$
+  if all of the following conditions hold:
+
+  \begin{enumerate}
+    \item \textbf{Rightful.}
+          For all $(txid, j, \sigma) \in in$ we have that
+          $\Ver(pk, \tx', \sigma)$ where
+          $(amount, pk) = \textsf{outpoint}_{\overline{\tx}}(txid, j)$
+          and $\tx'$ denotes $\tx$ with all signatures replaced by $\epsilon$.
+    \item \textbf{Unspent.}
+          All $(txid, j, \sigma) \in in$ form unique outpoints $(txid, j)$ and
+          for all $(txid, j, \sigma) \in in$ we have
+          $(txid, j) \in \textsc{UTXO}(\overline{\tx})$
+    \item \textbf{Conserving.}\index{Conservation Principle}
+          \[\sum_{in_i \in in} in_i.\textsf{amount} \geq \sum_{out_i \in out} out_i.\textsf{amount}\,.\]
+  \end{enumerate}
+
+  The \emph{UTXO validity language} $\ValLang_{\textsc{UTXO}}$ with macroeconomic
+  policy $\textsf{mints}$ is defined as
+  $\ValLang^{\textsf{extends}_{\textsc{UTXO}},\textsf{mints}}$.
+\end{definition}
+
 \section{Blockchains}
 \subsection{The Consensus Problem}
 \subsection{Proof-of-Work}
