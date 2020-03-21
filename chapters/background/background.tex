@@ -197,6 +197,35 @@ model and the Account model. We note, however, that our consensus protocols
 which enable compression and interoperability are not limited to these two
 models, but are generic.
 
+\subsection{Keys and addresses}
+While the consensus layer does not require this from the application layer,
+all known application layer instantiations make use of public/private keys.
+These keys are used to identify money holders in the system. The public key is
+used to \emph{receive} money, while the private key is used to sign instructions
+to \emph{send} money. The public key is publicized, while the private key
+remains secret. As the public key can be assumed to be known to anyone, anyone
+can \emph{send} money to everyone and this cannot be prevented. The receipient
+does not need to authorize a payment to receive it.
+
+To somewhat increase anonymity, it is recommended that public keys used to
+receive money are not recycled. In particular, it is recommended that a new
+public key is issued every time money is to be received. The set of all
+the private keys that belong to a user are known as a
+\emph{wallet}\index{Wallet}.
+
+The lifecycle of money is as follows. If Alice wishes to pay Bob, first she
+contacts Bob to ask for his public key. Bob generates a new public/private key
+pair and send the public key to Alice. Alice then issues a payment instruction
+which instructs Bob to be paid and contains the amount payable as well as Bob's
+public key. When Bob wishes to spend the money he received from Alice, he uses
+the respective private key to sign a message sending out a payment to someone
+else.
+
+Public keys used to send money are encoded into \emph{addresses}\index{Address}
+using special encodings such as base58\index{base58} or mixed-case~\cite{eip55}.
+These addresses can include checksums or other features which make them harder
+to miscommunicate or mistype.
+
 \section{Blockchains}
 \subsection{The Consensus Problem}
 \subsection{Proof-of-Work}
