@@ -52,25 +52,49 @@ treatment, refer to any introductory textbook in the subject~\cite{katz,handbook
 \input{chapters/background/ro}
 \input{chapters/background/environment}
 
+\todo{Copy lecture notes from our \emph{Introduction to Blockchains} course for the next sections...}
+
+\section{The Application Layer}
+In creating a decentralized cryptocurrency, the goal is to build a monetary
+system which is not reliant on any third parties.
+
+Money is moved around by issuing \emph{transactions}, which instruct the
+transfer of a certain amount from one party to another. If Alice holds a
+certain amount of money and she wishes to give it to Bob, she creates a
+transaction which encodes, in some form, the instruction to pay Bob that certain
+amount. That transaction is encoded into a string that is then signed by Alice
+and transmitted to the network.
+
+Contrary to centrally controlled currencies in which banks or payment processors
+are responsible for maintaining balances, decentralized cryptocurrencies allow
+any participant to verify the validity of a transaction. In order for this to be
+possible, every transaction is transmitted to every interested party on the
+network, a so-called \emph{full node}, who validates it. By recording all past
+transactions, every participant is aware of \emph{who owns what} and can thereby
+determine if an attempt to spend money is legitimate. No special privileged or
+trusted nodes exist on the network.
+
+We now formally define what a transaction is and look at the transaction formats
+for Bitcoin and Ethereum. In addition to being the largest cryptocurrencies,
+these two systems define two prototypal transaction formats known as the
+\emph{UTXO model} and the \emph{Account model}. All other cryptocurrencies adopt
+either model, or a hybrid of the two~\cite{chimeric}.
+
 \section{Blockchains}
+\subsection{The Consensus Problem}
 \subsection{Proof-of-Work}
 \cite{pow}\index{Proof-of-Work}
 The
 honest parties try to distinguish between messages diffused by the other honest
 parties and the adversary.
 
-\subsection{The Consensus Problem}
 \subsection{Blocks}
 genesis
 \subsection{Chains of Blocks}
 longest chain rule
 \subsection{Blockchain Addressing}
 \subsection{SPV}
-
-\section{The Transaction Layer}
-\subsection{Transactions}
-\subsection{The UTXO Model}
-\subsection{The Account Model}
+the p2p network and types of nodes: full nodes, SPV nodes, ...
 
 \section{Forks}
 \subsection{Hard Forks}
