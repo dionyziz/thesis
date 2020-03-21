@@ -244,8 +244,9 @@ assumption}.
 
 When a miner is asked to find a block, they collect the unconfirmed transactions
 into a string $\overline{x}$. They then attempt to find a $\textsf{nonce}$ such
-that $H(\overline{x} \concat \textsf{nonce}) \leq T$, where $T$ is a constant
-\emph{target} and $H$ is a cryptographically secure hash function. As the hash
+that $H(\overline{x} \concat \textsf{nonce} \concat h') \leq T$, where $T$ is a constant
+\emph{target}, $H$ is a cryptographically secure hash function, and $h'$ is the
+hash of the previous block. As the hash
 function has an unpredictable output, this problem becomes more difficult as $T$
 becomes smaller. The only known way to solve the problem is by brute forcing the
 $\textsf{nonce}$ until a suitable value is found. This process is known as
