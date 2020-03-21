@@ -18,8 +18,8 @@ is bounded by polynomial time bounds. Both the honest parties and the adversary
 are probabilistic Turing Machines. As we are working in distributed settings,
 our protocols will be long-lived and involve multiple parties running
 simultaneously and communicating over the network while maintaining local state.
-Among the parties in our execution, we will denote by $n$ the total number of
-parties and with $t$ the number of parties that are adversarial. To strengthen
+Among the parties in our execution, we will denote by $n$\index{$n$} the total number of
+parties and with $t$\index{$t$} the number of parties that are adversarial. To strengthen
 our adversary, we assume all the adversarial parties \emph{collude} and are
 controlled by a single adversary. The situation where multiple adversaries are
 not colluding is also captured by our stronger model (this can be captured by a
@@ -27,7 +27,7 @@ single adversary which simulates the multiple non-colluding adversaries).
 
 To model the distributed setting, we must speak of executions concretely.
 Towards this purpose, we conjure an \emph{environment} $\mathcal{Z}$
-\index{Environment} which is an
+\index{Environment}\index{$\mathcal{Z}$} which is an
 Interactive Turing Machine~\cite{interactive-tm} (ITMs) \index{Interactive
 Turing Machine} and is responsible for
 orchestrating the whole execution. An Interactive Turing Machine is a Turing
