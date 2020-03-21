@@ -215,11 +215,11 @@ communication protocols allow the generic transfer of information and are not
 limited to asset swapping. Additionally, we do not require a counter-party.
 
 One construction which allows the generic transfer of information between chains
-without additional trust assumptions is called \emph{BTCRelay}. The premise is
-to copy all block headers of one chain into the other using a smart contract.
-While secure, this structure is not succinct. It has been implemented as a smart
-contract in production which allows the transfer of information from Bitcoin to
-Ethereum.
+without additional trust assumptions is called \emph{BTCRelay}~\cite{btcrelay}.
+The premise is to copy all block headers of one chain into the other using a
+smart contract. While secure, this structure is not succinct (it is
+$\Theta(|\chain|)$). It has been implemented as a smart contract in production
+which allows the transfer of information from Bitcoin to Ethereum.
 
 \emph{Drivechains} and \emph{rootstock} are sidechain proposals which require
 miners of both chains to be aware of both networks. This follows our definition
