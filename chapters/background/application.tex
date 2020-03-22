@@ -1,0 +1,465 @@
+\section{The Application Layer}
+In creating a decentralized cryptocurrency, the goal is to build a monetary
+system which is not reliant on any third parties.
+Money is moved around by issuing \emph{transactions}, which instruct the
+transfer of a certain amount from one party to another. If Alice holds a
+certain amount of money and she wishes to give it to Bob, she creates a
+transaction which encodes, in some form, the instruction to pay Bob that certain
+amount. That transaction is encoded into a string that is then signed by Alice
+and transmitted to the network.
+
+Contrary to centrally controlled currencies in which banks or payment processors
+are responsible for maintaining balances, decentralized cryptocurrencies allow
+any participant to verify the validity of a transaction. In order for this to be
+possible, every transaction is transmitted to every interested party on the
+network, a so-called \emph{full node}, who validates it. By recording all past
+transactions, every participant is aware of \emph{who owns what} and can thereby
+determine if an attempt to spend money is legitimate. No special privileged or
+trusted nodes exist on the network.
+
+We now formally define what a transaction is and look at the transaction formats
+for Bitcoin and Ethereum. In addition to being the largest cryptocurrencies,
+these two systems define two prototypal transaction formats known as the
+\emph{UTXO model} and the \emph{Account model}. All other cryptocurrencies adopt
+either model, or a hybrid of the two~\cite{chimeric}.
+
+\subsection{Transactions}
+Transactions are part of the
+\emph{application layer}\index{Application Layer}. As this thesis concerns
+itself with the \emph{consensus layer} which organizes transactions into
+sequences, we will generally not concern ourselves about their format, and we
+will allow the application layer to specify any transaction format it wishes.
+Therefore, transactions can be any strings that are deemed valid by the
+application layer.
+
+\begin{definition}[Transaction]\index{Transaction}
+  A predefined language $\Trans$ of strings in $\{0, 1\}^*$ is called
+  a \emph{transaction language}. Elements $tx \in \Trans$ are called
+  \emph{transactions}.
+\end{definition}
+
+While specific applications such as Bitcoin or Ethereum mandate that
+transactions follow a certain format and must include, for example, signatures,
+we will not impose such requirements on our protocol. As there are
+preconceptions about what constitutes a transaction, we feel the need to give
+some examples of transaction languages. The set of valid transactions could be
+the empty set, the set $\{0, 1\}$ of bits, the set of natural numbers, or the
+set of triplets of a message, a public key, and a digital signature that pass
+verification under a certain signature scheme. While the latter corresponds more
+closely to practical protocols such as Bitcoin, our treatment is quite general
+and has no requirements to remain within this strict format.
+
+Once the set of valid transactions $\Trans$ has been defined by the
+application layer, it can now specify a \emph{validity language} which specifies
+which \emph{sequences} of transactions are valid. This captures what is deemed
+to be a valid transaction given a previous history of transactions in the
+system and allows the application layer to specify, for example, that double
+spending is not allowed.
+
+\begin{definition}[Validity Language]\index{Validity Language}
+  Given a transaction language $\Trans$, a predifined set of finite
+  transaction sequences $\ValLang \subseteq \Trans^*$ is called its
+  \emph{validity language}.
+\end{definition}
+
+The validity languages we will concern ourselves with have the property that
+they contain the empty transaction sequence $\epsilon$. This is useful because
+it allows a node booting up anew to begin with an empty transaction sequence
+before it starts receiving and validating transactions. Our validity languages
+are also \emph{extensible}: Given a valid transaction sequence $\overline{\tx}
+\in \ValLang$ and a new candidate transaction $\tx \in \Trans$, it is
+possible to check whether $\overline{\tx} \concat \tx \in \ValLang$ by applying
+a predicate $\textsf{extend}(\overline{\tx}, \tx)$. This $\textsf{extend}$
+predicate ensures that the transaction only spends money that belongs to it and
+exists in the system. Furthermore, once a
+transaction which invalidates the sequence has been added to the sequence, the
+sequence remains invalid.
+
+In addition to allowing transactions that spend existing money, it must be
+possible to also create new money. The macroeconomic rules for money creation
+are captured by another application-specific predicate
+$\textsf{mints}(\overline{\tx}, \tx)$ which checks whether a transaction $\tx$
+is a valid minting transaction. The rules for this can include, for example,
+limiting the amount of money generated per block.
+In typical cryptocurrencies, there is one minting transaction allowed per block
+and the amount that can be generated by this minting transaction has an
+upper bound which is algorithmically determined~\cite{equitability}.
+We will leave this predicate undefined in our treatment.
+
+Validity by extension is captured by the definition below:
+
+\begin{definition}[Validity by extension]\label{def:lang-extension}
+  Given an extension predicate $\textsf{extends}$, and a transaction language
+  $\Trans$, the validity language
+  $\ValLang^{\textsf{extends},\textsf{mints},\Trans}$ obtained \emph{by extension} is
+  the minimum set of transaction sequences which satisfies the following:
+
+  \begin{enumerate}
+    \item \textbf{Base.}
+          $\epsilon \in \ValLang^{\textsf{extends},\textsf{mints},\Trans}$
+    \item \textbf{Extension.}
+          For all $\overline{\tx} \in \ValLang^{\textsf{extends},\textsf{mints},\Trans}$, for all
+          $\tx \in \Trans$, if
+          $\textsf{extends}(\overline{\tx}, \tx)$ or $\textsf{mints}(\overline{\tx}, \tx)$ then
+          $\overline{\tx} \concat \tx \in \ValLang^{\textsf{extends},\textsf{mints},\Trans}$.
+  \end{enumerate}
+\end{definition}
+
+From the above definition, the following result follows immediately.
+
+\begin{lemma}[Validity Language Monotonicity]
+  Consider a validity language $\ValLang$ generated \emph{by extension} of a
+  transaction language $\Trans$. For all $w,w'\in \Trans^*$ we have
+  $w\not\in\ValLang \Rightarrow w\concat w'\not\in\ValLang$.
+\end{lemma}
+
+Monotonicity mandates the natural property that if a sequence of transactions is
+invalid, it cannot become valid again by adding further transactions.
+
+Furthermore, it is useful to ensure transactions are unique. This is captured in
+the following requirement for the validity languages of our interest.
+
+\begin{definition}[Validity Language Transaction Uniqueness]\label{def:trans-uniqueness}
+  A validity language $\ValLang$ pertaining to a transaction language $\Trans$
+  has \emph{transaction uniqueness} if it never contain the same transaction
+  twice: for any $\tx\in \Trans$ and any
+  $w_1,w_2,w_3\in \Trans^*$ we have
+
+  \[ w_1\concat\tx\concat
+  w_2\concat\tx\concat w_3\not\in\ValLang \,~. \]
+\end{definition}
+
+The natural ``uniqueness'' property of transactions holds in existing
+implementations, but is not necessary for our treatment, albeit allowing for
+some simplifications.
+
+For illustrative purposes, and because we aim our protocols to be deployable to
+existing blockchain systems, in particular to Bitcoin-compatible and
+Ethereum-compatible chains, we now explore two particular approaches to the
+transaction and validity languages employed in the blockchain space: the UTXO
+model and the Account model. We note, however, that our consensus protocols
+which enable compression and interoperability are not limited to these two
+models, but are generic.
+
+\subsection{Keys and addresses}
+While the consensus layer does not require this from the application layer,
+all known application layer instantiations make use of public/private keys.
+These keys are used to identify money holders in the system. The public key is
+used to \emph{receive} money, while the private key is used to sign instructions
+to \emph{send} money. The public key is publicized, while the private key
+remains secret. As the public key can be assumed to be known to anyone, anyone
+can \emph{send} money to everyone and this cannot be prevented. The receipient
+does not need to authorize a payment to receive it.
+
+To somewhat increase anonymity, it is recommended that public keys used to
+receive money are not recycled. In particular, it is recommended that a new
+public key is issued every time money is to be received. The set of all
+the private keys that belong to a user are known as a
+\emph{wallet}\index{Wallet}.
+
+The lifecycle of money is as follows. If Alice wishes to pay Bob, first she
+contacts Bob to ask for his public key. Bob generates a new public/private key
+pair and send the public key to Alice. Alice then issues a payment instruction
+which instructs Bob to be paid and contains the amount payable as well as Bob's
+public key. When Bob wishes to spend the money he received from Alice, he uses
+the respective private key to sign a message sending out a payment to someone
+else.
+
+Public keys used to send money are encoded into \emph{addresses}\index{Address}
+using special encodings such as base58\index{base58} or mixed-case~\cite{eip55}.
+These addresses can include checksums or other features which make them harder
+to miscommunicate or mistype.
+
+\subsection{The UTXO Model}\index{UTXO Model}
+
+The UTXO model was first introduced in Bitcoin. In the UTXO model, each
+transaction is a node in a \emph{weighted directed acyclic graph}. Despite being
+represented as graph nodes, transactions do not correspond to accounts or
+account holders, but denote a payment. An edge incoming to a transaction
+designates \emph{who is paying}, and an edge outgoing from a transaction denotes
+\emph{who is being paid}. The edge is annotated with two pieces of information:
+Its \emph{weight} that designates the \emph{amount} paid; and the \emph{address}
+of the payment receipient. The weights are integers denominated in the smallest
+denomination of the currency. In Bitcoin, this is the Satoshi\index{Satoshi},
+which equals $10^{-8}$ BTC. Denominating amounts in satoshis rather than
+bitcoins is helpful because it avoids rounding errors. The data of a transaction
+contains the collection of its input and output edges. The hash of that data
+gives the \emph{transaction id}, or \emph{txid}\index{txid}, which can be used
+to uniquely refer to a transaction. In the case of Bitcoin, the hash function
+used for this purpose is $\SHA$.
+
+A directed edge connecting two transactions denotes the transfer of money
+from one transaction to the other. It indicates that money was paid to a
+beneficiary through the first transaction, and that beneficiary subsequently
+spent the money they had received through the second transaction. As such,
+a \emph{coin is a chain of transactions}. Transactions can have \emph{dangling
+outgoing edges}, which are edges that are outgoing from a transaction but have
+not yet been connected as incoming edges into another transaction. These edges
+have not yet been spent and are available for spending. They are known as
+Unspent Transaction Outputs (UTXOs)\index{UTXO}. The collection of all UTXOs
+constitutes the available money in the system.
+
+The transaction DAG is known to all network participants. To determine how much
+money Alice owns, she collects the UTXOs of the transaction DAG and filters it
+according to the addresses that she is the owner of; that is, addresses that
+correspond to a public key for which she owns the corresponding private key. The
+sum of the amounts in these UTXOs is the total amount of money she owns. She
+does not look at \emph{spent} transaction outputs, because these have already
+been consumed and they cannot be spent again.
+
+To send money to Bob, Alice finds a UTXO $e_1$ she owns. She then creates a new
+transaction $\tx$ with one incoming edge $e_1$ and one outgoing edge $e_2$ and
+connects the UTXO $e_1$ as the incoming edge of $\tx$. As $e_1$ is no longer
+a dangling edge since it is now incoming to $\tx$, it is longer in the UTXO set.
+The outgoing edge of $\tx$ is now dangling, and so is now part of the UTXO set.
+Therefore, with the transaction, the UTXO set is updated so that $e_1$ is
+removed from it and $e_2$ is added to it. Edge $e_2$ is weighted by the amount
+that Alice wishes to pay and annotated by the address of the beneficiary to be
+paid, which is deduced from the public key of the receipient.
+
+To prove that she is the rightful owner of $e_1$, Alice produces a signature
+using the private key corresponding to the public key that corresponds to the
+address annotated in $e_1$. The contents signed by Alice's signature include the
+reference to $e_1$ so that it is clear \emph{which} coin Alice is spending. The
+contents also include $e_2$ and in particular the amount and new beneficiary.
+This ensures Alice's payment cannot be forged to be made payable to a different
+beneficiary.
+
+Alice then diffuses her transaction on the network, which is subsequently
+received by Bob.
+
+A transaction can have multiple inputs. This is useful if Alice has received
+multiple payments and she wants to make a larger payment. She creates one
+transaction with multiple inputs and a single output. The transaction consumes
+all inputs and pays them to the given output. A transaction can also have
+multiple outputs. Because every transaction fully consumes its inputs, if Alice
+has received a large payment in a single UTXO, she can consume it via a
+transaction that contains multiple outputs so that she can make multiple
+payments with it simultaneously. She can also consume a large UTXO by creating
+a transaction that contains two outputs: one output that pays out some amount to
+her desired beneficiary, and another that pays the rest of the money back to
+Alice. Outputs that pay back the original owner are known as change outputs.
+Change outputs are paid out to addresses created for this purpose that are known
+as \emph{change addresses}\index{Change Address} and are owned by the original
+owner. A typical transaction on a UTXO-based network consumes one or more inputs
+all owned by the same owner and contains two outputs: One which indicates the
+payment beneficiary, and another which indicates the change.
+
+An edge can be a dangling \emph{outgoing} edge from a transaction, in that it is
+not yet an \emph{incoming} edge to any other transaction. However, every edge
+must have a transaction from which it is outgoing. As such, every edge can be
+associated with a unique transaction that produced it. The outgoing edges of
+every transaction are ordered and indexed by the natural numbers. An edge can
+therefore be identified by the transaction that produced it together with its
+index among the outgoing edges of that transaction. This pair is known as an
+\emph{outpoint}.
+
+\begin{definition}[UTXO transaction]
+  A \emph{UTXO transaction} $\tx$ is a pair $(in, out)$ of inputs and outputs such
+  that $in$ is a sequence of outpoints $(in_1, in_2, \cdots)$ and $out$ is a
+  sequence of edges $(out_1, out_2, \cdots)$. It must hold that every input
+  $in_i$ is a tuple $(txid_i, j_i, \sigma_i)$ where the pair $(txid_i, j_i)$ is
+  an outpoint indicated by the transaction id $txid_i$ and an index $j_i$
+  which marks the output index within the transaction
+  identified by $txid_i$. The signature $\sigma_i$ is a signature on $\tx$
+  in which all $\sigma_k$ have been replaced by $\epsilon$. Additionally, it
+  must hold that every output $out_i$ is a pair $(amount, pk)$ indicating the
+  amount payable and the beneficiary address $pk$. The set of all syntactically
+  valid UTXO transactions is the UTXO transaction language
+  $\Trans_{\textsc{UTXO}}$.
+\end{definition}
+
+A transaction's signatures must be valid. They must sign the plaintext $\tx$ in
+which all $\sigma_k$ have been replaced by $\epsilon$. The replacement is made
+so that signatures do not have to sign themselves, which would be an impossible
+task. They must also pass the verification using the public key indicated by the
+respective outpoint. A transaction must follow the \emph{conservation
+principle} which mandates that the sum of output
+amounts cannot exceed the sum of input amounts.
+
+These rules define transaction validity inductively. When Alice receives a
+transaction from the network, whether it pertains to a payment to her or not,
+she needs to validate it. This require Alice to maintain a currently valid UTXO
+set against which she will compare the transaction and which she will use to
+update this UTXO set. Therefore, to verify a transaction, the procedure followed
+is thus. First, Alice already holds some valid UTXO set by the inductive
+hypothesis (she starts with the empty UTXO set). First, she checks that the
+inputs to the new transaction refer to outpoints that are in her existing UTXO
+set. She follows the outpoint pointers to check that the law of conservation
+holds for the new transaction. She also verifies all the signatures on the
+inputs of the new transaction using the public keys that appear in the
+outputs referenced by the outpoints. As long as everything is valid, she updates
+her UTXO to remove the outputs referenced by the outpoints and add the outputs
+of the new transaction.
+
+We are now ready to define transaction validity formally in the UTXO model.
+While the UTXO model should already be straightforward, we go through the
+exercise of presenting it precisely to illustrate the expressiveness of validity
+language formulations.
+
+First, we define outpoints.
+
+\begin{definition}[Outpoint]\index{Outpoint}
+  Consider the UTXO transactions language $\Trans_{\textsc{UTXO}}$ and the transaction id
+  hash function $H$.
+  Let $\overline{\tx} \in \Trans_{\textsc{UTXO}}^*$ be a transaction sequence
+  containing unique transactions.
+  Define the transaction lookup function
+  $\textsf{lookup-tx}_{\overline{\tx}}(txid)$ to equal $\tx$ if $H(\tx) = txid$ and
+  $\tx \in \overline{\tx}$, otherwise set $\textsf{lookup-tx}_{\overline{\tx}}(txid) = \bot$.
+  Define the \emph{outpoint lookup function}
+  $\textsf{outpoint}_{\overline{\tx}}(txid, j)$ to be the $j^\text{th}$ item of $out$ where
+  $(in, out) = \textsf{lookup-tx}(txid)$ if such a $j$ exists. Otherwise
+  set $\textsf{outpoint}_{\overline{\tx}}(txid, j) = \bot$.
+\end{definition}
+
+We can now define what the UTXO set of a transaction sequence is.
+
+\begin{definition}[UTXO set]
+  Consider the transaction language $\Trans_{\textsc{UTXO}}$ and the transaction
+  id hash function $H$. Let
+  $\overline{\tx} \in \Trans_{\textsc{UTXO}}^*$ be a transaction sequence containing
+  unique transactions.
+  The \emph{UTXO set} $\textsc{UTXO}(\overline{\tx})$ of $\overline{\tx}$ is defined as
+  the set which contains all outpoints $(txid, j)$ with the following properties:
+
+  \begin{enumerate}
+    \item \textbf{Unspent.}
+          There is no $\tx' \in \overline{\tx}$ with $\tx' = (in', out')$ such that
+          $(txid, j) \in in'$.
+    \item \textbf{Transaction output.}
+          There is some $\tx \in \overline{\tx}$ with $\tx = (in, out)$
+          such that $H(\tx) = txid$ and $1 \leq j \leq |out|$.
+  \end{enumerate}
+\end{definition}
+
+We are now ready to define the validity language for a UTXO system. We will
+define our validity language by extension according to
+Definition~\ref{def:lang-extension}.
+The $\textsf{extends}_{\textsc{UTXO}}(\overline{\tx}, \tx)$ predicate checks that
+the transaction $\tx$ can be applied on top of the existing transaction ledger
+$\overline{\tx}$ and is defined as follows.
+
+\begin{definition}[UTXO validity]
+  Let $\overline{\tx} \in \Trans_{\textsc{UTXO}}^*$ and $\tx \in \Trans_{\textsc{UTXO}}$ with
+  $\tx = (in, out)$ and let $\textsf{mint}$ be a \emph{minting predicate}.
+  Let $S = (\Gen, \Sig, \Ver)$ be a secure signature scheme.
+
+  We define $\textsf{extends}_{\textsc{UTXO}}(\overline{\tx}, \tx)$ to be $\true$
+  if all of the following conditions hold:
+
+  \begin{enumerate}
+    \item \textbf{Rightful.}
+          For all $(txid, j, \sigma) \in in$ we have that
+          $\Ver(pk, \tx', \sigma)$ where
+          $(amount, pk) = \textsf{outpoint}_{\overline{\tx}}(txid, j)$
+          and $\tx'$ denotes $\tx$ with all signatures replaced by $\epsilon$.
+    \item \textbf{Unspent.}
+          All $(txid, j, \sigma) \in in$ form unique outpoints $(txid, j)$ and
+          for all $(txid, j, \sigma) \in in$ we have
+          $(txid, j) \in \textsc{UTXO}(\overline{\tx})$
+    \item \textbf{Conserving.}\index{Conservation Principle}
+          \[\sum_{in_i \in in} in_i.\textsf{amount} \geq \sum_{out_i \in out} out_i.\textsf{amount}\,.\]
+  \end{enumerate}
+
+  The \emph{UTXO validity language} $\ValLang_{\textsc{UTXO}}$ with macroeconomic
+  policy $\textsf{mints}$ is defined as
+  $\ValLang^{\textsf{extends}_{\textsc{UTXO}},\textsf{mints}}$.
+\end{definition}
+
+\subsection{The Account Model}\index{Account Model}
+A different approach to transactions is followed in the Account Model, which was
+first put forth by Ethereum. Instead of maintaining UTXOs, the Account Model
+maintains account balances. Transactions are instructions to transfer an amount
+from one account to another. Accounts are represented by addresses. A
+transaction therefore contains the source account, the target account, the
+amount, as well as a signature authorizing the transfer. The conservation
+principle here mandates that the source account must have sufficient balance to
+cover the amount a transaction wishes to spend.
+
+Contrary to the UTXO model where every UTXO is spent only once, here it is
+possible to have multiple transactions which spend from the same source account,
+pay into the same target account, and transmit the same amount. As such, these
+transactions require a nonce, or counter, which ensures they are unique. This
+counter is necessary. If such no such counter was present, the system needing to
+support a repeated transfer would accept the same transaction twice. But such
+admissibility of transaction duplication is problematic, as an adversary could
+replay an existing transaction, with the same signature, benefiting her account
+twice, even though no such intention was recorded by the sender. The counter is
+therefore required to signal the fact that the sender wishes to initiate yet
+another transfer.
+
+\begin{definition}[Account Transaction]
+  An \emph{account transaction} $\tx$ is a tuple
+  $(\textsf{from},\allowbreak
+   \textsf{to},\allowbreak
+   \textsf{amount},\allowbreak
+   ctr,\allowbreak
+   \sigma)$ such that $\textsf{from} \neq \textsf{to}$.
+  The signature $\sigma$ is a signature on
+  $(\textsf{from},\allowbreak
+    \textsf{to},\allowbreak
+    \textsf{amount},\allowbreak
+    ctr,\allowbreak
+    \epsilon)$. The set of all
+  syntactically valid account transactions is the account transaction language
+  $\Trans_\textsc{account}$.
+\end{definition}
+
+Balances can be obtained from a ledger by summing the amounts transfered. We
+will then make use of balances to define whether an account transaction validly
+extends a ledger.
+
+\begin{definition}[Account Balances]\index{Balance}
+  Let $\overline{\tx} \subseteq \Trans_\textsc{account}^*$ be an account
+  transaction sequence. We define the \emph{balance}
+  $\textsf{balance}_{\overline{\tx}}(\textsf{acc})$
+  of an account $\textsf{acc}$
+  at the end of the transaction sequence $\overline{\tx}$
+  as follows. If $\overline{\tx} = \epsilon$, then define
+  $\textsf{balance}_{\overline{\tx}}(\textsf{acc}) = 0$.
+  Otherwise, $\overline{\tx}$ is non-empty, so set
+  $\overline{\tx} = \overline{\tx}'\concat\tx$
+  and let $(\textsf{from}, \textsf{to}, \textsf{amount}, \sigma) = \tx$.
+  Recursively let
+  $\textsf{balance}' = \textsf{balance}_{\overline{\tx}'}(\textsf{acc})$.
+  \begin{itemize}
+    \item If $\textsf{from} = \textsf{acc}$, then define
+          $\textsf{balance}_{\overline{\tx}}(\textsf{acc}) = \textsf{balance}' - \textsf{amount}$.
+    \item If $\textsf{to} = \textsf{acc}$, then define
+          $\textsf{balance}_{\overline{\tx}}(\textsf{acc}) = \textsf{balance}' + \textsf{amount}$.
+    \item Otherwise
+          define $\textsf{balance}_{\overline{\tx}}(\textsf{acc}) = \textsf{balance}'$.
+\end{itemize}
+\end{definition}
+
+We are now ready to define the validity language for an account-based system.
+Again, we will
+define our validity language by extension according to
+Definition~\ref{def:lang-extension}.
+The $\textsf{extends}_{\textsc{account}}(\overline{\tx}, \tx)$ predicate checks that
+the transaction $\tx$ can be applied on top of the existing transaction ledger
+$\overline{\tx}$ and is defined as follows.
+
+\begin{definition}[Account validity]
+  Let $\overline{\tx} \in \Trans_\textsc{account}^*$ and $\tx \in \Trans_{\textsc{account}}$.
+  Let $\tx = (\textsf{from}, \textsf{to}, \textsf{amount}, \textsf{ctr}, \sigma)$
+  and let $\textsf{mint}$ be a \emph{minting predicate}.
+  Let $S = (\Gen, \Sig, \Ver)$ be a secure signature scheme.
+
+  We define $\textsf{extends}_{\textsc{account}}(\overline{\tx}, \tx)$ to be $\true$
+  if:
+
+  \begin{enumerate}
+    \item \textbf{Rightful.}
+          $\Ver(\textsf{from}, \tx', \sigma)$ where
+          and $\tx' = (\textsf{from}, \textsf{to}, \textsf{amount}, \textsf{ctr}, \epsilon)$.
+    \item \textbf{Conserving.}\index{Conservation Principle}
+          For all $\textsf{acc}$ it holds that
+          $\textsf{balances}_{\overline{\tx} \concat \tx}(\textsf{acc}) \geq 0$.
+  \end{enumerate}
+
+  The \emph{account validity language} $\ValLang_{\textsc{account}}$ with macroeconomic
+  policy $\textsf{mints}$ is defined as
+  $\ValLang^{\textsf{extends}_{\textsc{account}},\textsf{mints}}$.
+\end{definition}
