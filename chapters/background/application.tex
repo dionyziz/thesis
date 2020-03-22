@@ -337,7 +337,7 @@ We are now ready to define the validity language for a UTXO system. We will
 define our validity language by extension according to
 Definition~\ref{def:lang-extension}.
 The $\textsf{extends}_{\textsc{UTXO}}(\overline{\tx}, \tx)$ predicate checks that
-the transaction $\tx$ can be applied on top of the existing transaction ledger
+the transaction $\tx$ can be applied on top of the existing transaction sequence
 $\overline{\tx}$ and is defined as follows.
 
 \begin{definition}[UTXO validity]
@@ -406,9 +406,9 @@ another transfer.
   $\Trans_\textsc{account}$.
 \end{definition}
 
-Balances can be obtained from a ledger by summing the amounts transfered. We
-will then make use of balances to define whether an account transaction validly
-extends a ledger.
+Balances can be obtained from a transaction sequence by summing the amounts
+transfered. We will then make use of balances to define whether an account
+transaction validly extends a transaction sequence.
 
 \begin{definition}[Account Balances]\index{Balance}
   Let $\overline{\tx} \subseteq \Trans_\textsc{account}^*$ be an account
@@ -438,7 +438,7 @@ Again, we will
 define our validity language by extension according to
 Definition~\ref{def:lang-extension}.
 The $\textsf{extends}_{\textsc{account}}(\overline{\tx}, \tx)$ predicate checks that
-the transaction $\tx$ can be applied on top of the existing transaction ledger
+the transaction $\tx$ can be applied on top of the existing transaction sequence
 $\overline{\tx}$ and is defined as follows.
 
 \begin{definition}[Account validity]
