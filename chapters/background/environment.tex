@@ -207,6 +207,17 @@ based on the execution so far.
 
 \input{chapters/background/algorithms/alg.var-environment}
 
+In the variable difficulty setting, we will concern ourselves with protocols in
+which the population evolution is gradual and observes certain
+bounds~\cite{varbackbone}.
+
+\begin{definition}[Bounded demographic]
+  For $\gamma \in \mathbb{R}^+$, a population sequence
+  $(n_r)_{r\in\mathbb{N}}$ is called \emph{$(\gamma, s)$-respecting} if for any
+  $S$ of at most $s$ consecutive rounds,
+  $\max_{r \in S}n_r \leq \gamma\cdot \min_{r \in S}n_r$.
+\end{definition}
+
 \subsection{Adaptive Corruption}
 \label{sec:prelim-corr}
 
