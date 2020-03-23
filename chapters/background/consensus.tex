@@ -133,6 +133,18 @@ until a transaction is confirmed. When we develop our protocols and we require
 a transaction to appear in a ledger, this parameter will appear as waiting time
 to ensure the transaction has taken its position to all honest parties' ledgers.
 
+We note that it is trivial to design a ledger protocol which has either liveness
+or persistence, but not both. To achieve persistence without liveness, the
+honest parties always return $\epsilon$ when their ledger views are read. This
+trivially satisfies persistence, as the empty sequence as a prefix of itself.
+Liveness is not satisfied because transactions are never confirmed. To achieve
+liveness without persistence, the honest parties include transactions in their
+ledgers in the order they see them on the network. This ensures transactions
+appear immediately, which achieves liveness, but the ledgers of different
+parties will disagree about their contents and order, and so persistence is
+lost. The challenge in creating a \emph{secure ledger} will be to achieve both
+properties.
+
 \begin{definition}[Secure ledger]
   A ledger $\Ledger$ is called \emph{secure} with parameters $\lambda$, $u$ if
   it has persistence with parameters $\lambda$ and liveness with parameter $u$.
@@ -140,7 +152,7 @@ to ensure the transaction has taken its position to all honest parties' ledgers.
 
 To solve the consensus problem and create a secure ledger protocol, the honest
 parties must come to agreement and ensure that the adversary does not split
-their views. In order to do that, we will allow parties to \emph{vote} on a
-transaction order. We will then utilize the majority of votes to arrive at a
-conclusion. This requires us to introduce an additional assumption: That the
-majority of parties are honest.
+their views while including all transactions. In order to do that, we will allow
+parties to \emph{vote} on a transaction order. We will then utilize the majority
+of votes to arrive at a conclusion. This requires us to introduce an additional
+assumption: That the majority of parties are honest.
