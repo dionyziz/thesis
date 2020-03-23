@@ -1,0 +1,146 @@
+\subsection{The Consensus Problem}\index{Consensus}
+As the peer-to-peer parties in a cryptocurrency system exchange money,
+transactions are generated and disseminated on the network. Messages on the
+network naturally do not arrive at every party in the same order (as is
+formally captured by our network model of Section~\ref{sec:env}).
+The parties need to determine whether a newly arriving transaction is valid by
+comparing it against the currently adopted transaction sequence.
+The order in which transactions are processed is important because it can affect
+the validity of the transaction sequence. If every party organizes their
+transactions according to the order they receive them from the network, they
+will end up disagreeing about whether a transaction is valid. This gives rise to
+the \emph{double spending problem}\index{Double Spending}.
+
+Consider the following situation. In the UTXO model, Alice sends 1 coin to Eve via
+a legitimate transaction $\tx$ which has only one output. This transaction is
+broadcast to the network and every party adopts it as valid. Subsequently, Eve,
+who is malicious,
+generates two transactions $\tx_1, \tx_2$ each of which consumes the outpoint of
+$\tx$ and generates a single new output of the same value, but to a different
+receipient each: $\tx_1$ pays Bob, while $\tx_2$ pays back Charlie. Both
+$\tx_1$ and $\tx_2$ are broadcast on the network at about the same time, and it
+so happens that Bob receives $\tx_1$ before $\tx_2$, while Charlie receives
+$\tx_2$ before $\tx_1$. If they adopt transactions in the order they receive
+them, Bob will consider $\tx_1$ to be valid and will adopt it, while rejecting
+$\tx_2$ as invalid. On the other hand, Charlie will do the opposite. Note that,
+without the existence of the other, each of these transactions is individually
+valid, as it is rightful and conserving.
+When the time comes for Bob to pay Charlie, Charlie will not agree with Bob that
+the money belongs to Bob. Without \emph{consensus} on which transaction occurred
+first, the economic participants cannot agree who owns what, and the monetary
+system breaks down.
+
+Before we describe the solution that proof-of-work offers, let us first observe
+that obvious solutions do not work. Consider the following protocol: Since only
+a malicious party would create a signature on both transactions $\tx_1$ and
+$\tx_2$, we could eliminate both transactions and mark them as invalid as soon
+as the double spend has been detected. This is not a good strategy. In this
+case, Eve can first pay Bob using $\tx_1$. After she receives the services of
+Bob, at a much later time, she can publish $\tx_2$, rendering Bob's money
+invalid. While Eve does not gain from this behavior, the trustworthiness of the
+monetary system is subverted. Simple adjustments to this strategy do not work
+either. Noting that $\tx_2$ would have to be broadcast much later, consider,
+for example, a protocol which waits for some time $\Delta$ prior to establishing
+whether a double spend has occurred or not. If $\tx_1$ appears at some time
+$r_0$ without any double spending transaction appearing prior to time
+$r_0 + \Delta$, the transaction $\tx_1$ can be accepted. Any double spending
+transaction $\tx_2$ appearing after time $r_0 + \Delta$ is rendered invalid. On
+the other hand, if $\tx_2$ appears within time $\Delta$, both $\tx_1$ and
+$\tx_2$ are rendered invalid. This protocol can be subverted by Eve as follows.
+She initially broadcasts $\tx_1$ at round $r_0$. When time $r_0 + \Delta$
+approaches, she broadcasts $\tx_2$ and it so happens that Bob receives $\tx_2$
+prior to time $r_0 + \Delta$, while Charlie receives $\tx_2$ after time
+$r_0 + \Delta$. This would cause Bob to reject both $\tx_1$ and $\tx_2$, while
+Charlie would only reject $\tx_2$. No simple protocol can withstand attacks that
+cause such disagreements.
+
+The problem then becomes an issue of coming to an agreement about the
+\emph{order} in which transactions have occurred. This problem of agreement is
+solved by the \emph{consensus layer}, the part of a decentralized system which
+attempts to organize \emph{application layer} transactions into sequences that
+belong to the application's validity language by ordering them into transaction
+sequences.
+
+As in later chapters we will speak about multiple decentralized systems
+interoperating, it is helpful to note which \emph{ledger} $\Ledger$
+the party in question maintains. In the simplest case, each ledger is associated
+with a unique cryptocurrency, but we will later relax this. The $\Ledger$ is the
+protocol which the honest parties execute to maintain their local views.
+
+\begin{definition}[Ledger]\index{Ledger}
+  A ledger protocol $\Ledger$ is an honest probabilistic polynomial-time
+  algorithm for maintaining a transaction sequence belonging to a validity
+  language $\ValLang$.
+\end{definition}
+
+To make the problem precise, we will consider the honest parties' beliefs on
+\emph{which transactions have occurred and what their order is}. The transaction
+sequence reported by an honest party at a particular round is known as the
+\emph{ledger view} of the party. An honest party's protocol exposes two
+methods related to transaction processing: A method to \emph{read} the current
+transaction sequence and a method to \emph{write} a transaction to their ledger.
+
+\begin{definition}[Ledger view]\index{Ledger view}
+  The \emph{ledger view} $\LView{\Ledger}{\party}{r} \in \ValLang$ of an honest
+  party $\party$ at round $r$ pertaining to ledger $\Ledger$ with validity
+  language $\ValLang$ is the transaction sequence reported by the honest party
+  when it is given the instruction to \emph{read} the current transaction
+  sequence.
+\end{definition}
+
+\begin{definition}[Confirmation]\index{Confirmation}
+  A transaction $\tx$ of ledger $\Ledger$ is called \emph{confirmed} by honest
+  party $\party$ at round $r$ if $\tx \in \LView{\Ledger}{\party}{r}$. We say
+  that a transaction is \emph{confirmed} at round $r$ if it is confirmed by all
+  honest parties.
+\end{definition}
+
+A good ledger protocol will exhibit two virtues: Persistence and Liveness. On
+one hand, persistence mandates that the parties eventually come to agreement.
+On the other hand, liveness mandates that transactions that occur eventually
+appear in everyone's view.
+
+\begin{definition}[Persistence]\index{Persistence}
+  A ledger protocol $\Ledger$ has \emph{persistence} with parameter $\lambda$
+  (the \emph{persistence parameter}) if for
+  any two honest parties $\party_1,\party_2$ and two rounds $r_1\leq r_2 +
+  \lambda$, it holds $\LView{\Ledger}{\party_1}{r_1} \preceq
+  \LView{\Ledger}{\party_2}{r_2}$.
+\end{definition}
+
+Note that we do not require that the ledger views of the honest parties are
+equal, but that, after sufficient time, they are a prefix of each other. The
+reason for this is that, while both parties will eventually agree on their
+ledger view up to a point, each may include a transaction at a later time. Until
+an honest party can be certain that a transaction is confirmed and is ready to
+report it in a particular position within its ledger view as \emph{stable}, it
+will keep the transaction as \emph{unstable} and not report it in its view. The
+duration, in number of rounds, during which transactions can remain unstable is
+known as the \emph{persistence parameter}.
+
+\begin{definition}[Liveness]\index{Liveness}
+  A ledger protocol $\Ledger$ has \emph{liveness} with parameter $u$ (the
+  \emph{liveness parameter}) if the following holds.
+  If \emph{all} honest parties in the system attempt to include a transaction
+  $\tx$ (which validly extends their ledger views) for all rounds $r, r + 1, \cdots, r
+  + u$ then, at any round $r' > r + u$, any queried honest party $\party$ will
+  report $\tx \in \LView{\Ledger}{\party}{r'}$.
+\end{definition}
+
+Liveness ensures that transactions appear on the ledger views of honest parties.
+The liveness parameter $u$ denotes the duration for which a party has to wait
+until a transaction is confirmed. When we develop our protocols and we require
+a transaction to appear in a ledger, this parameter will appear as waiting time
+to ensure the transaction has taken its position to all honest parties' ledgers.
+
+\begin{definition}[Secure ledger]
+  A ledger $\Ledger$ is called \emph{secure} with parameters $\lambda$, $u$ if
+  it has persistence with parameters $\lambda$ and liveness with parameter $u$.
+\end{definition}
+
+To solve the consensus problem and create a secure ledger protocol, the honest
+parties must come to agreement and ensure that the adversary does not split
+their views. In order to do that, we will allow parties to \emph{vote} on a
+transaction order. We will then utilize the majority of votes to arrive at a
+conclusion. This requires us to introduce an additional assumption: That the
+majority of parties are honest.
