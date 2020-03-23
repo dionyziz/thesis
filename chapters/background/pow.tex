@@ -1,5 +1,4 @@
 \subsection{Proof-of-Work}
-\cite{pow}\index{Proof-of-Work}
 In our decentralized systems in which the number of participants is unknown and
 their channels remain unauthenticated, we will assume that the \emph{majority}
 of the population is honest~\cite{backbone}. This assumption is summarized in
@@ -61,8 +60,31 @@ that a $\Delta$-bounded delay setting with $q > 1$ is captured by an equivalent
 model in which $\Delta' = \Delta + q$ and $q' = 1$.
 
 The honest parties try to distinguish between messages diffused by the other
-honest parties and the adversary. This is a form of \emph{voting}.
+honest parties and the adversary. This is a form of \emph{voting}. The parties
+vote on a message $m$ by solving the \emph{proof-of-work equation} which is
+defined as follows.
 
-Before we get to ordering transactions, let us first observe that the honest
-parties that have majority can at least come to a one-bit agreement in
-expectation.
+\begin{definition}[Proof-of-Work]\index{Proof-of-Work}
+  Consider a hash function $H: \{0, 1\}^* \rightarrow \{0, 1\}^\kappa$ and some
+  $T \leq 2^\kappa$.
+  A nonce
+  $nonce \in \{0, 1\}^*$ is called \emph{proof-of-work}
+  for message $m \in \{0, 1\}^*$ against target $T$ if the following inequality
+  holds:
+
+  \[
+  H(m \concat nonce) \leq T
+  \]
+\end{definition}
+
+By modeling $H$ as a random oracle, this makes the proof-of-work problem of
+finding a nonce a \emph{moderately hard} problem. In the extreme case
+where $T = 1$, the problem is computationally hard and lies in $\textsc{EXP}$,
+as it takes an exponential number of random oracle queries to find the value
+required.
+On the other end, if $T = 2^{\kappa-1}$, the problem is computationally easy and
+lies in $\textsc{P}$, as only a single query is required to solve the problem
+in expectation. When $T$ takes a moderate value, the problem requires a moderate
+number of queries until a solution is found. Crucially, the expected number of
+queries can be controlled by adjusting the $T$ parameter.
+
