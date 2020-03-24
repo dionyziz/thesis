@@ -61,23 +61,34 @@ model in which $\Delta' = \Delta + q$ and $q' = 1$.
 
 The honest parties try to distinguish between messages diffused by the other
 honest parties and the adversary. This is a form of \emph{voting}. The parties
-vote on a message $m$ by solving the \emph{proof-of-work equation} which is
-defined as follows.
+vote on a message $m$ by solving the \emph{proof-of-work equation}~\cite{pow}
+which is defined as follows.
 
-\begin{definition}[Proof-of-Work]\index{Proof-of-Work}
+\begin{definition}[Proof-of-Work]\index{Proof-of-Work}\index{Target}
   Consider a hash function $H: \{0, 1\}^* \rightarrow \{0, 1\}^\kappa$ and some
   $T \leq 2^\kappa$.
   A nonce
-  $nonce \in \{0, 1\}^*$ is called \emph{proof-of-work}
-  for message $m \in \{0, 1\}^*$ against target $T$ if the following inequality
+  $ctr \in \{0, 1\}^*$ is called \emph{proof-of-work}
+  for message $m \in \{0, 1\}^*$ against \emph{target} $T$ if the following inequality
   holds:
 
   \[
-  H(m \concat nonce) \leq T
+  H(m \concat ctr) \leq T
   \]
 \end{definition}
 
-By modeling $H$ as a random oracle, this makes the proof-of-work problem of
+If $H$ is modelled as a Random Oracle,
+the best way to solve proof-of-work for a previously unseen message $m$ is by
+brute force: iterate through all possible $ctr$ values until a solution is
+found.
+The message $m$ must have sufficient entropy to ensure no other party is looking
+for proof-of-work for the same message. The algorithm that looks for
+a proof-of-work solution, given $q$ queries available in a round, is illustrated
+in Algorithm~\ref{alg.pow}.
+
+\input{chapters/background/algorithms/alg.pow}
+
+This makes the proof-of-work problem of
 finding a nonce a \emph{moderately hard} problem. In the extreme case
 where $T = 1$, the problem is computationally hard and lies in $\textsc{EXP}$,
 as it takes an exponential number of random oracle queries to find the value

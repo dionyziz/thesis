@@ -1,0 +1,15 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.pow} The Proof-of-Work discovery algorithm}
+    \begin{algorithmic}[1]
+      \Function{$\textsf{pow}_{H,T,q}$}{$m$}
+          \For{$ctr \gets 1 \text{ to } q$}
+              \If{$H(m \concat ctr) \leq T$}
+                  \State\Return{$ctr$}
+              \EndIf
+          \EndFor
+          \State\Return{$\bot$}
+      \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
