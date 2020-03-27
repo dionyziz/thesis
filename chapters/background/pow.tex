@@ -97,5 +97,45 @@ On the other end, if $T = 2^{\kappa-1}$, the problem is computationally easy and
 lies in $\textsc{P}$, as only a single query is required to solve the problem
 in expectation. When $T$ takes a moderate value, the problem requires a moderate
 number of queries until a solution is found. Crucially, the expected number of
-queries can be controlled by adjusting the $T$ parameter.
+queries can be controlled by adjusting the target parameter $T$. Proof-of-work
+has the property that it is moderately hard to find, but once found it can be
+easily verified by checking that the equation holds.
 
+\begin{definition}[Successful Query]\index{Successful Query}
+We call a query to the Random Oracle that satisfies
+the proof-of-work equation a \emph{successful query}.
+\end{definition}
+
+\begin{lemma}[Successful Query]\index{p}
+The probability of a new query being successful $p = \frac{T}{2^\kappa}$.
+\end{lemma}
+
+We now define the random variables $X_r$, $Y_r$ that specify whether a round
+was \emph{successful} and \emph{uniquely successful}.
+
+\begin{definition}\index{Successful Round}\index{Uniquely Successful Round}\index{X}\index{Y}
+If an honest party has made a successful query during a round $r$, then we call
+$r$ a \emph{successful round} and set $X_r = 1$; otherwise, we set $X_r = 0$.
+If among the \emph{honest} queries during $r$ only
+\emph{one} was successful, we call $r$ a \emph{uniquely successful round}
+and we set $Y_r = 1$; otherwise, we set $Y_r = 0$.
+\end{definition}
+
+It is of course possible that, in addition to the honest parties, the adversary
+could have had successful queries during a successful or uniquely successful
+round. The adversary can also succeed in rounds during which the honest parties
+were unsuccessful. We let $Z_{rj} = 1$ if during round $r$ the $j^\text{th}$
+adversarial query was successful, where $j$ ranges from $1$ to $tq$; otherwise
+we let $Z_{rj} = 0$. For a set of rounds $S$, we define
+$X(S) = \sum_{r \in S}X_r$ and $Y(S) = \sum_{r \in S}Y_r$ as well as
+$Z(S) = \sum_{r \in S}\sum_{j = 1}^{tq} Z_{rj}$.
+
+Naturally, for the $\Delta$-bounded delay setting in which $q = 1$, the variable
+$j$ ranges up to $t$. In that model, we also define isolated uniquely successful
+rounds as rounds which are uniquely successful and are followed by a silence of
+duration $\Delta$.
+
+\begin{definition}[$\Delta$-isolated uniquely successful round]
+A round $r$ is \emph{$\Delta$-isolated uniquely successful round} if $Y_r = 1$
+and for all $r \leq r' \leq r + \Delta$ it holds that $X_{r'} = 0$.
+\end{definition}
