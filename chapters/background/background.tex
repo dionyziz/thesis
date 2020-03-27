@@ -91,6 +91,52 @@ The Bitcoin Backbone protocol is illustrated in Algorithm~\ref{alg.backbone}.
 
 \input{chapters/background/algorithms/alg.backbone}
 
+\todo{Continuity}
+
+The following three properties are desired for chains maintained by the honest
+parties.
+
+\begin{definition}[Chain Growth]\index{Chain Growth}
+  An execution has \emph{chain growth} with parameters $\tau \in \mathbb{R}$
+  (the \emph{chain velocity}) and $s \in \mathbb{N}$ if for all honest parties
+  $\party$ and for all rounds $r$ the following holds. If $\party$ has adopted
+  chain $\chain$ at round $r$, then for every round $r' > r + s$ the chain
+  $\chain'$ adopted by $\party$ at round $r'$ satisfies:
+
+  \[
+  |\chain'| \geq |\chain| + \tau s
+  \,.
+  \]
+\end{definition}
+
+\begin{definition}[Chain Quality]\index{Chain Quality}
+  An execution has \emph{chain quality} with parameters $\rho$ (the
+  \emph{chain quality parameter}) and $s \in \mathbb{N}$ if for all honest
+  parties $\party$ and for all rounds $r$ during which the party has adopted
+  chain $\chain$ the following holds. For any $i, j$ such that
+  $|\chain[i:j]| = s$,
+  the block set
+  $\chain' = \{B \in \chain[i{:}j]: B \text{ was honestly generated}\}$ satisfies:
+
+  \[
+  \frac{|\chain'|}{s} \geq \rho
+  \,.
+  \]
+\end{definition}
+
+\begin{definition}[Common Prefix]\index{Common Prefix}
+  An execution has \emph{common prefix} with parameter $k$ (the \emph{common
+  prefix parameter}) if for all honest parties $\party_1, \party_2$ and rounds
+  $r_1 \leq r_2$ the following holds. If $\party_1$ has adopted $\chain_1$
+  during round $r_1$ and $\party_2$ has adopted $\chain_2$ during round $r_2$,
+  then:
+
+  \[
+  \chain_1[{:}-k] \preceq \chain_2
+  \,.
+  \]
+\end{definition}
+
 \begin{remark}[Impossibility of full semi-synchrony]
 Revisiting the $\Delta$-bounded delay model, a folklore observation that has not appeared in
 the litature is that blockchain protocols are impossible to obtain in the fully
