@@ -6,8 +6,41 @@
 Given an honestly adopted chain, consensus security is based on the premise that
 it is difficult to create a competing chain which deviates significantly and has
 more proof-of-work than the existing honestly adopted chain. To determine which
-financial history is the valid one, a \emph{verifier} node connected anew to the
-network must download.
+financial history is the valid one, a \emph{verifier} node booting for the first
+time into the network, connects anew to multiple \emph{provers}, at least one of
+which is assumed to be honest. The verifier then downloads all available
+blockchains from its peers and adopts the longest one. The verifier must choose
+the chain that respects the protocol rules and corresponds to the most
+proof-of-work. In order to do that, the proof-of-work of every block in the
+chain must be presented and verified.
+
+\begin{figure}[tb]%{{{
+  \centering
+  \includegraphics[width=0.9 \textwidth]{chapters/introduction/figures/merkle-tree.pdf}
+  \caption{
+    A Merkle Tree of transactions making use of a cryptographicallys secure hash
+    function $H$. Black nodes indicate raw transactions.
+    Lightly shaded nodes indicate hashes. The root is shown at the top.
+  }
+  \label{fig.merkle}
+\end{figure}%}}}
+
+The way blockchains are structured in order to make this synchronization
+efficient is by separating the notion of a \emph{block} from that of a
+\emph{block header}. Instead of having each block contain all of its
+transactions and performing proof-of-work on it, transactions are first hashed
+into a special structure known as a Merkle Tree. A Merkle Tree of a transaction
+sequence $\overline{x}$ is structured as illustrated in Figure~\ref{fig.merkle}. Using a cryptographically
+secure hash function $H$, each transaction is hashed to obtain its transaction
+\emph{id}. Subsequently, each two ids are concatenated together and hashed again
+to obtain their parent. These parents are again concatenated and hashed
+together to obtain \emph{their} parent, until we arrive at a single \emph{root}
+node $x$ which contains a hash representation of every transaction in
+$\overline{x}$. The proof-of-work of the block is then computed by finding a
+$\textsf{nonce}$ such that $H(x \concat \textsf{nonce} \concat h') \leq T$. The
+transactions $\overline{x}$ are known as the \emph{block content}, while the
+portion $x \concat \textsf{nonce} \concat h'$ which is hashed for proof-of-work
+purposes is known as the \emph{header}.
 
  convince a node
 that a chain is the longest one, the proof-of-work of every block in the chain
