@@ -76,7 +76,8 @@ function $H$. The construction presented works for $|S|$ equal to a power of
 $2$.
 
 It treats $S$ as a sequence and organizes it into a complete binary tree $Z$
-using the $\textsf{heapify}$ routine. The routine places the hashes of the
+using the $\textsf{heapify}$ routine (for reference, see Figure~\ref{fig.merkle}
+in Chapter~\ref{chapter:introduction}). The routine places the hashes of the
 elements of $S$ on the leaves of $Z$ by storing them at locations $Z[|S|{:}]$.
 The value of each internal node is the hash of the concatenation of the values
 of its children. The $\textsf{compress}$ function returns the value of the root
