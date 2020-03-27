@@ -1,5 +1,77 @@
 \chapter{Conclusion}\label{chapter:conclusion}
 
+Throughout this thesis, we have presented effective consensus compression
+mechanisms for all decentralized blockchain protocols, in particular for
+both proof-of-work and proof-of-stake. We introduced the NIPoPoWs primitive for
+proof-of-work and the ATMS primitive for proof-of-stake. For proof-of-work, we
+presented the following variants:
+
+\begin{itemize}
+  \item \emph{Charity with goodness} in the static synchronous model, which
+        achieves security against a $\frac{1}{2}$ adversary, but succinctness
+        only optimistically.
+  \item \emph{Charity without goodness} which achieves both security and
+        succinctness against a $\frac{1}{3}$ adversary in both the static and
+        variable synchronous models and achieves both security and succinctness
+        against a $\frac{1}{4}$ adversary in both the static and variable
+        $\Delta$-bounded delay model. Succinctness is achieved when difficulty
+        does not decrease exponentially.
+  \item \emph{Distill}, which achieves comparable results to the above, with the
+        additional assumption that difficulty is non-decreasing.
+\end{itemize}
+
+For the first among the above, we gave concrete security parameters obtained
+through experimental analysis and simulations.
+
+We gave three important applications of our primitives:
+
+\begin{itemize}
+  \item \emph{Superlight clients}, which allow the construction of wallets that
+        can synchronize faster than standard SPV wallets. The improvement is
+        exponential for proof-of-work and constant for proof-of-stake.
+  \item \emph{Logarithmic space mining}, which allows the replacement of all
+        proof-of-work miners of the protocol with logarithmic-space equivalents
+        under the assumption that honest $\frac{1}{4}$ majority holds always.
+        The improvement is exponential compared to standard miners for both
+        state as well as communication complexity.
+  \item \emph{Blockchain interoperability}, which allows any variant of
+        blockchains to communicate, namely work/work, work/stake and
+        stake/stake. We gave constructions using native support (for stake) as
+        well as smart contract-based constructions (for work) and showed how
+        they can be used for generic information transfer. Finally, we leveraged
+        them to construct one-way and two-way pegs.
+\end{itemize}
+
+In addition to improving efficiency of existing solutions, our constructions
+hint towards two avenues which are in need of improvement in the blockchain
+space more generally. The first avenue concerns \emph{scalability}, a major
+current topic of research in the field. While most solutions have been focusing
+on layer-2 solutions such as Lightning~\cite{lightning}, our solution of
+allowing multiple chains to interoperate and in particular our proposal to
+separate the notion of a \emph{cryptocurrency} from its native \emph{blockchain}
+allows sidechains to be used to offload transaction traffic off of a main chain
+and into multiple sidechains. As long as the majority of transactions remain
+within one chain and are not cross-chain transactions, sidechain solutions can
+improve the scalability of the main chain. One example means of ensuring sharded
+transaction traffic is to create one sidechain per particular industry or
+wide geographical location. The second avenue concerns \emph{upgradability} and
+the trial of new features. While soft forks and hard forks require consensus
+change and may face opposition, sidechains can be used to trial out new features
+without requiring all of the main chain to upgrade to these new features. This
+can be useful for beta-testing, but also for adopting features that are
+considered more risky by the majority. The portion of the population willing to
+take the risk can move their capital to a novel sidechain, while the risk-averse
+majority can leverage the firewall property to protect their capital on the main
+chain.
+
+Overall, our proposals have given rise to vibrant new research directions and
+have inspired solutions which are seeing practical adoption across the
+cryptocurrency space. Multiple production cryptocurrencies have adopted our
+protocols, among others ERGO, nimiq, and WebDollar. Lastly, our primitives have
+been implemented and extended by researchers in peer reviewed papers. One
+prominent example is FlyClient~\cite{flyclient}, which provides an alternative
+implementation to our NIPoPoW primitive.
+
 \section{Future Work}
 
 \todo{Move and combine sections on future work from previous chapters into here}
