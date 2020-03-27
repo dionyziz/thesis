@@ -139,3 +139,14 @@ duration $\Delta$.
 A round $r$ is \emph{$\Delta$-isolated uniquely successful round} if $Y_r = 1$
 and for all $r \leq r' \leq r + \Delta$ it holds that $X_{r'} = 0$.
 \end{definition}
+
+In reality, not every honest party has the same computational power, and
+multiple honest parties may combine their computational power into a so-called
+\emph{mining pool}. These can be captured by treating a more powerful honest
+party as multiple honest parties each of which contributes $q$ queries per
+round. This is made explicit for the adversary, as she does not incur any
+network overhead to achieve communication between the $t$ corrupted parties. On
+the contrary, honest players discovering proof-of-work must diffuse it to the
+network at a given round and wait for it to be received and validated by the
+rest of the honest players at the beginning of the next round (or $\Delta$
+rounds later in the $\Delta$-bounded delay model).
