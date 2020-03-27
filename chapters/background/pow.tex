@@ -150,3 +150,18 @@ the contrary, honest players discovering proof-of-work must diffuse it to the
 network at a given round and wait for it to be received and validated by the
 rest of the honest players at the beginning of the next round (or $\Delta$
 rounds later in the $\Delta$-bounded delay model).
+
+These random variables $X, Y, Z$ have the following expected values. For all
+rounds $r$:
+
+\begin{itemize}
+  \item $\Ex[X_r] = 1 - (1 - p)^{q(n - t)}$
+  \item $\Ex[Y_r] = pq(n - t)(1 - p)^{q(n - t - 1)}$
+  \item $\Ex[Z_r] = pqt$
+\end{itemize}
+
+The random variables $X_r$ and $Y_r$ are Bernoulli distributed, while the
+random variable $Z_r$ is Binomially distributed.
+The expectation for the adversary assumes that she makes use of all
+her available Random Oracle queries. As we will only apply upper bounds to
+$\Ex[Z_r]$, this is without loss of generality.
