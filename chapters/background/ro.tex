@@ -69,3 +69,9 @@ programmability}, which is at the heart of many security proofs in cryptography.
 Our results are therefore stronger, as we only assume a \emph{non-programmable}
 Random Oracle~\cite{nielsen2002separating,fischlin2010random}, which is a weaker
 assumption than usually made.
+
+We note two features of the Random Oracle: First, it is
+\emph{collision-resistant}. Concretely, if a polynomial number of queries is
+made to the Random Oracle, then the probability that a collision will occur is
+negligible. Secondly, an adversary can \emph{predict} the output of the Random
+Oracle prior to making a new query to it with negligible probability.
