@@ -165,3 +165,11 @@ random variable $Z_r$ is Binomially distributed.
 The expectation for the adversary assumes that she makes use of all
 her available Random Oracle queries. As we will only apply upper bounds to
 $\Ex[Z_r]$, this is without loss of generality.
+
+The expectation $\Ex[X_r]$ is a value critical for our protocols and will be
+denoted $f$\index{f} throughout this work. If $f$ is too small, the
+proof-of-work problem is too hard and there is no progress, harming liveness.
+If $f$ is large, the proof-of-work problem is too easy and the honest parties
+fail to reach agreement, harming persistence. The parameter $T$ must be
+carefully calibrated according to $n$ and $q$ so that $f$ takes a balanced
+value.
