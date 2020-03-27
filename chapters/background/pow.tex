@@ -219,3 +219,45 @@ backbone series of papers~\cite{backbone,varbackbone}.
   An execution is $(\epsilon, \lambda)$-typical with overwhelming probability
   in $\epsilon^2 \lambda$.
 \end{theorem}
+
+Before we get to ordering transactions, consider momentarily the classical
+problem of a one-bit agreement~\cite{lamport} known as the Byzantine
+Agreement\index{Byzantine Agreement} problem. In
+the Byzantine Agreement problem, each party boots up with one, potentially
+different, \emph{input bit} each, either $0$ or $1$, in its state. The parties
+wish to coordinate among each other in order to output a single \emph{output
+bit}. The protocol has \emph{agreement} if all honest parties always give output
+bits consistent with each other (i.e., if one honest party outputs $b$, all do).
+The protocol has \emph{validity} if, when all honest parties are given the same
+input bit, the output bit matches the input bit. Agreement or validity alone are
+easy to achieve. An example of a protocol that has only agreement asks
+all parties to always output $0$. An example of a protocol that has only validity
+asks all parties to simply output their input. The challenge is to achieve
+both validity and agreement. Contrary to the classical setting, our setting here
+is different, because parties are anonymous, unauthenticated, and their count is
+unknown. As such, any attempt by the honest parties to report their inputs and
+coordinate among each other can be subverted by an adversary who injects
+messages that report honest-looking input bits, perhaps differently to each
+party, splitting their view.
+
+Instead, proof-of-work must be leveraged. One approach that doesn't work, but
+gives intuition about how proof-of-work can be leveraged is as follows.
+Initially, each party boots with an input bit $b$. The party repeatedly attempts
+to find proof-of-work solutions $ctr_i$ for the message $b || r_i$ where $r_i$
+is sampled uniformly at random from $\{0, 1\}^\kappa$ to ensure high entropy.
+Once some proof-of-work is found, the solution $b || r_i || ctr_i$ is broadcast
+to the network and the process is repeated for as many $r_i$ as possible. After
+$\lambda$ rounds have passed, the parties look at the proof-of-work solutions
+that have been diffused on the network throughout the execution and count the
+votes for bit $0$ and bit $1$. If all honest parties are given the same input,
+then they will all produce votes in favour of that input. In \emph{expectation},
+the count of these votes will be more than whatever the adversary produces,
+thereby achieving validity. However, \emph{agreement} is not achieved because,
+if half the honest parties are given input $0$ and the other half are given
+input $1$, the adversary can create proof-of-work only in favour of the bit $0$
+and hand over that work only to half the parties, causing disagreement. This
+lack of agreement hints towards the need to \emph{chain} proof-of-work,
+incorporating each previous solution as part of the message for each future
+attempt, and continuously work on top of the most proof-of-work chain that
+exists on the network, giving rise to \emph{blockchains}. We describe this
+process in the next section.
