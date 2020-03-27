@@ -129,14 +129,3 @@ be deployed to existing cryptocurrencies without a fork.
 %         security of our scheme as well as concrete parameters based on these
 %         experiments.
 % \end{enumerate}
-
-\noindent
-\textbf{Previous work.} The need for succinct clients was first identified by
-Nakamoto in his original paper~\cite{bitcoin}. Predicates pertaining to events
-occurring in the blockchain have been explored in the setting of
-sidechains~\cite{sidechains}. It has
-also been implemented for simple classes of predicates such as atomic
-swaps~\cite{tiernolan,herlihy2018atomic}, which do not allow full
-synchronization. Non-succinct certificates about proof-of-\emph{stake}
-blockchains have been proposed in~\cite{pos-sidechains}, but their scheme is not
-applicable to proof-of-\emph{work}. Superblocks were first described in the Bitcoin Forum~\cite{highway} and later formalized~\cite{popow} to describe their \emph{Proofs of Proof-of-Work} which have limited applications due to interactivity, lack of security, and inability to prove facts buried deep within the blockchain. We improve upon their work with a security definition, an interactive construction, and an attack against their scheme which works with overwhelming probability.
