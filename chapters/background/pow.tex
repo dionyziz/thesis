@@ -173,3 +173,49 @@ If $f$ is large, the proof-of-work problem is too easy and the honest parties
 fail to reach agreement, harming persistence. The parameter $T$ must be
 carefully calibrated according to $n$ and $q$ so that $f$ takes a balanced
 value.
+
+As rounds are independent, the expectations for $\Ex[X(S)]$, $\Ex[Y(S)]$,
+$\Ex[Z(S)]$ are equal to $|S|\Ex[X_r]$, $|S|\Ex[Y_r]$, and $|S|\Ex[Z_r]$
+respectively. If $|S|$ is sufficiently large, the actual values attained by
+$\Ex[X(S)]$, $\Ex[Y(S)]$, and $\Ex[Z(S)]$ will most likely be near their
+expectation. This intuition is formally captured by the notion of a
+\emph{typical query distribution}:
+
+\begin{definition}[Typical Query Distribution]
+  \index{Typical Query Distribution}\index{$\epsilon$}
+  Let $\epsilon \in (0, 1)$ and integer $\lambda \geq \frac{2}{f}$. Let $S$
+  be a set of rounds with $|S| \geq \lambda$. An execution has
+  \emph{$(\epsilon, \lambda)$-typical query distribution} if:
+
+  \begin{itemize}
+    \item $(1 - \epsilon)\Ex[X(S)] < X(S) < (1 + \epsilon)\Ex[X(S)]$
+    \item $(1 - \epsilon)\Ex[Y(S)] < Y(S)$
+    \item $Z(S) < \Ex[Z(S)] + \epsilon\Ex[X(S)]$
+  \end{itemize}
+\end{definition}
+
+The honest majority assumption allows us to argue that the number of uniquely
+successful queries of the honest parties are generally larger than the number of
+successful queries of the adversary. This follows immediately if our query
+distribution is typical and is formally proven in the Bitcoin Backbone series of
+papers~\cite{backbone,varbackbone}.
+
+Throughout this work, we will be interested in executions in which our
+distributions behave nicely. We term these executions
+\emph{typical}~\cite{backbone}. The properties we care about pertain to the
+values attained by $X, Y, Z$ as well as the collision-resistance and
+unpredictability of the Random Oracle.
+
+\begin{definition}[Typical Execution]\index{Typical Execution}
+  An execution is \emph{$(\epsilon, \lambda)$-typical} if it has an
+  \emph{$(\epsilon, \lambda)$-typical query distribution} and no
+  \emph{collisions} or \emph{predictions} have occurred.
+\end{definition}
+
+The following theorem is essential for our development and is proven in the
+backbone series of papers~\cite{backbone,varbackbone}.
+
+\begin{theorem}[Typicality]
+  An execution is $(\epsilon, \lambda)$-typical with overwhelming probability
+  in $\epsilon^2 \lambda$.
+\end{theorem}
