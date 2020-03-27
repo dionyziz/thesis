@@ -7,8 +7,8 @@
                 \lor |\Pi'| = 0 \lor \Pi'[0] \neq \mathcal{G}$}
                 \State\Return{$\Pi$}
             \EndIf
-            \Let{(\chi, \ell, \mathcal{D})}{\textsf{Dissolve}_{m,k}(\Pi)}
-            \Let{(\chi', \ell', \mathcal{D'})}{\textsf{Dissolve}_{m,k}(\Pi')}
+            \Let{(\chi, \ell, \mathcal{D})}{\textsf{Distill}_{m,k}(\Pi)}
+            \Let{(\chi', \ell', \mathcal{D'})}{\textsf{Distill}_{m,k}(\Pi')}
             \Let{M}{\{\mu \in \mathbb{N}: \mathcal{D}[\mu]\cap\mathcal{D}'[\mu]\ne\emptyset\}}
             \If{$M = \emptyset$}
               \If{$\ell' > \ell$}

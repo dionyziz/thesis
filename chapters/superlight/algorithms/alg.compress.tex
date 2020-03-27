@@ -3,7 +3,7 @@
     transitioning a full miner to a logspace miner. Given a full chain, it
     compresses it into logspace state.}
     \begin{algorithmic}[1]
-        \Function{\sf Dissolve$_{m,k}$}{$\chain$}
+        \Function{\sf Distill$_{m,k}$}{$\chain$}
             \Let{\chain^*}{\chain[{:}-k]}
             \Let{\mathcal{D}}{\emptyset}
             \If{$|\chain^*| \geq 2m$}
@@ -22,7 +22,7 @@
             \State\Return{$(\mathcal{D}, \ell, \chi)$}
         \EndFunction
         \Function{\sf Compress$_{m,k}$}{$\chain$}
-            \Let{(\mathcal{D}, \ell, \chi)}{\textsf{Dissolve}_{m,k}(\chain)}
+            \Let{(\mathcal{D}, \ell, \chi)}{\textsf{Distill}_{m,k}(\chain)}
             \Let{\pi}{\bigcup_{\mu = 0}^\ell \mathcal{D}[\mu]}
             \State\Return{$\pi\chi$}
         \EndFunction
