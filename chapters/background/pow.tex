@@ -126,16 +126,6 @@ we let $Z_{rj} = 0$. For a set of rounds $S$, we define
 $X(S) = \sum_{r \in S}X_r$ and $Y(S) = \sum_{r \in S}Y_r$ as well as
 $Z(S) = \sum_{r \in S}\sum_{j = 1}^{tq} Z_{rj}$.
 
-Naturally, for the $\Delta$-bounded delay setting in which $q = 1$, the variable
-$j$ ranges up to $t$. In that model, we also define isolated uniquely successful
-rounds as rounds which are uniquely successful and are followed by a silence of
-duration $\Delta$.
-
-\begin{definition}[$\Delta$-isolated uniquely successful round]
-A round $r$ is \emph{$\Delta$-isolated uniquely successful round} if $Y_r = 1$
-and for all $r \leq r' \leq r + \Delta$ it holds that $X_{r'} = 0$.
-\end{definition}
-
 In reality, not every honest party has the same computational power, and
 multiple honest parties may combine their computational power into a so-called
 \emph{mining pool}. These can be captured by treating a more powerful honest
@@ -236,6 +226,32 @@ backbone series of papers~\cite{backbone,varbackbone}.
   An execution is $(\epsilon, \lambda)$-typical with overwhelming probability
   in $\epsilon^2 \lambda$.
 \end{theorem}
+
+We introduce some additional definitions that are useful for $\Delta$ delays.
+In the $\Delta$-bounded delay model, periods of silence that corresponded to
+an honest party succeeding in a uniquely successful round now correspond to a
+sequence of $\Delta$ consecutive rounds at the beginning of which only one
+honest party is successful. The intuitive reason is that the adversary can delay
+any other successful query diffusion message within that same $\Delta$ period
+and make the two messages coincide in the view of receiving honest parties,
+causing disagreement. As such, a useful concept will be to define an
+\emph{isolated (uniquely) successful} round as a round that is (uniquely)
+successful and is followed by a silence of duration $\Delta$. We also introduce
+the respective indicator random variables $X'_i, Y'_i$ for $\Delta$-isolated
+(uniquely) successful rounds.
+
+\begin{definition}[$\Delta$-isolated (Uniquely) Successful Round]
+\index{$\Delta$-isolated Successful Round}
+\index{$\Delta$-isolated Uniquely Successful Round}
+\index{X'}\index{Y'}
+A round $r$ is a \emph{$\Delta$-isolated successful round} if $X_r = 1$
+and for all $r < r' < r + \Delta$ it holds that $X_{r'} = 0$. In that case we
+set $X'_r = 1$; otherwise, we set $X'_r = 0$.
+
+A round $r$ is a \emph{$\Delta$-isolated uniquely successful round} if $Y_r = 1$
+and for all $r < r' < r + \Delta$ it holds that $X_{r'} = 0$. In that case we
+set $Y'_r = 1$; otherwise, we set $Y'_r = 0$.
+\end{definition}
 
 Before we get to ordering transactions, consider momentarily the classical
 problem of a one-bit agreement~\cite{lamport} known as the Byzantine

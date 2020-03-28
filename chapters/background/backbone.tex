@@ -85,6 +85,25 @@ In the synchronous model we have:
   parameter $k \geq 2\lambda f$.
 \end{theorem}
 
+In the $\Delta$-bounded delay model we have:
+
+\begin{theorem}[Chain Growth]
+  A typical execution satisfies \emph{Chain Growth} with
+  velocity $\tau = (1 - \epsilon)f(1 - f)^{\Delta - 1}$.
+\end{theorem}
+
+\begin{theorem}[Chain Quality]
+  A typical execution satisfies \emph{Chain Quality} with
+  quality
+  $\rho = 1 - \frac{1}{(1 - \epsilon)(1 - f)^\Delta}\frac{t}{n - t} - \frac{e}{1 - \epsilon}(1 + \frac{\Delta}{\lambda})$
+  and chunk size $\ell \geq 2\lambda f + 2\Delta f$.
+\end{theorem}
+
+\begin{theorem}[Common Prefix]
+  A typical execution satisfies \emph{Common Prefix} with
+  $k \geq 2\lambda f + 2\Delta$.
+\end{theorem}
+
 \begin{remark}[Impossibility of full semi-synchrony]
 Revisiting the $\Delta$-bounded delay model, a folklore observation that has not appeared in
 the litature is that blockchain protocols are impossible to obtain in the fully
