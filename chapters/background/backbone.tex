@@ -1,7 +1,4 @@
 \subsection{Blockchain Backbone}
-\todo{Restore old NIPoPoWs paper backbone overview section}
-
-\todo{fix citations}\cite{backbone,pass-asynchronous,varbackbone}
 
 The Bitcoin Backbone protocol is illustrated in Algorithm~\ref{alg.backbone}.
 
@@ -63,6 +60,31 @@ can only differ by up to $k$ blocks near their ends.
   \]
 \end{definition}
 
+The next three theorems establish that these three properties hold in typical
+executions and have been proven in the backbone series of papers. These theorems
+hold in both the synchronous and the $\Delta$-bounded delay network
+models~\cite{pass-asynchronous} as well as in the static~\cite{backbone} and
+variable difficulty settings~\cite{varbackbone}. We state them here without
+proof.
+
+In the synchronous model we have:
+
+\begin{theorem}[Chain Growth]
+  A typical execution satisfies \emph{Chain Growth} with
+  velocity $\tau = (1 - \epsilon)\lambda$ and chunk size $s \geq \lambda$.
+\end{theorem}
+
+\begin{theorem}[Chain Quality]
+  A typical execution satisfies \emph{Chain Quality} with quality
+  $\rho = 1 - (1 + \frac{\delta}{2})\frac{t}{n - t} - \frac{\epsilon}{1 - \epsilon}$
+  and chunk size $\ell \geq 2\lambda f$.
+\end{theorem}
+
+\begin{theorem}[Common Prefix]
+  A typical execution satisfies \emph{Common Prefix} with common prefix
+  parameter $k \geq 2\lambda f$.
+\end{theorem}
+
 \begin{remark}[Impossibility of full semi-synchrony]
 Revisiting the $\Delta$-bounded delay model, a folklore observation that has not appeared in
 the litature is that blockchain protocols are impossible to obtain in the fully
@@ -87,9 +109,3 @@ relaxing the conditions.
 \end{remark}
 
 \todo{fast and slow blocks}
-
-% Honest Majority Assumption
-% Chain Growth
-% Common Prefix
-% Chain Quality
-% The Constant Difficulty assumption and its relaxation
