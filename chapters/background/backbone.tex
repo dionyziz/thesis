@@ -18,10 +18,10 @@ longest chain, this property holds even in executions of dishonest majority.
 
 \begin{definition}[Chain Growth]\index{Chain Growth}
   An execution has \emph{chain growth} with parameters $\tau \in \mathbb{R}$
-  (the \emph{chain velocity}) and $s \in \mathbb{N}$ if for all honest parties
-  $\party$ and for all rounds $r$ the following holds. If $\party$ has adopted
-  chain $\chain$ at round $r$, then for every round $r' > r + s$ the chain
-  $\chain'$ adopted by $\party$ at round $r'$ satisfies:
+  (the \emph{chain velocity}) and $s \in \mathbb{N}$ (the \emph{chunk size}) if
+  for all honest parties $\party$ and for all rounds $r$ the following holds. If
+  $\party$ has adopted chain $\chain$ at round $r$, then for every round $r' > r
+  + s$ the chain $\chain'$ adopted by $\party$ at round $r'$ satisfies:
 
   \[
   |\chain'| \geq |\chain| + \tau s
@@ -34,15 +34,14 @@ of an honestly adopted chain will always contain some ($\rho$) honest blocks.
 
 \begin{definition}[Chain Quality]\index{Chain Quality}
   An execution has \emph{chain quality} with parameters $\rho$ (the
-  \emph{chain quality parameter}) and $s \in \mathbb{N}$ if for all honest
-  parties $\party$ and for all rounds $r$ during which the party has adopted
-  chain $\chain$ the following holds. For any $i, j$ such that
-  $|\chain[i:j]| = s$,
-  the block set
-  $\chain' = \{B \in \chain[i{:}j]: B \text{ was honestly generated}\}$ satisfies:
+  \emph{chain quality parameter}) and $\ell \in \mathbb{N}$ (the \emph{chunk size})
+  if for all honest parties $\party$ and for all rounds $r$ during which the
+  party has adopted chain $\chain$ the following holds. For any $i, j$ such that
+  $|\chain[i:j]| = \ell$, the block set $\chain' = \{B \in \chain[i{:}j]: B \text{
+  was honestly generated}\}$ satisfies:
 
   \[
-  \frac{|\chain'|}{s} \geq \rho
+  \frac{|\chain'|}{\ell} \geq \rho
   \,.
   \]
 \end{definition}
