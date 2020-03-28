@@ -206,13 +206,15 @@ themselves to succinct proofs-of-work or stake.
 The first practical implementation of cross-chain information transfer involves
 the use of \emph{atomic swaps}. Atomic swaps allow the exchange of two assets
 between a party on one chain and a counter-party on another chain atomically.
-Atomicity ensures that either both assets are exchanged, or neither. This makes
-atomic swaps useful for decentralized cross-chain trading and makes
-decentralized exchanges (DEXes) possible. Atomic swaps were first introduced by
-Tier Nolan~\cite{tiernolan}. Multi-asset atomic swaps were studied
-by Herlihy~\cite{herlihy2018atomic}. Contrary to atomic swaps, our cross-chain
+Atomicity is achieved through Hash Time Locked Contracts~\cite{lightning} and
+ensures that either both assets are exchanged, or neither. This makes atomic
+swaps useful for decentralized cross-chain trading and makes decentralized
+exchanges (DEXes) possible. Atomic swaps were first introduced by Tier
+Nolan~\cite{tiernolan}. Multi-asset atomic swaps were studied by
+Herlihy~\cite{herlihy2018atomic}. Contrary to atomic swaps, our cross-chain
 communication protocols allow the generic transfer of information and are not
-limited to asset swapping. Additionally, we do not require a counter-party.
+limited to asset swapping. Additionally, we do not require a counter-party to
+trade with.
 
 One construction which allows the generic transfer of information between chains
 without additional trust assumptions is called \emph{BTCRelay}~\cite{btcrelay}.
