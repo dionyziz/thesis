@@ -1,0 +1,96 @@
+\subsection{Blockchain Backbone}
+\todo{Restore old NIPoPoWs paper backbone overview section}
+
+\todo{fix citations}\cite{backbone,pass-asynchronous,varbackbone}
+
+The Bitcoin Backbone protocol is illustrated in Algorithm~\ref{alg.backbone}.
+
+\input{chapters/background/algorithms/alg.backbone}
+
+\todo{Continuity}
+
+Chains maintained by honest parties running the backbone protocol in an honest
+majority setting satisfy the following three properties.
+
+The \emph{chain growth} property states that the chain of an honest party will
+keep growing at a certain rate $\tau$. Because honest parties always extend the
+longest chain, this property holds even in executions of dishonest majority.
+
+\begin{definition}[Chain Growth]\index{Chain Growth}
+  An execution has \emph{chain growth} with parameters $\tau \in \mathbb{R}$
+  (the \emph{chain velocity}) and $s \in \mathbb{N}$ if for all honest parties
+  $\party$ and for all rounds $r$ the following holds. If $\party$ has adopted
+  chain $\chain$ at round $r$, then for every round $r' > r + s$ the chain
+  $\chain'$ adopted by $\party$ at round $r'$ satisfies:
+
+  \[
+  |\chain'| \geq |\chain| + \tau s
+  \,.
+  \]
+\end{definition}
+
+The \emph{chain quality} property states that any large enough ($\geq s$) chunk
+of an honestly adopted chain will always contain some ($\rho$) honest blocks.
+
+\begin{definition}[Chain Quality]\index{Chain Quality}
+  An execution has \emph{chain quality} with parameters $\rho$ (the
+  \emph{chain quality parameter}) and $s \in \mathbb{N}$ if for all honest
+  parties $\party$ and for all rounds $r$ during which the party has adopted
+  chain $\chain$ the following holds. For any $i, j$ such that
+  $|\chain[i:j]| = s$,
+  the block set
+  $\chain' = \{B \in \chain[i{:}j]: B \text{ was honestly generated}\}$ satisfies:
+
+  \[
+  \frac{|\chain'|}{s} \geq \rho
+  \,.
+  \]
+\end{definition}
+
+The \emph{common prefix} property states that the chains of two honest parties
+cannot deviate much. In particular, they will share a large common prefix and
+can only differ by up to $k$ blocks near their ends.
+
+\begin{definition}[Common Prefix]\index{Common Prefix}
+  An execution has \emph{common prefix} with parameter $k$ (the \emph{common
+  prefix parameter}) if for all honest parties $\party_1, \party_2$ and rounds
+  $r_1 \leq r_2$ the following holds. If $\party_1$ has adopted $\chain_1$
+  during round $r_1$ and $\party_2$ has adopted $\chain_2$ during round $r_2$,
+  then:
+
+  \[
+  \chain_1[{:}-k] \preceq \chain_2
+  \,.
+  \]
+\end{definition}
+
+\begin{remark}[Impossibility of full semi-synchrony]
+Revisiting the $\Delta$-bounded delay model, a folklore observation that has not appeared in
+the litature is that blockchain protocols are impossible to obtain in the fully
+semi-synchronous setting where \emph{no} conditions are imposed on $\Delta$,
+because of the anonymous nature of the model. This impossibility stems from the
+fact that $n$ is unknown to the honest parties. To see this, consider an
+honest majority execution in which an adversary controls $t = (1 - \delta)(n -
+t)$ parties for some $\delta > 0$. If the honest parties take a decision of
+transaction acceptance within some time $\Delta$, then that $\Delta$ can be used
+as network delay in which the messages of a percentage larger than $\delta$ of
+the honest parties are delayed. That setting is then indistinguishable to the
+honest parties from a setting in which the adversary controls the majority of
+the parties $t > n - t$, as there is an honest percentage which is effectively
+eclipsed. This is the case regardless of which solution is used to approach the
+problem of consensus -- whether it is through blockchains or other means.
+Standard dishonest majority attacks therefore become possible avenues to break
+the protocol. Hence, the $\Delta$-bounded delay setting in which $\Delta$ is
+unknown but some conditions are imposed on it is the best possible model we can
+hope for, as further relaxation would not allow for a solution, as long as
+dishonest majority breaks the protocol. The model can only be improved by
+relaxing the conditions.
+\end{remark}
+
+\todo{fast and slow blocks}
+
+% Honest Majority Assumption
+% Chain Growth
+% Common Prefix
+% Chain Quality
+% The Constant Difficulty assumption and its relaxation
