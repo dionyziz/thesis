@@ -98,7 +98,14 @@ proofs \emph{about} the fact that proof-of-work or proof-of-stake took place
 without presenting every proof-of-work nonce or every proof-of-stake signature.
 This gives rise to \emph{Proofs of Proof-of-Work} and stake.
 
-\todo{continuity}
+While it is useful for mobile wallets to synchronize quickly, if a good protocol
+for superlight nodes is developed, one natural question that arises is whether
+the same protocol can also be used for full nodes and miners. This would help
+quickly create a new miner and have it working on the chain without needing a
+long synchronization time. Can miners, like superlight clients, also synchronize
+quickly with the rest of the network while achieving security comperable to a
+full node? And if so, do we need any extra assumptions and what are the security
+limitations of such a model?
 
 \subsection{Interoperability}
 Since the invention of Bitcoin in 2009, numerous other cryptocurrencies have
