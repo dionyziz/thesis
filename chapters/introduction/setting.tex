@@ -251,3 +251,41 @@ function has an unpredictable output, this problem becomes more difficult as $T$
 becomes smaller. The only known way to solve the problem is by brute forcing the
 $\textsf{nonce}$ until a suitable value is found. This process is known as
 \emph{proof-of-work}.
+
+Proof-of-work systems take significant computational resources to secure,
+because they must ensure honest parties are putting in more effort than any
+possible adversary. While the computational resources go towards securing the
+network and are not wasted, a question is whether an alternative protocol can
+achieve comparable security with lower computational power consumption. Such a
+protocol would be more efficient and environmentally friendly. Towards this
+direction, the idea of \emph{proof-of-stake} was introduced. The concept is the
+same as with proof-of-work in that blocks and chains are formed which confirm
+transactions and are issued at a controlled rate. However, the assumptions are
+changed. Instead of assuming honest majority by computational power,
+\emph{honest majority by stake} is assumed. \emph{Stake} denotes the amount of
+money one owns within the system. This assumption essentially mandates that the
+majority of the money in the system is owned by participants behaving honestly.
+As money changes hands with time, this assumption is presumed to hold throughout
+the execution despite \emph{shifting stake}. Given that stake is owned by
+cryptographic keys, instead of having nodes attempt to solve the proof-of-work
+computational puzzle by brute forcing, the nodes are simply asked to sign off
+a block occasionally using the same key that signifies money ownership.
+
+Therefore, a node is asked to sign off a block every once in a while. This node,
+known as a \emph{leader}, is a representative among the rest of the stakeholders
+and is chosen at random among the stakeholders as follows. Among all the coins
+in the system, a coin is selected uniformly at random. As richer participants
+own more coins, their probability of being selected is higher. While this
+sampling process will sometimes elect adversarial nodes, it elects nodes
+according to the underlying stake distribution. We know that following this
+election process leads to a blockchain which behaves similar to proof-of-work:
+While there can be short temporary forks due to adversarial behavior, soon
+enough the honest parties prevail and keep working on the longest chain. One
+challenge in the implementation of this protocol is how to do the sampling among
+the coins in a manner that is unpredictable. Due to technical reasons, the
+protocol \emph{freezes} the stake distribution for a specific duration called an
+\emph{epoch} during which an old view of the stake distribution is used for
+sampling. Once an epoch has passed, the altered stake distribution is observed
+and a new snapshot is taken. Under the assumption that stake shifting does not
+occur at a very large rate, the \emph{bounded stake-shift assumption}, this
+sampling method is secure.
