@@ -105,6 +105,26 @@ With the addition of a $\Delta$-bounded delay it holds that~\cite{backbone-new}:
   $k \geq 2\lambda f + 2\Delta$.
 \end{theorem}
 
+In the variable difficulty synchronous case it holds that~\cite{varbackbone}:
+
+\begin{theorem}[Chain Growth]
+  A typical execution satisfies \emph{Chain Growth} with
+  velocity $\alpha = (1 - \epsilon)f$
+  and chunk size $s \geq \lambda$.
+\end{theorem}
+
+\begin{theorem}[Chain Quality]
+  A typical execution satisfies \emph{Chain Quality} with
+  quality
+  $\rho = \delta - 2\epsilon - \theta f \geq \frac{\delta}{2}$.
+  and chunk size $\ell \geq \frac{\theta\gamma m}{8\tau}$.
+\end{theorem}
+
+\begin{theorem}[Common Prefix]
+  A typical execution satisfies \emph{Common Prefix} with
+  $k \geq \frac{\theta \gamma m}{4\tau}$.
+\end{theorem}
+
 \begin{remark}[Impossibility of full semi-synchrony]
 Revisiting the $\Delta$-bounded delay model, a folklore observation that has not appeared in
 the litature is that blockchain protocols are impossible to obtain in the fully
