@@ -136,118 +136,143 @@ wishes to exchange Bitcoin for Ethereum, they need to find a counterparty who
 wishes to exchange Ethereum for Bitcoin (this is generally easy to do through
 centralized services). However, each of these blockchain systems remains
 isolated. The concept of a \emph{cryptocurrency} and its respective \emph{chain}
-remains intertwined: A Bitcoin lives in the Bitcoin chain, while an Ether lives
+remain intertwined: A Bitcoin lives in the Bitcoin chain, while an Ether lives
 in the Ethereum chain. The \emph{interoperability} problem pertains to the
 ability to move a cryptocurrency from its native chain to a remote chain,
 a one-way peg\index{One-way Peg}, and then back, a two-way
 peg\index{Two-way Peg}. If Bitcoin and Ethereum were interoperating, it would be
 possible to move one Bitcoin from the Bitcoin chain to the Ethereum chain and
-back. In a properly interoperating system, the Bitcoin would retain its nature
-during its lifespan within the Ethereum chain. For example, it would maintain
-the same exchange rate against other currencies as a Bitcoin living in the
-Bitcoin chain. While on the Ethereum chain, it would also enjoy the benefits of
-the Ethereum ecosystem. For example, it would make itself subject to smart
-contracts.
+back. The Bitcoin would retain its \emph{nature} during its lifespan within the
+Ethereum chain. It would always be a Bitcoin, not an Ether. For example, it
+would maintain the same exchange rate against other currencies. While on the
+Ethereum chain, it would also enjoy the benefits of the Ethereum ecosystem. For
+example, it would make itself subject to smart contracts and enjoy the faster
+confirmation speed of Ethereum. At the same time, it would make itself subject
+to the security assumptions of Ethereum. For example, it could subject itself to
+more limited security protection under a smaller amount of honest computational
+power devoted to the mining of the chain it lives on. The bitcoin would have the
+benefits and shortcomings of the Ethereum environment only as long as it lives
+on the foreign blockchain. When it returns back to its native chain, it should
+again behave within the context of the Bitcoin blockchain. The bitcoin has
+become \emph{decoupled} from its blockchain. This is illustrated in
+Figure~\ref{fig.two-way-peg}.
 
-\todo{continuity here}
+\begin{figure}[tb]%{{{
+  \centering
+  \includegraphics[width=0.9 \textwidth]{chapters/introduction/figures/two-way-peg.pdf}
+  \caption{
+    A motivating but imaginary two-way peg. A bitcoin is moved from its native
+    Bitcoin chain to the Ethereum chain and back. While on the Ethereum chain,
+    it is still a bitcoin.
+  }
+  \label{fig.two-way-peg}
+\end{figure}%}}}
 
-The smart contracts are confined to access data only within the blockchain
-itself, such as data maintained within the state of the smart contract itself.
-Access to external data
-requires a trusted third party or group thereof to vouch for the data
-validity~\cite{towncrier}.
+More generally, and beyond the transfer of a cryptocurrency asset from one
+blockchain to another, it is useful to allow one blockchain to consume
+information pertaining to another. Today, smart contracts are confined to access
+data only within the blockchain they run on, such as data maintained within the
+state of the smart contract itself. Access to external data requires a trusted
+third party or group thereof to vouch for the data validity~\cite{towncrier}.
+As contracts can represent complex financial conditions and trust relationships,
+it is useful to give them the ability to take decisions based on \emph{events}
+that take place on different chains. One example could be an Ethereum contract
+which gives out shares in a decentralized company (in the form of tokens)
+conditioned on the fact that a series of Bitcoin payments have been made in
+regular intervals during a predetermined period of time. Another example could
+be an insurance contract running on the Ethereum blockchain which, conditioned
+on the fact that a particular Bitcoin account fails to receive a predetermined
+amount of money until a particular point in time, releases an Ethereum payment
+to its policyholder. As one can readily see from these not so complex examples,
+such contract conditions that go beyond a simple payment cannot be readily
+encoded in the form of an atomic swap or a two-way peg and may not even have a
+definite counter-party in each chain.
 
-\todo{continuity here}
+As such, we are looking for a generic cross-chain communication mechanism which
+allows blockchains to interoperate, achieving one-way pegs, two-way pegs, as
+well as generic information transfers. Such a system should allow smart
+contracts on one blockchain to receive and react to events taking place on
+another blockchain without the need of trusted parties. We term this generic
+communication mechanism a \emph{sidechain}\footnote{We note here that previous
+work has used this term in a narrower context than the generic information
+transfer we propose here. This is one reason why the term \emph{cross-chain
+communication} for a generic protocol may be preferable.}. Despite their widely
+agreed usefulness there exist currently no sidechain constructions that are
+decentralised, efficient, and generic at the same time. One critical challenge
+in desigining these protocols is that the aim is to allow the two chains to
+remain \emph{miner isolated}. This means that, while users could maintain
+wallets in multiple chains and observe them for transactions of their interest,
+as well as forward information between the chains, the \emph{miners} that
+run the consensus protocol in each chain cannot be required to connect to
+multiple networks. For example, it is desirable that Ethereum can react to
+Bitcoin events without requiring the Ethereum miners to connect to (or even know
+about the existence of) the Bitcoin network.
 
-Sidechains~\cite{sidechains} are a mechanism for cross-chain communication in
-blockchains. They allow smart contracts on one blockchain to receive and
-react to \textit{events} taking place on another blockchain without the need
-of trusted parties. Despite their widely agreed usefulness
-there exist no constructions that are decentralised and efficient at the same
-time.
+% Sidechains can exist in two forms. In the first case, they are simply a
+% mechanism for two existing \textit{stand-alone blockchains} to communicate, in
+% which case any of the two blockchains can be the sidechain of the other and they
+% are treated as equals. In the second case, the sidechain can be a ``child'' of
+% an existing blockchain, the \textit{mainchain}, in that its genesis block, the
+% first block of the blockchain, is somehow seeded from the parent blockchain and
+% the child blockchain is meant to depend on the parent blockchain, at least
+% during an initial bootstrapping stage.
 
-\todo{continuity}
+% A sidechain system can choose to enable certain types of interactions between
+% the participating block\-chains. The most basic interaction
+% is the transfer of assets from
+% one blockchain to another. In this application, the nature of the asset
+% transferred is retained in that it is not transformed into a different class of
+% asset.
+% As such, it maintains its value and may also be transferred back.
+% The ability to move assets back and
+% forth between two chains is sometimes referred to as a \textit{2-way peg}. Provided
+% the two chains are both secure as individual blockchains, a secure
+% sidechain protocol construction allows this security to be carried on to
+% cross-chain transfers.
 
-While enjoying wide adoption,
-there  are several fundamental open questions remaining to be resolved
-that include (i)
-         Interoperability:
-           How can different blockchains interoperate and exchange
-           assets or other data?
-(ii)  Scalability:
-           How can blockchain protocols scale, especially proportionally to the number of           participating nodes?
-(iii)
-         Upgradability:
-           How can a deployed blockchain protocol codebase evolve to support a new
-           functionality, or correct an implementation problem?
+Interoperability can also be a useful mechanism to enable interfacing between
+decentralized blockchains and more traditional centralized systems such as
+accounts whose balances are held by custodians and are subject to the traditional
+laws of particular countries. Such a construction could allow for a smoother
+transition from the legacy monetary system to a blockchain-enabled system. The
+same mechanisms that allow a smart contract in Ethereum to verify a remote
+Bitcoin payment can be used to allow a \emph{permissioned} chain (in which the
+consensus is achieved by majority voting between a centralized committee) to
+verify a Bitcoin payment without requiring its consensus maintainers to connect
+to the Bitcoin network. It is, of course, trivial to write an Ethereum verifier
+that checks whether a transaction has been confirmed within such a permissioned
+network (by simply verifying and counting signatures). Therefore in this thesis
+we will concentrate on consuming data from decentralized chains, as the other
+way around is straightforward.
 
-The conditions used to validate transactions %for each node of the system
-depend on local blockchain events according to the view of each node and they
-typically cannot be dependent on other blockchain sessions. Being
-able to perform operations across blockchains, for instance from a main blockchain
-such as Bitcoin to a ``sidechain'' that has some enhanced functionality, has been
-frequently considered  a fundamental technology enabler in the blockchain space.\footnote{See
-e.g., \url{https://blockstream.com/technology/} and \cite{sidechains}.  }
+While sidechains were not originally proposed for scalability purposes, they can
+also be used to off-load the load of a blockchain in terms of transactions
+processed. For this purpose, a particular blockchain, which we will call the
+\emph{main chain}, that wishes to off-load its load can create multiple separate
+chains, the \emph{side chains}, that maintain consensus independently. A
+cross-chain protocol can then be used to connect each side chain to the main
+chain, with the main chain functioning as a financial hub. While communication
+protocols between the main chain and the side chain can be symmetric, their use
+cases are different. In this application, the use of the main chain is as a
+permanent store of value as well as an interface between different side chains,
+while each side chain is used for everyday transactions. As long as 2-way pegs
+are enabled, a particular sidechain can offer specialization by, e.g., industry,
+in order to avoid requiring the mainchain to handle all the transactions
+occurring within a particular economic sector. As long as the majority of
+transactions does not cross economic sectors, this provides a straightforward
+and simple way to ``shard'' blockchains~\cite{sharding,omniledger,rapidchain}.
+Another way of sharding could be by geographical location.
 
-\todo{continuity}
+Lastly, a child side chain can be created from a parent main chain as a means of
+exploring a new feature, e.g., in the scripting language, or the consensus
+mechanism without requiring a soft, hard, or velvet fork~\cite{nipopows,velvet}.
+The side chain does not need to maintain its own separate currency, as value can
+be moved between the sidechain and the main chain at will. If the feature of the
+sidechain proves to be popular, the main chain can eventually be abandoned by
+moving all assets to the sidechain, which can become the new main chain. In
+fact, such experimentation with new features was one of the original motivators
+for sidechains~\cite{sidechains}.
 
-Sidechains, introduced in \cite{sidechains},  are a
-way for multiple blockchains to communicate with each other and have one react
-to events in the other. Sidechains can exist in two forms. In the first case, they are simply a mechanism for two
-existing \textit{stand-alone blockchains} to communicate, in which case any of
-the two blockchains can be the sidechain of the other and they are treated as
-equals. In the second case, the
-sidechain can be a ``child'' of an existing blockchain, the \textit{mainchain},
-in that its genesis block, the first block of the blockchain, is somehow seeded
-from the parent blockchain and the child blockchain is meant to depend on the
-parent blockchain, at least during an initial bootstrapping stage.
-
-A sidechain system can choose to enable certain types of interactions between
-the participating block\-chains. The most basic interaction
-is the transfer of assets from
-one blockchain to another. In this application, the nature of the asset
-transferred is retained in that it is not transformed into a different class of
-asset (this is in contrast to a related but different concept of \emph{atomic
-swaps}).
-As such, it maintains its value and may also be transferred back.
-The ability to move assets back and
-forth between two chains is sometimes referred to as a \textit{2-way peg}. Provided
-the two chains are both secure as individual blockchains, a secure
-sidechain protocol construction allows this security to be carried on to
-cross-chain transfers.
-
-A secure sidechain system could be of a great value vis-\`a-vis all three
-of the pressing open questions in blockchain systems mentioned above. Specifically:
-
-%\noindent
-{\em Interoperability.} There are currently hundreds of
-    cryptocurrencies deployed in production. Transferring assets between
-    different chains requires transacting with intermediaries (such as exchanges). Furthermore,
-    there is no way to securely interface with another blockchain to react to
-    events occurring within it. Enabling sidechains allows
-    blockchains of different nature to communicate, including interfacing with
-    the legacy banking system which can be made available through the use of
-    a private ledger.
-
-%\noindent
-{\em   Scalability.} While sidechains were not originally proposed for
-    scalability purposes, they can be used to off-load the load of a blockchain
-    in terms of transactions processed. As long as 2-way pegs are enabled, a
-    particular sidechain can offer specialization by, e.g., industry, in order
-    to avoid requiring the mainchain to handle all the transactions occurring
-    within a particular economic sector. This provides a straightforward way to
-    ``shard'' blockchains, cf. \cite{sharding,omniledger,rapidchain}.
-
-%\noindent
-{\em Upgradability.} A child sidechain can be created from a parent
-    mainchain as a means of exploring a new feature, e.g., in the scripting language, or
-    the consensus mechanism
-    without requiring a soft, hard, or velvet fork~\cite{nipopows,velvet}. The
-    sidechain does not need to maintain its own separate currency, as value can
-    be moved between the sidechain and the mainchain at will. If the feature of
-    the sidechain proves to be popular, the mainchain can eventually be
-    abandoned by moving all assets to the sidechain, which can become the new
-    mainchain.
-
-Given the benefits listed above for distributed ledgers, there is a pressing
-need to address the question of sidechain security and feasibility, which so far, perhaps surprisingly, has not received any proper formal treatment.
+Given the benefits listed above, there is a pressing need to address the
+question of sidechain security and feasibility, which so far has not received
+any formal treatment.
