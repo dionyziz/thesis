@@ -1,8 +1,6 @@
 \section{Motivation}
 \subsection{Superlight Clients}
 
-\todo{continuity}
-
 Given an honestly adopted chain, consensus security is based on the premise that
 it is difficult to create a competing chain which deviates significantly and has
 more proof-of-work than the existing honestly adopted chain. To determine which
@@ -25,9 +23,14 @@ chain must be presented and verified.
   \label{fig.merkle}
 \end{figure}%}}}
 
-The way blockchains are structured in order to make this synchronization
-efficient is by separating the notion of a \emph{block} from that of a
-\emph{block header}. Instead of having each block contain all of its
+Proof-of-work blockchain clients such as mobile wallets today are based on the
+Simplified Payment Verifications (SPV) protocol, which was described in the
+original Bitcoin paper~\cite{bitcoin}, and allows them to sychronize with the
+network by downloading only block \emph{headers} and not the entire blockchain with
+transactions. However, such initial synchronization still requires receiving all
+the block headers.
+
+Instead of having each block contain all of its
 transactions and performing proof-of-work on it, transactions are first hashed
 into a special structure known as a Merkle Tree. A Merkle Tree of a transaction
 sequence $\overline{x}$ is structured as illustrated in Figure~\ref{fig.merkle}. Using a cryptographically
@@ -42,24 +45,42 @@ transactions $\overline{x}$ are known as the \emph{block content}, while the
 portion $x \concat \textsf{nonce} \concat h'$ which is hashed for proof-of-work
 purposes is known as the \emph{header}.
 
- convince a node
-that a chain is the longest one, the proof-of-work of every block in the chain
-must be presented and verified. This chain $\chain$ grows linearly with time.
-The first problem we concern ourselves with
-
-\todo{continuity}
-
-Proof-of-work blockchain clients such as mobile wallets today are based on the
-Simplified Payment Verifications (SPV) protocol, which was described in the
-original Bitcoin paper~\cite{bitcoin}, and allows them to sychronize with the
-network by downloading only block headers and not the entire blockchain with
-transactions. However, such initial synchronization still requires receiving all
-the block headers. In this work, we study the question of whether better
+This chain $\chain$ of block headers grows linearly in time. The problem we
+concern ourselves with is whether it is possible to optimize this protocol,
+achieving communication $o(|\chain|)$. We study the question of whether better
 protocols exist and in particular if downloading fewer block headers is
 sufficient to securely synchronize with the rest of the blockchain network. Our
 requirement is that the system remains decentralized and that useful facts about
-the blockchain (such as the Merkle root of current account balances in
-Ethereum~\cite{wood,buterin}) can be deduced from the downloaded data.
+the blockchain (such as the Merkle root of current account balances in Ethereum)
+can be deduced from the downloaded data.
+
+Our setting is as follows. A \emph{superlight} verifier wakes up having only the
+first block of the blockchain, the genesis block. In the meantime, the
+blockchain has grown and contains many blocks. The verifier wishes to know
+whether a transaction is confirmed to decide if a payment has been made. It
+connects to multiple other \emph{full nodes}, that we term \emph{verifiers}
+throughout this work, who maintain the whole blockchain. At least one connection
+will be to an \emph{honest node}. All the provers send some claims to the
+verifier, some claiming that the transaction is confirmed, while others that it
+is not. The goal of the verifier is to decide which of these claims is true. The
+claims are accompanied by \emph{evidence} to illustrate them, but must be short
+in length so that the client can synchronize quickly. In particular, we aim for
+exponentially shorter messages $\bigO(polylog(|\chain|))$ instead of the
+standard $\bigO(|\chain|)$ than an SPV node requires. These superlight nodes are
+useful when a client such as a mobile wallet wishes to synchronize with the
+network quickly. Other facts beyond transaction inclusion, such as account
+balances, are also useful to prove.
+
+The question the verifier is trying to answer is not simply whether the
+transaction has been included in \emph{some} valid block, but whether that block
+belongs to the longest chain. For the proof-of-work case, this chain corresponds
+to the chain containing the most proof-of-work that respects the protocol rules
+(such as the occasional recalculation of the target $T$). For proof-of-stake,
+this chain corresponds to the longest chain which has valid signatures by the
+majority of the stakeholders at each point in time, keeping in mind that stake
+is shifting from epoch to epoch.
+
+\todo{continuity}
 
 \subsection{Interoperability}
 Since the invention of Bitcoin in 2009, numerous other cryptocurrencies have
