@@ -84,4 +84,28 @@ subsequent elements until the end of the sequence.
 We use the notation $A \preceq B$ to indicate that sequence $A$ is a prefix of
 $B$, namely that $B[{:}|A|] = A$.
 
+We will reuse some set notation when talking about sequences\footnote{Formally
+speaking, in the traditional build-up of mathematical foundations using
+axiomatic set theory, sequences are defined as sets, and this would be deemed
+somewhat abusive in light of the following fact. If $A$ is a sequence and $x$ is
+a candidate element, $x \in A$ could have a different truth value when $A$ is
+interpreted as set and when $A$ is interpreted as a sequence. For this reason,
+the symbols $\in, \subseteq$ and so on, when referring to sequences (as is made
+clear in the surrounding text), are meant to be read as predicates $\in',
+\subseteq'$ and so on different from their set-theoretic counterparts. For
+conciseness, and because it does not affect clarity in our treatment, we will
+not mark them with the prime symbol.}. Given a sequence $A$, we write $x \in A$
+to mean $\exists s_1, s_2: A = s_1 \concat x \concat s_2$. We write
+$A \subseteq B$ to mean that $A$ is a \emph{subsequence} of $B$, that is it has
+all the same elements in the same order, but it could have more intertwined.
+More precisely, $\epsilon \subseteq B$ is true; and if $A \subseteq B$ is true,
+then $x \concat A \subseteq x \concat B$ as well as $A \subseteq x \concat B$
+are both true. We will use set builder notation to filter sequences. Namely,
+$\{x \in A: p(x)\}$ is interpreted as $\epsilon$ if $A = \epsilon$; otherwise,
+if $A$ is non-empty and we have $A = uB$ for some element $u$ and sequence $B$,
+then $\{x \in A: p(x)\} = p(u) \concat \{x \in B: p(x)\}$. We use $A \cap B$ to
+mean the sequence $\{x \in A: x \in B\}$. Because in all of its uses throughout
+this work $A$ and $B$ will have their shared elements appear in the same order,
+this operator will be symmetric in our case.
+
 % TODO: \chain\{A:Z\} notation (inclusive, exclusive). But how to include Z?

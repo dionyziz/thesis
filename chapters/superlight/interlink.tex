@@ -72,30 +72,14 @@ subchain, as long as the \emph{blockchain property} is maintained (i.e., that
 each block must contain an interlink pointer to its previous block in the
 sequence).
 
-Among chains $\chain$ we use the notation $\chain[i]$ to denote the (zero-based)
-$i^\text{th}$ block from the beginning. Negative indices indicate blocks from
-the end, so $\chain[-1]$ is the tip of the blockchain. We let $\chain[i{:}j]$ indicate
-the range of blocks from $i$ (inclusive) to $j$ (exclusive), and omitting an
-index from the range takes it to the beginning or the end respectively. We use
-$\chain\{A{:}Z\}$ to indicate the blocks of $\chain$ starting in block $A$
-(inclusive) and ending in block $Z$ (exclusive), i.e., if $A$ appears with
-index $i_A$ in $\chain$ and $B$ appears with index $i_B$ in $\chain$, then we
-set $\chain\{A{:}Z\}$ to be $\chain[i_A{:}i_B]$. Omitting a block from the range
-again takes it to the beginning or end respectively.
-
 Blockchains are sequences, but it is more convenient to use set notation for
-some operations. Specifically, $B \in \chain$ and $\emptyset$ have the obvious
-meaning. Let $\chain_1 \subseteq \chain_2$ denote that all blocks in $\chain_1$ exist
-in $\chain_2$, perhaps with additional blocks intertwined. Let $\chain_1 \cup
-\chain_2$ be the chain obtained by sorting the blocks contained in both
-$\chain_1$ and $\chain_2$ into a sequence (this may be not always defined, as
-pointers may be missing). We will freely use set builder notation $\{B \in
-\chain: p(B)\}$. Let $\chain_1 \cap \chain_2$ be the chain $\{B: B \in \chain_1
-\land B \in \chain_2\}$. In all cases, the blockchain property must be
-maintained. The lowest common ancestor is $\textsf{LCA}(\chain_1, \chain_2) =
-(\chain_1 \cap \chain_2)[-1]$. If $\chain_1[0] = \chain_2[0]$ and $\chain_1[-1]
-= \chain_2[-1]$, we say the chains $\chain_1, \chain_2$ \emph{span} the same
-block range.
+some operations. Let $\chain_1 \cup \chain_2$ be the chain obtained by sorting
+the blocks contained in both $\chain_1$ and $\chain_2$ into a sequence (this may
+be not always defined, as pointers may be missing). In all cases, the blockchain
+property must be maintained. The lowest common ancestor is
+$\textsf{LCA}(\chain_1, \chain_2) = (\chain_1 \cap \chain_2)[-1]$. If
+$\chain_1[0] = \chain_2[0]$ and $\chain_1[-1] = \chain_2[-1]$, we say the chains
+$\chain_1, \chain_2$ \emph{span} the same block range.
 
 It will soon become clear that it is useful to construct a chain containing only
 the superblocks of another chain. Given $\chain$ and level $\mu$, the
