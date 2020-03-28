@@ -4,13 +4,9 @@ their channels remain unauthenticated, we will assume that the \emph{majority}
 of the population is honest~\cite{backbone}. This assumption is summarized in
 the following equation:
 
-\begin{definition}[Honest Majority Assumption]\index{Honest Majority}\index{$\delta$}
-  We say that a population has \emph{honest majority} if
-
-  \[
-  t \leq (1 - \delta)(n - t)
-  \]
-\end{definition}
+\[
+t \leq (1 - \delta)(n - t)
+\]
 
 This mandates that the number of adversarial parties $t$ is less than the honest
 parties $n - t$ by a fraction determined by the parameter $\delta$, the
@@ -170,28 +166,49 @@ The expectation $\Ex[X_r]$ is a value critical for our protocols and will be
 denoted $f$\index{f} throughout this work. If $f$ is too small, the
 proof-of-work problem is too hard and there is no progress, harming liveness.
 If $f$ is large, the proof-of-work problem is too easy and the honest parties
-fail to reach agreement, harming persistence. The parameter $T$ must be
-carefully calibrated according to $n$ and $q$ so that $f$ takes a balanced
-value.
+all solve proof-of-work simultaneously. In that case, there are no intermittent
+\emph{periods of silence}\index{Period of Silence} that honest parties can
+utilize to reach agreement, and thus persistence is harmed. The parameter $T$
+must be carefully calibrated according to $n$ and $q$ so that $f$ takes a
+balanced value.
 
 As rounds are independent, the expectations for $\Ex[X(S)]$, $\Ex[Y(S)]$,
 $\Ex[Z(S)]$ are equal to $|S|\Ex[X_r]$, $|S|\Ex[Y_r]$, and $|S|\Ex[Z_r]$
 respectively. If $|S|$ is sufficiently large, the actual values attained by
 $\Ex[X(S)]$, $\Ex[Y(S)]$, and $\Ex[Z(S)]$ will most likely be near their
-expectation. This intuition is formally captured by the notion of a
-\emph{typical query distribution}:
+expectation, except with some small error $\epsilon$. This intuition is formally
+captured by the notion of a \emph{typical query distribution}:
 
 \begin{definition}[Typical Query Distribution]
-  \index{Typical Query Distribution}\index{$\epsilon$}
-  Let $\epsilon \in (0, 1)$ and integer $\lambda \geq \frac{2}{f}$. Let $S$
-  be a set of rounds with $|S| \geq \lambda$. An execution has
-  \emph{$(\epsilon, \lambda)$-typical query distribution} if:
+  \index{Typical Query Distribution}\index{$\epsilon$}\index{Chernoff Error}
+  Let $\epsilon \in (0, 1)$ (the \emph{Chernoff error}) and integer $\lambda
+  \geq \frac{2}{f}$. Let $S$ be a set of rounds with $|S| \geq \lambda$. An
+  execution has \emph{$(\epsilon, \lambda)$-typical query distribution} if:
 
   \begin{itemize}
     \item $(1 - \epsilon)\Ex[X(S)] < X(S) < (1 + \epsilon)\Ex[X(S)]$
     \item $(1 - \epsilon)\Ex[Y(S)] < Y(S)$
     \item $Z(S) < \Ex[Z(S)] + \epsilon\Ex[X(S)]$
   \end{itemize}
+\end{definition}
+
+We are now ready to state the full \emph{honest majority assumption}. Our
+assumption requires that the honest majority gap $\delta$ is sufficient to
+account for both the Chernoff error $\epsilon$ as well as the the lack of
+silence due to a potentially large parameter $f$.
+
+\begin{definition}[Honest Majority Assumption]\index{Honest Majority}\index{$\delta$}
+  We say that a population has \emph{honest majority} if
+
+  \[
+  t \leq (1 - \delta)(n - t)
+  \]
+
+  where
+
+  \[
+  3f + 3\epsilon < \delta \leq 1\,.
+  \]
 \end{definition}
 
 The honest majority assumption allows us to argue that the number of uniquely
