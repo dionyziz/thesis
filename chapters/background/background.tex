@@ -60,6 +60,20 @@ treatment, refer to any introductory textbook in the subject~\cite{katz,handbook
 
 \subsection{Blocks}
 genesis
+
+\todo{continuity}
+
+Blockchains are finite
+block sequences obeying the \emph{blockchain property}: that in every block in
+the chain there exists a pointer to its previous block. A chain is
+\emph{anchored} if its first block is \emph{genesis}, denoted $Gen$.
+Given chains $\chain_1, \chain_2$ and blocks $A, Z$ we concatenate them as
+$\chain_1 \chain_2$ or $\chain_1 A$. $\chain_2[0]$ must point to $\chain_1[-1]$
+and $A$ must point to $\chain_1[-1]$.
+The \emph{id} function
+returns the id of a block given its data, i.e., $\textsf{id} = H(ctr, G(x,
+\textsf{interlink}))$.
+
 \subsection{Chains of Blocks}
 longest chain rule
 \subsection{Blockchain Addressing}
