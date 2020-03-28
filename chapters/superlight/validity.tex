@@ -1,7 +1,16 @@
 \subsection{Computational Ledgers}
 
+\todo{Consider merging this into background chapter}
+
+We give some extensions to the validity languages described in
+Chapter~\ref{chapter:background}, which will allow us to construct clients that
+maintain shorter state than the full historical sequence of transactions.
+
 The blockchain protocol is parametrized by a \emph{blockchain application}
 tuple $(\mathcal{L}, \mathcal{S}, S_0, \delta)$ which consists of the following:
+
+\todo{Use a different notation for $\delta$ as this is reserved for the honest
+majority gap}
 
 \begin{enumerate}
   \item $\mathcal{L}$: A (potentially infinite) \emph{transaction language} containing all valid
