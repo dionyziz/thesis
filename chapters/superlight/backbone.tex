@@ -1,27 +1,12 @@
-\subsection{The Backbone Model}
-We work in the Backbone model~\cite{backbone} and adopt an
-environment where the network is synchronous and the protocol is executed in
-distinct \emph{rounds}. We give a short overview of the model. We let $\kappa$
-denote the security parameter. We use $n$ to denote the total number of parties,
-$t$ of which are adversarial. All parties share a common \emph{genesis} block
-$\mathcal{G}$ before which no mining has occurred. In the traditional protocol
-prior to our contributions, each party adopted a
+\textbf{Extending the Backbone protocol.}
+We work in the static difficulty $q$-query synchronous Backbone model
+(see Chapter~\ref{chapter:background} for details). In the traditional protocol
+prior to our contributions in this chapter, each party adopted a
 \emph{blockchain} $\chain$, which is a sequence of blocks each containing the
 hash of its previous block, up to the genesis block. Each honest node maintained
 an adopted blockchain, which was the longest blockchain it had observed. On top
 of that blockchain, it tried to create a new block containing data
-(transactions) $x$ it received from the environment. Block generation took
-place, by honest parties and the adversary alike, by invoking a shared Random
-Oracle which is denoted $H(\cdot)$ and whose range is $\{0,1\}^\kappa$. If the
-output of the Random Oracle was below a certain threshold $T < 2^\kappa$, which
-we call the \emph{mining target}, the block was considered \emph{valid} and was
-appended to the blockchain. The honest parties tried to find a block by performing
-proof-of-work, which entails looking for a nonce $\mathsf{ctr}$ such that the
-proof-of-work equation is satisfied i.e., $H(\mathsf{ctr} \concat s \concat x) \leq T$,
-where $s$ denotes a pointer to the previous block. We use $q$ to denote the
-number of random oracle queries per party per round. The honest parties searched
-the space by performing $q$ queries for $\mathsf{ctr} \gets 1$ to $q$. The
-adversary controlling $t$ parties gets $qt$ total queries per round. If an
+(transactions) $x$ it received from the environment. If an
 honest party found a new block, she broadcasted it to the rest of the parties.
 Whenever an honest party received a blockchain from the network, she adopted it
 using the \emph{longest blockchain rule}, which mandated that a new blockchain
@@ -49,11 +34,6 @@ Sections~\ref{sec.mining13} and~\ref{sec.mining12}.
 % 	$t\leq(\frac13-\delta)n$, where $3f+3\eps<\delta\leq\frac13$.
 % \end{quote}
 %
-It has been proven~\cite{backbone,varbackbone} that, in both the
-constant and variable difficulty settings, such executions
-follow the properties of \emph{Chain Growth}, \emph{Common Prefix}, and
-\emph{Chain Quality}.
-
 %>>>
 
 % TABLE <<<
