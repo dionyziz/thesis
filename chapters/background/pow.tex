@@ -170,10 +170,13 @@ expectation, except with some small error $\epsilon$. This intuition is formally
 captured by the notion of a \emph{typical query distribution}:
 
 \begin{definition}[Typical Query Distribution]
-  \index{Typical Query Distribution}\index{$\epsilon$}\index{Chernoff Error}
+  \index{Typical Query Distribution}
+  \index{$\epsilon$}\index{$\lambda$}
+  \index{Chernoff Error}\index{Wait Time}
   Let $\epsilon \in (0, 1)$ (the \emph{Chernoff error}) and integer $\lambda
-  \geq \frac{2}{f}$. Let $S$ be a set of rounds with $|S| \geq \lambda$. An
-  execution has \emph{$(\epsilon, \lambda)$-typical query distribution} if:
+  \geq \frac{2}{f}$ (the \emph{wait time}). Let $S$ be a set of rounds with $|S|
+  \geq \lambda$. An execution has \emph{$(\epsilon, \lambda)$-typical query
+  distribution} if:
 
   \begin{itemize}
     \item $(1 - \epsilon)\Ex[X(S)] < X(S) < (1 + \epsilon)\Ex[X(S)]$
