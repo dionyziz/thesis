@@ -102,8 +102,12 @@ The Bitcoin Backbone protocol is illustrated in Algorithm~\ref{alg.backbone}.
 
 \todo{Continuity}
 
-The following three properties are desired for chains maintained by the honest
-parties.
+Chains maintained by honest parties running the backbone protocol in an honest
+majority setting satisfy the following three properties.
+
+The \emph{chain growth} property states that the chain of an honest party will
+keep growing at a certain rate $\tau$. Because honest parties always extend the
+longest chain, this property holds even in executions of dishonest majority.
 
 \begin{definition}[Chain Growth]\index{Chain Growth}
   An execution has \emph{chain growth} with parameters $\tau \in \mathbb{R}$
@@ -117,6 +121,9 @@ parties.
   \,.
   \]
 \end{definition}
+
+The \emph{chain quality} property states that any large enough ($\geq s$) chunk
+of an honestly adopted chain will always contain some ($\rho$) honest blocks.
 
 \begin{definition}[Chain Quality]\index{Chain Quality}
   An execution has \emph{chain quality} with parameters $\rho$ (the
@@ -132,6 +139,10 @@ parties.
   \,.
   \]
 \end{definition}
+
+The \emph{common prefix} property states that the chains of two honest parties
+cannot deviate much. In particular, they will share a large common prefix and
+can only differ by up to $k$ blocks near their ends.
 
 \begin{definition}[Common Prefix]\index{Common Prefix}
   An execution has \emph{common prefix} with parameter $k$ (the \emph{common
