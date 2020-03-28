@@ -256,6 +256,54 @@ and for all $r < r' < r + \Delta$ it holds that $X_{r'} = 0$. In that case we
 set $Y'_r = 1$; otherwise, we set $Y'_r = 0$.
 \end{definition}
 
+These random variables have the following expectations for every round $r$:
+
+\begin{itemize}
+  \item $\Ex[X'_r] = f(1 - f)^{\Delta - 1} \geq f[1 - (\Delta - 1)f]$
+  \item $\Ex[Y'_r] \geq f(1 - f)^{2\Delta - 1} \geq f[1 - (2\Delta - 1)f]$
+\end{itemize}
+
+In this case, we also have to strengthen the honest majority assumption to
+accommodate for the $\Delta$ delay:
+
+\begin{definition}[$\Delta$ Honest Majority]
+  We say that a population has \emph{honest majority} with \emph{wait time}
+  $\lambda \in \mathbb{N}$ under a $\Delta$-bounded delay with wait if
+
+  \[
+  t \leq (1 - \delta)(n - t)
+  \]
+
+  where
+
+  \[
+  \delta > 5(\epsilon + 2\Delta f + \frac{2 \Delta}{f})\,.
+  \]
+\end{definition}
+
+Typicality of queries is strengthened as follows:
+
+\begin{definition}[$\Delta$ Typical Query Distribution]
+  An execution has \emph{$(\epsilon, \lambda, \Delta)$-typical query
+  distribution} with parameters $\epsilon \in (0, 1)$ (the \emph{Chernoff
+  error}), integer $\lambda \geq \frac{2}{f}$ (the \emph{wait time}) and integer
+  $\Delta$ (the \emph{delay}), if for any set of rounds $S$ with $|S| \geq
+  \lambda$ it holds that:
+
+  \begin{itemize}
+    \item $(1 - \epsilon)\Ex[X'(S)] < X'(S), X(S) < (1 + \epsilon)\Ex[X(S)]$
+    \item $(1 - \epsilon)\Ex[Y'(S)] < Y'(s)$
+    \item $Z(S) < \Ex[Z(S)] + \epsilon \Ex[X'(S)]$
+  \end{itemize}
+\end{definition}
+
+Typical executions are then defined as before and the standard theorem holds:
+
+\begin{theorem}[$\Delta$ Typicality]
+  An execution is $(\epsilon, \lambda, \Delta)$-typical with overwhelming
+  probability in $\epsilon^2 f^2 (1 - f)^{4\Delta - 2} \lambda$.
+\end{theorem}
+
 Before we get to ordering transactions, consider momentarily the classical
 problem of a one-bit agreement~\cite{lamport} known as the Byzantine
 Agreement\index{Byzantine Agreement} problem. In
