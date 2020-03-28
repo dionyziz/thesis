@@ -14,7 +14,7 @@ keep growing at a certain rate $\tau$. Because honest parties always extend the
 longest chain, this property holds even in executions of dishonest majority.
 
 \begin{definition}[Chain Growth]\index{Chain Growth}
-  An execution has \emph{chain growth} with parameters $\tau \in \mathbb{R}$
+  An execution has \emph{chain growth} with parameters $\alpha \in \mathbb{R}$
   (the \emph{chain velocity}) and $s \in \mathbb{N}$ (the \emph{chunk size}) if
   for all honest parties $\party$ and for all rounds $r$ the following holds. If
   $\party$ has adopted chain $\chain$ at round $r$, then for every round $r' > r
@@ -71,7 +71,7 @@ In the synchronous model we have:
 
 \begin{theorem}[Chain Growth]
   A typical execution satisfies \emph{Chain Growth} with
-  velocity $\tau = (1 - \epsilon)\lambda$ and chunk size $s \geq \lambda$.
+  velocity $\alpha = (1 - \epsilon)f$ and chunk size $s \geq \lambda$.
 \end{theorem}
 
 \begin{theorem}[Chain Quality]
@@ -89,7 +89,8 @@ In the $\Delta$-bounded delay model we have:
 
 \begin{theorem}[Chain Growth]
   A typical execution satisfies \emph{Chain Growth} with
-  velocity $\tau = (1 - \epsilon)f(1 - f)^{\Delta - 1}$.
+  velocity $\alpha = (1 - \epsilon)f(1 - f)^{\Delta - 1}$
+  and chunk size $s \geq \lambda$.
 \end{theorem}
 
 \begin{theorem}[Chain Quality]
