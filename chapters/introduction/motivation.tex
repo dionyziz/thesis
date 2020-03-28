@@ -86,12 +86,17 @@ balances, are also useful to prove.
 
 The question the verifier is trying to answer is not simply whether the
 transaction has been included in \emph{some} valid block, but whether that block
-belongs to the longest chain. For the proof-of-work case, this chain corresponds
-to the chain containing the most proof-of-work that respects the protocol rules
-(such as the occasional recalculation of the target $T$). For proof-of-stake,
-this chain corresponds to the longest chain which has valid signatures by the
+belongs to the longest chain and hence the economic participants will also agree
+that the transaction took place. For the proof-of-work case, this chain
+corresponds to the chain containing the most proof-of-work that respects the
+protocol rules (such as the occasional recalculation of the target $T$ due to
+changes in the total mining power of the network). For proof-of-stake, this
+chain corresponds to the longest chain which has valid signatures by the
 majority of the stakeholders at each point in time, keeping in mind that stake
-is shifting from epoch to epoch.
+is shifting from epoch to epoch. In both cases we are trying to create succinct
+proofs \emph{about} the fact that proof-of-work or proof-of-stake took place
+without presenting every proof-of-work nonce or every proof-of-stake signature.
+This gives rise to \emph{Proofs of Proof-of-Work} and stake.
 
 \todo{continuity}
 
