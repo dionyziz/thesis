@@ -48,7 +48,10 @@ context.
 We use $\epsilon$ to denote the empty sequence (or empty string). We write
 one sequence next to another to denote string concatenation. Likewise, we
 concatenate sequences to symbols by juxtaposition. If for clarity this needs to
-be made explicit, we will use the symbol $\concat$ for concatenation.
+be made explicit, we will use the symbol $\concat$ for concatenation. We make
+the implicit assumption that concatenation encodes values into a string
+unambiguously, for example by separating them by a special character that never
+appears in the operands. This allows them to be uniquely extracted again.
 
 Our sequences are indexed starting at $0$. Given a sequence $\chain$, we use
 $|\chain|$ to denote its length. We use Python notation to denote sequence
