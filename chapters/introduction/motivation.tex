@@ -48,14 +48,24 @@ transactions $\overline{x}$ are known as the \emph{block content}, while the
 portion $x \concat \textsf{nonce} \concat h'$ which is hashed for proof-of-work
 purposes is known as the \emph{header}.
 
-This chain $\chain$ of block headers grows linearly in time. The problem we
-concern ourselves with is whether it is possible to optimize this protocol,
-achieving communication $o(|\chain|)$. We study the question of whether better
-protocols exist and in particular if downloading fewer block headers is
-sufficient to securely synchronize with the rest of the blockchain network. Our
-requirement is that the system remains decentralized and that useful facts about
-the blockchain (such as the Merkle root of current account balances in Ethereum)
-can be deduced from the downloaded data.
+This chain $\chain$ of block headers grows linearly in time. To put the problem
+in perspective and motivate the question, at the time of writing, Ethereum's
+blockchain (as measured by the amount of data that needs to be downloaded to
+synchronize a full node) is currently more than $250$GB, and the size of block
+headers is $4.6$GB. The latter amount is currently too large for a user-friendly
+mobile wallet.
+
+The problem we concern ourselves with is whether it is possible to optimize this
+protocol, achieving communication $o(|\chain|)$. We study the question of
+whether better protocols exist and in particular if downloading fewer block
+headers is sufficient to securely synchronize with the rest of the blockchain
+network. Our requirement is that the system remains decentralized and that
+useful facts about the blockchain (such as the Merkle root of current account
+balances in Ethereum) can be deduced from the downloaded data. This means that
+we don't want to utilize techniques such as checkpointing (in which the verifier
+software is patched by its trusted developer to include a later block as
+a \emph{neon genesis} replacement to the genesis block) or trusting a server to
+give us the correct blockchain.
 
 Our setting is as follows. A \emph{superlight} verifier wakes up having only the
 first block of the blockchain, the genesis block. In the meantime, the
