@@ -95,17 +95,13 @@ subchain, as long as the \emph{blockchain property} is maintained (i.e., that
 each block must contain an interlink pointer to its previous block in the
 sequence).
 
-Blockchains are sequences, but it is more convenient to use set notation for
-some operations. Specifically, $B \in \chain$ and $\emptyset$ have the obvious
-meaning. $\chain_1 \subseteq \chain_2$ means that all blocks in $\chain_1$ exist
-in $\chain_2$, perhaps with additional blocks intertwined. $\chain_1 \cup
-\chain_2$ is the chain obtained by sorting the blocks contained in both
-$\chain_1$ and $\chain_2$ into a sequence (this may be not always defined, as
-pointers may be missing). We will freely use set builder notation $\{B \in
-\chain: p(B)\}$. $\chain_1 \cap \chain_2$ is the chain $\{B: B \in \chain_1
-\land B \in \chain_2\}$. In all cases, the blockchain property must be
-maintained. The lowest common ancestor is $\textsf{LCA}(\chain_1, \chain_2) =
-(\chain_1 \cap \chain_2)[-1]$. If $\chain_1[0] = \chain_2[0]$ and $\chain_1[-1]
+Blockchains are sequences, so we will use the set notation defined in
+Chapter~\ref{chapter:introduction}. We note that, when manipulating blockchains
+in this manner, it is important to remember when the blockchain property is
+maintained. In particular, $\chain_1 \cup \chain_2$ and $\chain_1 \cap \chain_2$
+as well as chains filtered through set-builder notation,
+while sequences of blocks, may not always be chains since pointers may be missing.
+If $\chain_1[0] = \chain_2[0]$ and $\chain_1[-1]
 = \chain_2[-1]$, we say the chains $\chain_1, \chain_2$ \emph{span} the same
 block range.
 
