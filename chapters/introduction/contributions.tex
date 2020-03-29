@@ -48,6 +48,32 @@ and adds the reference $H(B')$.
 \todo{the variable difficulty and $\Delta$-delay setting}
 \todo{proofs of stake}
 
+\ifdraft
+\todo{Clean up paragraph}
+In this section, we introduce the first
+trustless construction for proof-of-work sidechains. We describe how to build
+generic communication between blockchains. As one application, we give the
+construction of a \emph{two-way pegged} asset which can be moved from one
+blockchain to another while retaining its nature. We provide a high-level
+construction in Solidity. Our construction works across a broad range of
+blockchains requiring only two underlying properties. First, that the
+\emph{source} blockchain is a proof-of-work blockchain supporting
+Non-Interactive Proofs of Proof-of-Work (NIPoPoWs), a cryptographic primitive
+which allows constructing succinct proofs \emph{about} events which occur in a
+proof-of-work blockchain and which was recently introduced in~\cite{nipopows}.
+Support for NIPoPoWs can be introduced to practically any
+work-based cryptocurrency such as Bitcoin and Ethereum without a hard or soft
+fork. Second, that the \emph{target} blockchain is able to validate such proofs
+through smart contracts such as, e.g., Ethereum or Ethereum
+Classic.
+We give a formal proof of security of our construction via
+reduction to NIPoPoW security under the assumption that the interoperating
+blockchains are secure individually.
+To our knowledge, we are the first to
+provide such a construction in
+full and prove its security.
+\fi
+
 \subsection{Summary of Contributions}
 A summary of our contributions and their dependencies, with annotations
 indicating where they are presented in this thesis, is visually illustrated in
