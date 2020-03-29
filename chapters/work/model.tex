@@ -1,14 +1,10 @@
-\section{Model and Definitions}
+\section{Definitions}
 \label{sec:model}
-Our model is based on the ``backbone'' model for proof-of-work
-cryptocurrencies~\cite{backbone}, extended with SPV. Following their model, we
-assume \emph{synchrony}
-and constant difficulty. We discuss an extension to the variable difficulty and the \emph{bounded delay} setting~\cite{pass-asynchronous} in the next chapter.
 
 \todo{Move the following to preliminaries}
 
 \noindent
-\textbf{Backbone model.}
+\textbf{Extending the Backbone model.}
 % AM:
 %We define our problem in the setting of a blockchain client which is completely
 %stateless beyond the knowledge of a common reference string, the genesis block.
@@ -62,10 +58,9 @@ others. We focus our attention in \emph{stable} predicates having the property
 that all honest miners share their view of them in a way that is updated in a
 predictable manner, with a truth-value that persists as the blockchain grows (an
 example of an unstable predicate is e.g., the least significant bit of the hash
-of last block). Following the work of \cite{backbone}, we wait for $k$ blocks to
+of last block). Following the backbone work, we wait for $k$ blocks to
 bury a block before we consider it \emph{confirmed} and thereby the predicates
-depending on it stable. $k$ is the \emph{common prefix} security parameter,
-which in Bitcoin folklore is often taken to be $k = 6$.
+depending on it stable ($k$ is the common prefix parameter).
 
 In our setting, for a given predicate $Q$, several  provers (including
 adversarial ones) will generate proofs claiming potentially different truth
