@@ -13,14 +13,28 @@ for a verifier to process a sparse subset of the blockchain, rather than only
 consecutive blocks.
 
 Valid blocks satisfy the proof-of-work condition: $id \leq T$, where $T$ is the
-mining target. In this chapter, we make the simplifying assumption that $T$
-is constant. Some blocks will achieve a lower id. If $id \leq
-\frac{T}{2^\mu}$ we say that the block is of level $\mu$. All blocks are level
-$0$. Blocks with level $\mu$ are called $\mu$-\emph{superblocks}.
-$\mu$-superblocks for $\mu > 0$ are also $(\mu - 1)$-superblocks. The level of a
-block is given as $\mu = \left \lfloor \log(T) - \log(\sf{id}(B)) \right
-\rfloor$ and denoted $\emph{level}(B)$. By convention, for $Gen$ we set $id =
-0$ and $\mu = \infty$.
+mining target. In this chapter, we work in the static difficulty, and so make
+the simplifying assumption that $T$ is constant. Some blocks will achieve a
+lower id. If $id \leq \frac{T}{2^\mu}$ we say that the block is of level $\mu$.
+All blocks are level $0$. Blocks with level $\mu$ are called
+$\mu$-\emph{superblocks}. $\mu$-superblocks for $\mu > 0$ are also $(\mu -
+1)$-superblocks. The level of a block is given:
+
+\begin{definition}[Level]\index{Level}
+  Let $B$ be a valid block. Its \emph{level} $\mu$ is defined as:
+
+  \[
+  \mu = \emph{level}(B) = \left \lfloor \log(T) -
+\log(\sf{id}(B)) \right \rfloor
+  \,.
+  \]
+
+  By convention for $Gen$ we set $\mu = \infty$.
+\end{definition}
+
+\begin{definition}[Superblock]\index{Superblock}
+  A block of level $\mu$ is called a \emph{$\mu$-superblock}.
+\end{definition}
 
 Observe that in a blockchain protocol execution it is expected $1/2$ of the
 blocks will be of level $1$; $1/4$ of the blocks will be of level $2$; $1/8$
