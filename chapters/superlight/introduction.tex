@@ -1,38 +1,12 @@
-\section{Introduction}
+In this chapter, we put forth a second method to compress and update
+a PoW blockchain which we term the \emph{distill} method. This method is similar
+but different from the \emph{charity} method introduced in
+Chapter~\ref{chapter:work}. We discuss how this method can be used to create
+\emph{logarithmic space miners}, extending our previous application from simple
+verifiers to nodes maintaining the blockchain. As in Chapter~\ref{chapter:work},
+we still work in the synchronous static difficulty model.
 
-\todo{Merge this section with background chapter}
-
-The typical blockchain protocol, as exemplified by the Bitcoin~\cite{bitcoin}
-blockchain, has parties called \emph{miners} issue blocks by solving a cryptographic
-puzzle known as \emph{proof of work} (PoW)~\cite{pow}. This block extends
-the longest (or, more precisely, the most \emph{difficult}) chain of blocks that
-is known to the party at each time. Blocks are exchanged between parties and
-accepted as long as they are fresh and are extending the longest chain a party
-is aware of. This protocol logic has been formally analysed in a number of
-previous works,
-e.g.,~\cite{backbone,varbackbone,pass-asynchronous,composable-bitcoin}
-and shown to be capable of withstanding a suitably bounded, in terms of
-computational power, adversary.
-
-
-Distributed ledgers are typically intended to operate over a long period
-and this creates a set of performance considerations,
-both in terms of time and space, that impacts both
-continuously operating nodes as well as the onboarding process for new nodes.
-At the time of writing the size of the Bitcoin blockchain is
-over 200GB\footnote{See \url{https://www.blockchain.com/charts/blocks-size} for
-current statistics} imposing a considerable storage and onborading requirement.
-The standard way of improving this is the utilisation of SPV (``simple payment
-verification'') clients that maintain only the headers of blocks
-while suppressing any other information of the ledger that is not relevant to
-the client. While this can be a substantial space saver it still requires a
-state that grows {\em linearly} with the runtime of the system. The fundamental
-open question we tackle in this work is whether it is possible to reduce this
-further, and specifically to a state that grows only {\em logaritmically} in the
-system's run-time.
-
-{\bf  Our contributions.} We put forth a novel method to compress and update
-a PoW blockchain. In particular our method enables the compression of
+Our method enables the compression of
 the state of a full-node into one that merely includes
 the current application state (such as the UTXO set) as well as a suitable sequence of logarithmically many
 blocks that
@@ -42,10 +16,8 @@ variant that enables even further savings in terms of space.
 No node needs to maintain a linearly-growing blockchain in our protocol, as
 miners can even mine on top of these compressed chains. As mining produces new
 blocks, the state of the miners evolves and can be shared across the network.
-Our construction is based on the previously known notion of \emph{superblocks}~\cite{popow,nipopows,compactsuperblocks},
-blocks that have achieved unusually high difficulty. Such blocks are rare and
-are representative of the underlying proof-of-work that was performed in the
-surrounding blocks in the full chain. Our construction prunes all blocks that
+Our construction is based on the previously introduced notion of superblocks
+(see Chapter~\ref{chapter:work}). Our construction prunes all blocks that
 are not superblocks of sufficient difficulty, while only keeping superblocks in
 the state.
 In more details we provide the following.
