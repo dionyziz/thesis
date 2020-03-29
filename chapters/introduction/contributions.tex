@@ -15,6 +15,26 @@ once and do not require multiple interrogation questions from the verifier. As
 such, these proofs are non-interactive and we call them \emph{Non-Interactive
 Proofs of Proof-of-Work} (NIPoPoWs).
 
+To create such succinct representations of work, we look at the distribution of
+block hashes in the chain. Every valid block $B$ satisfies the proof-of-work
+equation $H(B) \leq T$ where $T$ is the mining target, but some blocks satisfy
+it better than others. Some blocks so happen to have a hash with value
+\emph{much} lower than $T$, even though this is not required for validity and is
+not intentional. For example, some blocks will satisfy $H(B) \leq \frac{T}{2}$.
+Concretely, because the hash function is uniformly distributed, in expectation
+\emph{half} the blocks will satisfy $H(B) \leq \frac{T}{2}$, a \emph{quarter} of
+them will satisfy $H(B) \leq \frac{T}{4}$, an \emph{eighth} will satisfy $H(B)
+\leq \frac{T}{8}$, and in general only a $\frac{1}{2^\mu}$ fraction of blocks
+will satisfy $H(B) \leq \frac{T}{2^\mu}$. If a block satisfies this inequality
+for some $\mu \in \mathbb{N}$, we say that it is of \emph{level} $\mu$ and call
+it a $\mu$-superblock (and note that a $\mu$-superblock for $\mu > 0$ is also
+a $(\mu - 1)$-superblock). The probability of a valid block $B$ being a
+$\mu$-superblock is:
+
+\[
+\Pr[H(B) \leq \frac{T}{2^\mu}|H(B) \leq T] = \frac{1}{2^\mu}
+\]
+
 \begin{figure}
     \caption{The probabilistic hierarchical blockchain.
     Higher levels have achieved a higher difficulty during
