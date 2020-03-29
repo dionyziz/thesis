@@ -114,9 +114,14 @@ The \emph{lowest common ancestor} of chains $\chain_1$, $\chain_2$ is defined as
 \end{definition}
 
 It will soon become clear that it is useful to construct a chain containing only
-the superblocks of another chain. Given $\chain$ and level $\mu$, the
-\emph{upchain} $\chain\upchain^\mu$ is defined as $\{B \in \chain: level(B)
-\geq \mu\}$. A chain containing only $\mu$-superblocks is called a
+the superblocks of another chain.
+
+\begin{definition}[Upchain]\index{Upchain}
+Given $\chain$ and level $\mu$, the \emph{upchain} $\chain\upchain^\mu$ is
+defined as $\{B \in \chain: level(B) \geq \mu\}$.
+\end{definition}
+
+A chain containing only $\mu$-superblocks is called a
 $\mu$\emph{-superchain}. It is also useful, given a $\mu$-superchain $\chain'$
 to go back to the regular chain $\chain$. Given chains $\chain' \subseteq
 \chain$, the \emph{downchain} $\chain'\downchain\!\!_\chain$ is defined as
