@@ -4,7 +4,7 @@
 
 \todo{Move to contributions in introduction}
 
-\noindent\textbf{Our contributions. } In this paper, we introduce the first
+In this section, we introduce the first
 trustless construction for proof-of-work sidechains. We describe how to build
 generic communication between blockchains. As one application, we give the
 construction of a \emph{two-way pegged} asset which can be moved from one
@@ -12,12 +12,8 @@ blockchain to another while retaining its nature. We provide a high-level
 construction in Solidity. Our construction works across a broad range of
 blockchains requiring only two underlying properties. First, that the
 \emph{source} blockchain is a proof-of-work blockchain supporting
-Non-Interactive Proofs of Proof-of-Work (NIPoPoWs), a cryptographic primitive
-which allows constructing succinct proofs \emph{about} events which occur in a
-proof-of-work blockchain and which was recently introduced in~\cite{nipopows}.
-Support for NIPoPoWs can be introduced to practically any
-work-based cryptocurrency such as Bitcoin and Ethereum without a hard or soft
-fork. Second, that the \emph{target} blockchain is able to validate such proofs
+NIPoPoWs.
+Second, that the \emph{target} blockchain is able to validate such proofs
 through smart contracts such as, e.g., Ethereum or Ethereum
 Classic.
 We give a formal proof of security of our construction via
