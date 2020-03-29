@@ -107,31 +107,5 @@ Subsequently, these signatures will be combined together with all necessary
 information to convince the mainchain nodes (that do not have access to the
 sidechain) that the sidechain certificate is valid.
 
-\noindent {\bf  Related work. }
-Sidechains were first proposed as a high level concept in~\cite{sidechains}.
-%To the best of
-%our knowledge, so far  no
-%formal definition of sidechain security exists, and existing constructions are not
-%accompanied by formal analysis.
-Notable proposed implementations of the concept are given in~\cite{drivechains,lerner}.
-In these works, no formal proof of security
-is provided and their performance is sometimes akin to maintaining the whole
-blockchain within the sidechain, limiting any potential scalability gains.
-%
-There have been several attempts to create various cross-chain transfer
-mechanisms including Polkadot~\cite{polkadot},
-Cosmos~\cite{tendermint}, Blockstream's Liquid \cite{federated-interoperability} and Interledger \cite{interledger}. These constructions  differ in various aspects from our work including in that
-they focus on proof-of-work or private (Byzantine) blockchains, require
-federations, are not decentralized and --- in all cases ---
- lack a formal security model and analysis.
-Threshold multi-signatures were considered before, e.g., \cite{pass-asynchronous},
-without the ad-hoc characteristic we consider here.
-A related primitive that has been considered as potentially useful for enabling
-proof-of-work (PoW) sidechains (rather than PoS ones) is a (non-interactive) proof of
-proof-of-work~\cite{popow,nipopows}; nevertheless,  these works do not give a
-formal security definition for sidechains, nor provide a complete sidechain
-construction. We reiterate that while we focus on  PoS, our definitions and model
-are fully relevant for the PoW setting as well.
-
 After treating stake-based sidechains, we turn to work-based sidechains in later
 sections.
