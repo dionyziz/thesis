@@ -217,7 +217,8 @@ initial deployment.
 
 Surprisingly, this simple rule solves the consensus problem. Because blocks are
 broadcast once every $10$ minutes on average, this leaves a sufficient window of
-silence between blocks so that honest parties will adopt the same chain. If it
+silence between blocks, leaving enough time for the message of the newly found
+block to travel through the peer-to-peer network, so that honest parties will adopt the same chain. If it
 happens that two blocks are found almost simultaneously by chance, some parties
 will mine on top of one chain, while others will mine on top of another. Once a
 new block is found, one of the two chains will grow longer and the population
