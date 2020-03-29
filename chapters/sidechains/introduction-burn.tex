@@ -28,17 +28,17 @@ time, $\$21.6$M in today's prices) for the bootstrapping of the
 Counterparty cryptocurrency~\cite{counterparty}.
 
 While its adoption is undeniable, there has not been a formal treatment for
-proof-of-burn. This is the gap this work aims to fill.
+proof-of-burn. Using the methods outlined in the previous sections and chapters,
+one can utilize proofs-of-burn to create a one-way peg: Money is burned on one
+chain to be created on another.
 
-\noindent
-\textbf{Our contributions.}
-A summary of our contributions is as follows:
+This section addresses the following:
 \begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=(\roman*)]
     \item \textbf{Primitive definition.} Our definitional contribution introduces proof-of-burn as a cryptographic primitive for the first time. We
     define it as a protocol which consists of two algorithms, a burn address \emph{generator} and a burn address \emph{verifier}. We put forth the foundational properties which make for secure burn protocols, namely \emph{unspendability}, \emph{binding}, and \emph{uncensorability}.   One of the critical  features of our formalization is that a tag has to be bound cryptographically with any proof-of-burn operation.
     \item \textbf{Novel construction.} We propose a novel and simple construction which is flexible and can be adapted for use in existing cryptocurrencies, as long as they use public key hashes for address generation. To our knowledge, all popular cryptocurrencies are
     compatible with our scheme. We prove our construction secure in the Random Oracle model~\cite{ro}.
-    \item \textbf{Bootstrapping mechanism.} We propose a cryptocurrency proof-of-burn bootstrapping mechanism which does not require miners to connect to external blockchain networks. Our mechanism in principle allows burning from any proof-of-work-based cryptocurrency.
+    \item \textbf{Bootstrapping mechanism.} We propose a cryptocurrency proof-of-burn bootstrapping mechanism which does not require miners to connect to external blockchain networks. Our mechanism in principle allows burning from any proof-of-work-based cryptocurrency. This is what gives rise to one-way pegs.
     \item \textbf{Experimental results.} We provide a compehensively tested production grade implementation of the bootstrapping mechanism in Ethereum
     written in Solidity, which we release as open source software. Our implementation can be used to consume proofs of burn of a source blockchain
     within a target blockchain. We provide experimental measurements for the cost of burn verification and find that, in current Ethereum prices,
@@ -61,10 +61,3 @@ We define the following properties for a proof-of-burn protocol:
 \end{itemize}
 
 Finally, we consider the \emph{usability} of a proof-of-burn protocol important: whether a user is able to create a burn transaction using her regular cryptocurrency wallet.
-
-\todo{Move to background chapter}
-\noindent
-\textbf{Notation.} We use $\uniform(S)$ to denote the uniform distribution
-obtained by sampling any item of the finite set $S$ with probability $\frac{1}{|S|}$.
-We denote the support of a distribution $\mathcal{D}$ by $[\mathcal{D}]$. We also use $[n]$ to denote the set of integers from $1$ to $n$.
-We denote the empty string by $\epsilon$ and string concatenation by $\conc$.
