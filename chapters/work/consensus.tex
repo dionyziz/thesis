@@ -105,6 +105,14 @@ If $\chain_1[0] = \chain_2[0]$ and $\chain_1[-1]
 = \chain_2[-1]$, we say the chains $\chain_1, \chain_2$ \emph{span} the same
 block range.
 
+\begin{definition}[Lowest Common Ancestor]\index{Lowest Common Ancestor}
+The \emph{lowest common ancestor} of chains $\chain_1$, $\chain_2$ is defined as
+
+\[
+\textsf{LCA}(\chain_1, \chain_2) = (\chain_1 \cap \chain_2)[-1]\,.
+\]
+\end{definition}
+
 It will soon become clear that it is useful to construct a chain containing only
 the superblocks of another chain. Given $\chain$ and level $\mu$, the
 \emph{upchain} $\chain\upchain^\mu$ is defined as $\{B \in \chain: level(B)
