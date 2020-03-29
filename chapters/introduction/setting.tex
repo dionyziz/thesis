@@ -175,24 +175,36 @@ Eve can lie about the timestamps of her transactions or broadcast them at a
 delayed time, timestamps cannot be trusted.
 
 Transactions on the network are collected by nodes into bundles called
-\emph{candidate blocks}. These nodes are known as \emph{miners}. Each miner
-attempts to \emph{mine} the candidate block it has created, turning it into a
-\emph{block}. Mining involves solving a moderately hard problem and has a small
-probability of success. When the problem is successfully solved, we say that a
-block has been \emph{found} or \emph{mined}. The moderate hardness of mining
-ensures blocks are created at a predetermined expected rate. For Bitcoin, this
-rate is $10$ minutes. Once a block is found, it is broadcast to the rest of the
-network. A transaction is considered \emph{confirmed} once it has been included
-in a block. Transactions inside blocks are placed in an arbitrary order
-determined by the party creating the block. Block validity mandates that no
-double spends appear within the same block.
+\emph{candidate blocks}. These blocks are simply strings concatenating the
+transactions together with some metadata. The nodes that collect them are known
+as \emph{miners} and anyone can participate as a miner. Each miner attempts to
+\emph{mine} the candidate block it has created, turning it into a \emph{block}.
+Mining involves solving a moderately hard problem and has a small, but not
+negligible, probability of success. When the problem is successfully solved, we
+say that a block has been \emph{found} or \emph{mined}. The block contains the
+transactions, metadata, as well as the solution to the moderately hard problem.
+The moderate hardness of mining ensures blocks are created at a predetermined
+expected rate. For Bitcoin, this rate is $10$ minutes. Once a block is found, it
+is broadcast to the rest of the network. A transaction is considered
+\emph{confirmed} once it has been included in a block. Transactions inside
+blocks are placed in an arbitrary order determined by the party creating the
+block. Block validity mandates that no double spends appear within the same
+block. Once a transaction is confirmed in a block, it is considered to have been
+placed in order among other transactions.
 
 A block includes a pointer to the most recent block seen by the node. This
-creates a \emph{chain of blocks} or \emph{blockchain}. The validity of the
-blockchain requires that the transactions in the new block do not conflict with
-transactions in the previous chain. Whenever a node receives a blockchain from
-the network, if it is longer than its own blockchain in the number of blocks it
-contains, then it abandons its own blockchain and adopts the longer one.
+creates a \emph{chain of blocks} or \emph{blockchain}. As each block contains
+transactions, reading the transactions within the blockchain in order gives a
+unique ledger signifying which transaction happened before which other
+transaction. The validity of the blockchain requires that the transactions in
+the new block do not conflict with transactions in the previous chain, and so
+reading the transaction sequence of a valid blockchain always gives a valid
+transaction sequence. Whenever a node receives a blockchain from the
+network, if it is longer than its own blockchain in the number of blocks it
+contains, then it abandons its own blockchain and adopts the longer one. This is
+known as the \emph{longest chain rule}. The first block of the blockchain,
+called the \emph{genesis} block, was fixed by the protocol at the time of
+initial deployment.
 
 \begin{figure}[h]
     \caption{
