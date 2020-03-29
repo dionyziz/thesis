@@ -112,21 +112,6 @@ Subsequently, these signatures will be combined together with all necessary
 information to convince the mainchain nodes (that do not have access to the
 sidechain) that the sidechain certificate is valid.
 
-We abstract the notion of
-this trust transition into a new cryptographic primitive called
-\emph{ad-hoc threshold multisignatures (ATMS)}
-that we implement in three distinct ways. The first one
-simply concatenates signatures of elected slot leaders. While secure, the disadvantage of
-this implementation is that the size of the sidechain certificate is
-$\Theta(k)$ signatures.
-An improvement can be achieved by
-employing multisignatures and Merkle-tree hashing for verification key aggregation;  using this we can drop the sidechain-certificate size to
-$\Theta(r)$ signatures where $r$  slot leaders do not participate in its generation; in the optimistic case $r\ll k$ and thus this scheme can be
-a significant improvement in practice. Finally, we show that STARKs and bulletproofs~\cite{ben2017scalable,bulletproofs}
-can be used to bring down the size of the certificate to be optimally succinct in the random oracle model.  We observe that in the case of an active sidechain (e.g., one that returns assets
-at least once per epoch) our construction with succinct sidechain
-certificates has optimal storage requirements in the mainchain.
-
 \noindent {\bf  Related work. }
 Sidechains were first proposed as a high level concept in~\cite{sidechains}.
 %To the best of
