@@ -3,6 +3,17 @@
 \section{Our Contributions}
 \subsection{Superblocks}
 
+We create a decentralized blockchain client or verifier which, having only
+\emph{genesis}, connects to multiple provers, at least one of which is honest,
+is able to ascertain the confirmation of a transaction. Using its full local
+chain, each prover generates a succinct proof and sends it to the verifier.
+Adversarial provers can send anything in the place of a proof. By comparing the
+proofs in terms of the amount of proof-of-work they encode, the verifier deduces
+which blockchain contains the most proof-of-work without receiving and
+validating every block header. The proofs the provers send are only generated
+once and do not require multiple interrogation questions from the verifier. As
+such, these proofs are non-interactive and we call them \emph{Non-Interactive
+Proofs of Proof-of-Work} (NIPoPoWs).
 
 \begin{figure}
     \caption{The probabilistic hierarchical blockchain.
