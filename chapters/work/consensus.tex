@@ -77,7 +77,16 @@ It copies the existing interlink data structure and
 then modifies its entries from level $0$ to $\textsf{level}(B')$ to
 point to the block $B'$.
 
-\import{./}{chapters/work/algorithms/alg.nipopow-interlink.tex}
+\input{chapters/work/algorithms/alg.nipopow-interlink}
+
+We will only care about \emph{whether} a block contains a pointer to a previous
+block, not the positions of these pointers within the block.
+An optimization we can readily perform on this algorithm is to treat the
+interlink vector as a \emph{set} and remove duplicates, as illustrated in
+Algorithm~\ref{alg.interlink-set-update}. This optimization achieves a constant
+saving of about $50\%$ in expectation~\cite{compactsuperblocks}.
+
+\input{chapters/work/algorithms/alg.interlink-set-update}
 
 \noindent\textbf{Traversing the blockchain. }
 As we have now extended blocks to contain multiple pointers to previous blocks,
