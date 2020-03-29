@@ -50,10 +50,11 @@ pointer pointing to the most recent block of the same level. These pointers must
 be included in the data of the block so that proof-of-work commits to them. As
 the level of a block cannot be prediced before its proof-of-work is calculated,
 we extend the \emph{previous block id} structure of classical blockchains to be
-a vector, the \emph{interlink vector}. The interlink vector points to the most
-recent preceding block of every level $\mu$. Genesis is of infinite level and
-hence a pointer to it is included in every block. The number of pointers that
-need to be included per block is in expectation $\log(|\chain|)$.
+a vector, the \emph{interlink vector}\index{Interlink}. The interlink vector
+points to the most recent preceding block of every level $\mu$. Genesis is of
+infinite level and hence a pointer to it is included in every block. The number
+of pointers that need to be included per block is in expectation
+$\log(|\chain|)$.
 
 \begin{figure}
     \caption{The hierarchical blockchain.
