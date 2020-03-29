@@ -1,12 +1,7 @@
-\subsection{Introduction}
-
-\todo{Clean up this section}
-\noindent
-{\bf Our contributions. }
-First, we formalize the notion of sidechains by proposing a rigorous cryptographic
-definition, the first one to the best of our knowledge.
-The definition is abstract enough to be able to capture the security for
-blockchains based on proof-of-work, proof-of-stake, and other consensus mechanisms.
+In this section, we formalize the notion of sidechains by proposing a rigorous
+cryptographic definition, the first one to the best of our knowledge. The
+definition is abstract enough to be able to capture the security for blockchains
+based on proof-of-work, proof-of-stake, and other consensus mechanisms.
 
 A critical security feature of a  sidechain system that we formalise
 is the \textit{firewall property} in
@@ -44,7 +39,7 @@ sidechain was still secure, cause the particular transfers to take place.
 %mainchain and the sidechain consists of a simple law of conservation, then the
 %limited liability  property captures  precisely a blockchain firewall.
 
-Second, we  outline a concrete exemplary
+In this section, we outline a concrete exemplary
 construction for sidechains for proof-of-stake
 blockchains. For conciseness our construction is described
 with respect to a generic PoS blockchain consistent with the  Ouroboros
@@ -137,3 +132,6 @@ proof-of-work~\cite{popow,nipopows}; nevertheless,  these works do not give a
 formal security definition for sidechains, nor provide a complete sidechain
 construction. We reiterate that while we focus on  PoS, our definitions and model
 are fully relevant for the PoW setting as well.
+
+After treating stake-based sidechains, we turn to work-based sidechains in later
+sections.
