@@ -65,8 +65,45 @@ interlink data structure which needs to be included as part of the next block.
 It copies the existing interlink data structure from level $\textsf{level}(B')$
 and adds the reference $H(B')$.
 \todo{continuity}
+When a chain $\chain$ is mined, there will therefore exist a \emph{subchain} of
+it, consisting only of blocks of level $\mu$, which is going to be only
+$\frac{|\chain|}{2^\mu}$ blocks long. The core idea of the construction is this:
+Instead of sending the full chain, the prover chooses a level $\mu$ and sends
+this as a \emph{representative of the underlying work}. Presenting a block of
+level $\mu$ captures the fact that work of about $2^\mu$ has happened around it
+without presenting that work itself. As such, a superblock is a way for the
+prover to \emph{sample} the blockchain in a way that can convince the verifier:
+When the verifier receives $m$ blocks of level $\mu$, it can deduce that
+approximately $m 2^\mu$ regular blocks must exist around those superblocks.
+Constructions based on this simple idea instantiate NIPoPoWs by leveraging
+superblocks and we call them \emph{superblock NIPoPoWs}.
 
-\todo{NIPoPoWs}
+A simplified description of our protocol then works as follows. Initially, some value
+$m$ is fixed, representing the number of blocks that the verifier wishes to
+receive to feel safe. This $m$ is a constant parameter. The honest prover then
+chooses the highest level $\mu$ which has at least $m$ blocks at that level.
+Choosing any level above $\mu$ would not satisfy the verifier, as fewer than $m$
+blocks would be transmitted. Choosing any level below $m$ would be wasteful, as
+more blocks would have to be transmitted. This prover choice is illustrated in
+Figure~\ref{fig.level-threshold}. Suppose that the verifier receives two
+proofs from two provers, one of which is honest while the other adversarial, and
+wishes to compare them. The verifier first checks that all the blocks it has
+received really are $\mu$-superblocks by verifying the proof-of-work equation
+parameterized by $\mu$ is satisfied, and that each proof it has received has at
+least $m$ blocks. Then, just as an SPV verifier would compare the length of two
+full chains, the NIPoPoW verifier now simply \emph{counts} the number of blocks
+it has received from the two provers and announces that the one with the most
+blocks is the winner. If the verifier receives the proofs $\pi_1$ and $\pi_2$,
+then the decision is simply the result of the comparison $|\pi_1| > |\pi_2|$.
+
+\begin{figure}[ht]
+    \caption{A superblock NIPoPoW prover chooses the threshold (dashed line)
+    corresponding to level $\mu = 2$ for the verifier requirement $m = 4$.}
+    \centering
+    \includegraphics[width=0.7\columnwidth,keepaspectratio]{chapters/introduction/figures/level-threshold.pdf}
+    \label{fig.level-threshold}
+\end{figure}
+
 \todo{applications to superlight wallets}
 \todo{applications to sidechains}
 \todo{applications to logspace mining}
