@@ -35,13 +35,18 @@ $\mu$-superblock is:
 \Pr[H(B) \leq \frac{T}{2^\mu}|H(B) \leq T] = \frac{1}{2^\mu}
 \]
 
-\begin{figure}
-    \caption{The probabilistic hierarchical blockchain.
+Under this light, the blockchain looks as illustrated in
+Figure~\ref{fig.superblocks}. Of course, because block hashes behave randomly,
+this image will be probabilistic and blocks may not be precisely distributed as
+expected.
+
+\begin{figure}[ht]
+    \caption{Superblocks distributed within a blockchain.
     Higher levels have achieved a higher difficulty during
-    mining. All blocks are connected to the genesis block $G$.}
+    mining.}
     \centering
-    \includegraphics[width=0.7\columnwidth,keepaspectratio]{chapters/introduction/figures/hierarchical-ledger-span.pdf}
-    \label{fig.hierarchy}
+    \includegraphics[width=0.7\columnwidth,keepaspectratio]{chapters/introduction/figures/superblocks.pdf}
+    \label{fig.superblocks}
 \end{figure}
 
 The algorithm for this construction is shown in
