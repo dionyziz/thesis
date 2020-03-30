@@ -1,7 +1,7 @@
 % superlight clients
 % sidechains
 \section{Our Contributions}
-\subsection{Superblocks}
+\subsection{Superblocks and NIPoPoWs}
 
 We create a decentralized blockchain client or verifier which, having only
 \emph{genesis}, connects to multiple provers, at least one of which is honest,
@@ -214,6 +214,67 @@ interrogation steps will be logarithmic, as they are bounded by the number of
 levels. Because there can be
 no two chains at level $0$ which are both long and significantly diverge, one of
 the two provers will necessarily fail.
+
+While it seems that this requires some interactivity, in reality the provers can
+provide sufficient evidence upfront so that no interrogation is needed and the verifier can compare proofs
+completely
+offline. The prover must ensure that there are sufficient blocks in the proof to
+enable a comparison regardless of which block is deemed to be the LCA block (as
+the adversary can create a proof which essentially chooses the LCA in her
+favour). As such, no matter what block in his proof is chosen as the LCA block
+$b$ after which the comparison will be performed, the honest prover wants to
+ensure he will be successful. The prover includes sufficient blocks so that for
+every block $b$ in his proof (a candidate LCA), there exists some level $\mu$
+for which at least $m$ superblocks of that level will appear after $b$.
+Furthermore, to ensure no work is missed, the honest prover wants \emph{all} his
+blocks of the chosen level to appear after $b$.
+
+This requires us to build a prover that sends blocks at multiple levels. A
+summary of the construction is then as follows. The prover first chooses the
+highest level $\mu$ which has at least $m$ blocks. He sends all
+$\mu$-superblocks. Then, for each lower level $j - 1$, he sends sufficient
+blocks of level $j - 1$ to cover the same range that the last $m$ blocks of level
+$j$ span. The blocks that are selected for sending in such a NIPoPoW are
+illustrated in Figure~\ref{fig.nipopow-example}. In this example, the protocol is
+working with parameter $m = 3$. Initially, the prover chooses the \emph{highest}
+level $\mu$ that has at least $m = 3$ blocks. In this case, he selects $\mu = 2$
+which has $4 \geq m$ blocks, as level $3$ would be insufficient with only $2 <
+m$ blocks. All $4$ blocks of $\mu = 2$ are included. Subsequently, the last
+$m = 3$ blocks of level $\mu = 2$ are considered and the $6$ blocks of level $1$
+that span the same range are also included. Lastly, the last $m = 3$ blocks of
+level $\mu = 1$ are considered and the last $6$ blocks of level $0$ that span the
+same range are also included. The final proof is $10$ blocks long (because some
+blocks belong to multiple levels, but do not need to be repeated in the proof).
+
+\begin{figure}
+    \caption{
+      A Non-Interactive Proof of Proof-of-Work based on superblocks. Multiple
+      squares stacked above one another illustrate the same block which spans
+      multiple superblock levels. The solid blocks are included in the proof.
+      The dashed blocks are not selected for proof inclusion at that level.
+    }
+    \centering
+    \includegraphics[width=\columnwidth,keepaspectratio]{chapters/introduction/figures/non-interactive-popow.pdf}
+    \label{fig.nipopow-example}
+\end{figure}
+
+To compare two proofs $\pi_1$ and $\pi_2$ of this style, the verifier first
+finds the LCA block $b$ among them. He then chooses a level $\mu$ such that at
+least one of the provers has provided $m$ blocks of level $\mu$ after $b$ and
+compares the count of distinct blocks at that level. Once we introduce our full
+chain traversal notation, this comparison can be expressed elegantly using the
+inequality
+
+\[
+|\pi_1\{b{:}\}\upchain^\mu| > |\pi_2\{b{:}\}\upchain^\mu|
+\,.
+\]
+
+Even though multiple levels have been included in the proof, the proofs only
+take logarithmic size and are therefore succinct. The reason is that the number
+of levels is logarithmic, while the number of blocks included in each level is
+constant and approximately $2m$ per level, bringing the total to
+$2m\log|\chain|$.
 
 \todo{applications to superlight wallets}
 \todo{applications to sidechains}
