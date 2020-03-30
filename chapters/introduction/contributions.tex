@@ -276,6 +276,49 @@ of levels is logarithmic, while the number of blocks included in each level is
 constant and approximately $2m$ per level, bringing the total to
 $2m\log|\chain|$.
 
+\todo{infix}
+
+Having created this construction, it is now possible to build \emph{superlight
+wallets} that can synchronize exponentially faster than standard SPV wallets.
+This still requires provers to be full nodes and have access to a complete
+chain. A natural question that arises is whether it is possible to make a
+NIPoPoW verifier that has already received a verified NIPoPoW take the place of
+a standard prover. The answer is \emph{yes}, because these proofs are
+deterministic and can be simply replayed by nodes that have downloaded them.
+Additionally, once a NIPoPoW verifier has synchronized with the network, any new
+block that is mined on top of the existing chain can also be (fully) verified by
+them and adopted by them. Thus, even though the verifier does not hold the whole
+chain, it can keep downloading and verifying new blocks from the network. The
+next question is whether a verifier who holds a NIPoPoW $\pi$ and receives a
+series of new blocks $b_1, b_2, \cdots, b_k$ from the network can convince
+another verifier that these blocks now belong to the best chain. This is
+possible because superblock-based NIPoPoWs have the \emph{online} property:
+Consider a NIPoPoW $\pi$ created for a chain $\chain$. If $b_1$ is created on
+top of $\chain$, then it is possible to evolve $\pi$ into a new NIPoPoW $\pi_1$
+which pertains to the chain $\chain \concat b_1$ without ever seeing $\chain$.
+This is because the new NIPoPoW $\pi_1$ only needs to contain (some) blocks from
+$\pi$ as well as $b_1$ itself. This can be used to keep evolving NIPoPoWs as
+blocks are added, always only keeping the latest among them. Previous blocks
+and old NIPoPoWs can be garbage collected, allowing the node to function with a
+state of logarithmic size.
+
+The node that has synchronized using a NIPoPoW and only holds a NIPoPoW can
+function as both a prover and a verifier and even be able to deal with cases
+of temporary forks. In fact, the node can even \emph{mine} on top of their
+NIPoPoW. Because it holds the most recent block of the blockchain, it simply
+creates a new candidate block that points to it and attempts to solve
+proof-of-work accordingly. If he succeeds, he can broadcast the new block to the
+rest of the network and update their local state by evolving their NIPoPoW in
+light of the new block. As long as the majority of the mining power is honest,
+even \emph{all} miners can upgrade to this logarithmic protocol so that no one
+really has to ever save the whole chain. The idea here is that the full history
+of transactions is not necessary to achieve economic consensus; what is needed
+is to be able to determine whether a new transaction is valid, and for this it
+suffices to know the current state of the system, be it unspent transaction
+outputs or account balances. This technique, which provides exponential
+improvements in the size of state storage, we term
+\emph{logarithmic space mining}.
+
 \todo{applications to superlight wallets}
 \todo{applications to sidechains}
 \todo{applications to logspace mining}
