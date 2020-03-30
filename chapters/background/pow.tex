@@ -337,9 +337,9 @@ party, splitting their view.
 Instead, proof-of-work must be leveraged. One approach that doesn't work, but
 gives intuition about how proof-of-work can be leveraged is as follows.
 Initially, each party boots with an input bit $b$. The party repeatedly attempts
-to find proof-of-work solutions $ctr_i$ for the message $b || r_i$ where $r_i$
+to find proof-of-work solutions $ctr_i$ for the message $b \concat r_i$ where $r_i$
 is sampled uniformly at random from $\{0, 1\}^\kappa$ to ensure high entropy.
-Once some proof-of-work is found, the solution $b || r_i || ctr_i$ is broadcast
+Once some proof-of-work is found, the solution $b \concat r_i \concat ctr_i$ is broadcast
 to the network and the process is repeated for as many $r_i$ as possible. After
 $\lambda$ rounds have passed, the parties look at the proof-of-work solutions
 that have been diffused on the network throughout the execution and count the
