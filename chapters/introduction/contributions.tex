@@ -321,7 +321,76 @@ outputs or account balances. This technique, which provides exponential
 improvements in the size of state storage, we term
 \emph{logarithmic space mining}.
 
-\todo{applications to superlight wallets}
+\subsection{Proofs of Proof-of-Stake}
+Different techniques can be used to compress consensus state in proof-of-stake
+blockchains. Unlike proof-of-work in which the work of a block is a stand-alone
+property that can be verified by the verifier, the verification of the
+proof-of-stake signature on a block requires the verifier to know the stake
+distribution of the current epoch so as to be able to decide whether the key
+making the signature corresponds to a correctly elected leader. However, having
+the verifier see the whole stake distribution would be inefficient. Instead, we
+propose a construction in which the verifier only sees a small sample of the
+stake distribution per epoch. The protocol looks at the leaders that were
+elected to mint blocks throughout the epoch, and assembles a number of these
+leaders into a \emph{committee}. Since the block leaders are selected in a
+follow-the-satoshi fashion by respecting the evolving stake distribution, the
+committee members are selected in this way too. It has been shown that
+committees selected once per epoch in this fashion will have honest majority
+\emph{by count} as long as the underlying stake distribution that was used for
+the selection process has honest majority by stake.
+
+The light stake verifier looks at one such committee per epoch. For each epoch,
+the committee signs off a \emph{certificate} which attests to the election of a
+new committee for the next epoch. The committee members themselves are full
+nodes who, in the honest protocol, only sign off such certificates attesting to
+the correct new committee. The verifier checks that the certificate has been
+signed by the majority of an epoch's commitee. By verifying these certificates,
+the verifier can ensure that he holds a representative sample of keys for each
+epoch. These keys corresponding to the committee of each epoch can then be used
+to sign statements alleging that a transaction took place during their
+respective epoch. As the verifier knows the committee for each epoch, they can
+verify these statements also.
+
+While this construction has eliminated the need for the verifier to maintain the
+whole stake distribution as it shifts from epoch to epoch, something that would
+require the verifier to look at every transaction, it still requires the
+verifier to know a committee for each epoch. These committees can be quite
+large to ensure that the sampling of stake is representative. We optimize this
+need by introducing the Ad-Hoc Threshold Multi-Signatures (ATMS) primitive, in
+which a whole committee is represented by a single short public key. This public
+key, called the \emph{aggregate public key}, encodes in it all the public keys
+of all committee members, and its size is comparable to a regular public key.
+There is one aggregate key per epoch. Furthermore, if multiple committee members
+create signatures on a message, these can be \emph{aggregated} into a single
+\emph{aggregate signature} which has a small size, comparable to a regular
+signature. These signature schemes are also \emph{treshold signatures}:
+If a majority of the keys used to create the aggregate public key combine their
+signatures into an aggregate signature, the aggregate signature will pass
+verification with the corresponding public key in which more keys have been
+aggregated. On the other hand, any aggregation of signatures by a minority
+number of signatories will not verify. Lastly, the signature scheme is
+\emph{ad hoc}, because each member of the committee can locally create their own
+signature without interactivity with the rest of the members. The signatures can
+then be aggregated by any party, even outside of the signatories themselves.
+Similarly, public keys can be generated locally without interactivity and
+aggregated later by any party.
+
+The evolution of committees from epoch to epoch is then represented by asking
+the verifier to only hold a single aggregate key per epoch. For each transition
+from epoch to epoch, the majority of the committee of the previous epoch sign
+a certificate transitioning to the committee of the new epoch. The certificate's
+text contains the new aggregate public key. These signatures are combined into
+an aggregate signature and can be verified by the aggregate public key of the
+previous epoch. As such, the verifier simply sees one public key and one
+signature per epoch. The aggregate public key of each epoch can also vouch for
+events that took place during that epoch such as a particular transaction. For
+purposes of synchronization of a light client, the committee corresponding to
+the current epoch can vouch for any transactions occurring any time in the past,
+and the light verifier can use the current aggregate key to verify any such
+claims. The amount of data needed to download is therefore minuscule per epoch.
+However, as epochs evolve linearly with time, the asymptotic complexity is still
+$\Theta(|\chain|)$, albeit with a very small constant.
+
 \todo{applications to sidechains}
 \todo{applications to logspace mining}
 \todo{the variable difficulty and $\Delta$-delay setting}
