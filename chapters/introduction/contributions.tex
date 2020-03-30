@@ -104,6 +104,15 @@ then the decision is simply the result of the comparison $|\pi_1| > |\pi_2|$.
     \label{fig.level-threshold}
 \end{figure}
 
+The crucial point in terms of security is that an adversary cannot fake this
+set of superblocks without actually putting in the work. An adversary that
+produces a $\mu$-superblock will also in expectation generate some $2^\mu$
+regular blocks in the process (even though the adversary may of course choose
+to discard these). Because the adversary has minority mining power, an adversary
+cannot create a longer sequence of $\mu$-superblocks faster than the honest
+parties create one, for the same reason that an adversary cannot create a longer
+regular blockchain faster than the honest parties create one.
+
 \todo{applications to superlight wallets}
 \todo{applications to sidechains}
 \todo{applications to logspace mining}
