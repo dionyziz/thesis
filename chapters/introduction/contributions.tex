@@ -49,22 +49,6 @@ expected.
     \label{fig.superblocks}
 \end{figure}
 
-The algorithm for this construction is shown in
-Algorithm~\ref{alg.interlink-set}~\cite{compactsuperblocks}. The
-interlink set of the Genesis block is, by definition, empty. The algorithm
-describes how the interlink can be updated once a block is found. The new
-interlink is then included in the next block. This construction ensures that
-every block contains a direct pointer to its most recent $\mu$-superblock
-ancestor, for every $\mu \in \mathbb{N}$.
-
-\import{./}{chapters/superlight/algorithms/alg.interlink-set-update.tex}
-
-The \textsf{updateInterlinkSet} algorithm accepts a block $B'$, which already has an
-interlink data structure defined on it. The function evaluates the
-interlink data structure which needs to be included as part of the next block.
-It copies the existing interlink data structure from level $\textsf{level}(B')$
-and adds the reference $H(B')$.
-\todo{continuity}
 When a chain $\chain$ is mined, there will therefore exist a \emph{subchain} of
 it, consisting only of blocks of level $\mu$, which is going to be only
 $\frac{|\chain|}{2^\mu}$ blocks long. The core idea of the construction is this:
@@ -120,6 +104,47 @@ continues with subsequent increases in level, until at level $\mu =
 \log|\chain|$ we expect to find only $\frac{|\chain|}{2^\mu} = 1$ block. As soon
 as we get to level $\log|\chain| + 1$, we expect to find no more blocks of that
 level or above. The number of levels is therefore $\log|\chain|$.
+
+To ensure that the blocks sent by the prover cannot be reordered in the wrong
+chronological order, just as in the regular underlying blockchain, we need to
+introduce pointers that point between consecutive blocks of the same level. As
+such, a $\mu$-superblock must include in its contents a pointer to the most
+recent $\mu$-superblock that was mined before it. Unfortunately, we cannot add
+just these exact pointers to the block contents, because the pointer data must
+be included in the contents that are hashed during the attempt to find
+proof-of-work. It seems that we must predict what level a block will have prior
+to it being mined, but its level depends on its hash, which is a product of its
+mining. Therefore, we will simply include all the pointers that could be needed
+regardless of what level the block achieves. Prior to mining any block, the
+miner collects a pointer to the most recent superblock of each level it has seen
+so far. It places these pointers in a list which it then includes in the block
+it is mining. When the block is mined, regardless of what level it achieves, it
+will have a pointer to the most recent block of its own level.
+
+The number of pointers that need to be included in this manner is small because
+the number of levels the blockchain will ever reach is $\log|\chain|$. This
+interlinking is illustrated in Figure~\ref{fig.hierarchy}. To avoid premining of
+superblocks (blocks that were mined prior to the creation of the genesis block),
+we require that the interlink vector of every block also contains a pointer to
+the genesis block. By having miners add these extra pointers to blocks, the
+verifier can check that the blocks in each proof presented have been mined in
+the order given. We see that NIPoPoWs are \emph{subchains} of the blockchain in
+that they form subsequences of the block sequence and also maintain pointers
+across. The change of adding interlink pointers seems on the surface to require
+that miners change their behavior and so a hard fork (a breaking change of
+consensus protocol rules) is required. However, the upgrade can be deployed
+using a soft fork (a backwards-compatible change), or even without requiring any
+miner upgrade in what we introduce as a \emph{velvet fork}.
+
+\begin{figure}[ht]
+    \caption{The interlinked blockchain. Each superblock is drawn taller
+    according to its achieved level. Each block links to all the blocks that are
+    not being overshadowed by their descendants. The most recent (right-most)
+    block links to the four blocks it has direct line-of-sight to.}
+    \centering
+    \includegraphics[width=0.9\columnwidth,keepaspectratio]{chapters/introduction/figures/level-shadows.pdf}
+    \label{fig.hierarchy}
+\end{figure}
 
 \todo{applications to superlight wallets}
 \todo{applications to sidechains}
