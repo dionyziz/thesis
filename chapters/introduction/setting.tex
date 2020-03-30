@@ -306,3 +306,17 @@ sampling. Once an epoch has passed, the altered stake distribution is observed
 and a new snapshot is taken. Under the assumption that stake shifting does not
 occur at a very large rate, the \emph{bounded stake-shift assumption}, this
 sampling method is secure.
+
+One important detail that is needed to make the proof-of-stake protocol secure
+is to ask parties to \emph{evolve} their private keys once every epoch. In this
+process, an honest party uses their old private key to produce a new one in a
+way that allows anyone holding the respective public key to verify the evolution
+was truthful. The old key is then destroyed. This is useful to ensure that each
+key corresponds to a particular epoch. A key corresponding to an epoch cannot be
+used to create votes on blocks corresponding to older epochs, giving the system
+\emph{forward secrecy}. This protects against an event in which a majority
+stakeholder, due to stake shifting, becomes a minority stakeholder. The honest
+majority assumption allows that stakeholder to then become corrupt. It is
+important that the adversary corrupting the minority stakeholder cannot reuse
+old keys that corresponded to the time when the stakeholder was holding the
+majority of the stake.
