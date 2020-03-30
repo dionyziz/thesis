@@ -1,12 +1,12 @@
 \begin{figure}[ht]
 \begin{algorithm}[H]
     \caption{\label{alg.ro} The Random Oracle model parameterized by security
-             parameter $\lambda$.}
+             parameter $\kappa$.}
     \begin{algorithmic}[1]
         \Let{T}{\emptyset}
-        \Function{\sf H}{$x$}
+        \Function{\sf H$_\kappa$}{$x$}
             \If{$x \not\in T$}
-                \State$T[x] \getsrandomly \{0, 1\}^\lambda$
+                \State$T[x] \getsrandomly \{0, 1\}^\kappa$
             \EndIf
             \State\Return$T[x]$
         \EndFunction

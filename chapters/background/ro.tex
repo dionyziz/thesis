@@ -24,14 +24,14 @@ In the Random Oracle model, we assume the existence of a global oracle machine
 $H$ to which every party, adversarial or honest, has access to. The machine
 models the hash function and hence allows parties to ask for its evaluation at
 any input. The Random Oracle machine receives any input in $\{0, 1\}^*$ and
-returns an output in $\{0, 1\}^\lambda$.
+returns an output in $\{0, 1\}^\kappa$.
 
 \input{./chapters/background/algorithms/alg.ro.tex}
 
 The output is chosen as illustrated in Algorithm~\ref{alg.ro}. In detail, the
-Random Oracle is parameterized by the security parameter $\lambda$. Upon
+Random Oracle is parameterized by the security parameter $\kappa$. Upon
 receiving some input $x$, if the input has not been encountered before, then it
-produces a fresh uniformly random $\lambda$-bit string which it stores in a
+produces a fresh uniformly random $\kappa$-bit string which it stores in a
 dictionary $T$ and returns. If on the other hand it receives an input it has
 seen before, it answers consistently with its previous answer, giving the same
 answer for the same query by consulting the dictionary $T$. Hence, this
@@ -51,11 +51,11 @@ sampled in polynomial time nor represented in polynomial space, this latter
 formulation means that, when the oracle is treated that way, it cannot be
 modelled as an Interactive Turing Machine, but must remain an oracle. In this
 formulation, at the beginning of the execution, the random oracle $H$ is sampled
-uniformly at random from the function space $(\{0, 1\}^\lambda)^{\{0, 1\}^*}$,
+uniformly at random from the function space $(\{0, 1\}^\kappa)^{\{0, 1\}^*}$,
 and the adversary and honest parties are invoked with oracle access to this same
 $H$. As all parties will be polynomial in our treatment, this sampling can also
 be understood to be done uniformly at random from the function space $(\{0,
-1\}^\lambda)^{\{0, 1\}^{p(\kappa)}}$ where $p(\kappa)$ denotes the polynomial
+1\}^\kappa)^{\{0, 1\}^{p(\kappa)}}$ where $p(\kappa)$ denotes the polynomial
 bounding the total execution of all parties together.
 
 An important feature of the Random Oracle model is that the adversary cannot
