@@ -391,16 +391,137 @@ claims. The amount of data needed to download is therefore minuscule per epoch.
 However, as epochs evolve linearly with time, the asymptotic complexity is still
 $\Theta(|\chain|)$, albeit with a very small constant.
 
+\subsection{Sidechains}
+
+Consensus compression is useful for superlight clients and superlight mining.
+One of its most interesting application beyond this pertains to cross-chain
+communication. Given two chains, the \emph{source chain} and the
+\emph{destination chain} which are maintained by independent mining populations,
+we want to have the destination chain react to an \emph{event} that took place
+in the source chain. The miners on one chain are \emph{isolated} from the other,
+and they do not connect to its network. However, users interested in the
+cross-chain events can connect to both networks. Because users can be
+adversarial, the destination chain miners cannot simply trust the users' claim
+that an event took place on the source chain -- it needs to be verified.
+
+Events that can be passed from blockchain to blockchain can be virtually any
+predicate pertaining to a small amount of data such as a constant number of
+transactions or blocks. In practice, these events can be, for example, about the
+fact that a transaction with particular metadata took place on the source
+blockchain, that a particular amount has been sent or received, that a
+particular account holds a certain amount of balance at some point in time, that
+some transaction output remains unspent, that a smart contract method was
+called with some particular arguments, or that a smart contract's state
+variables held certain values at some point in time.
+
+We create support for cross-chain communication for blockchain systems in which
+the source blockchain can produce Non-Interactive Proofs of
+Proof-of-Work-or-Stake. As discussed, these systems may need some backwards
+compatible upgrades before they can be used as sources, such as introducing
+interlinks. On the receiving side, we require the blockchain to either have
+native support for consuming these Proofs of Proofs (and its miners to run a
+verifier), or to have smart contract support. Smart contract support is
+sufficient because a compressed consensus verifier (such as a NIPoPoW or ATMS
+verifier) can be written in the code of a smart contract.
+
+The core idea of our sidechain construction is as follows. Whenever an event
+takes place within the source blockchain, information about the event as and its
+corresponding blockchain is compressed into a Proof of Proof. For proof-of-work
+sources, these are NIPoPoWs; for proof-of-stake sources, these are evolving
+ATMS. As the proof is a short string, it can be submitted to the destination
+blockchain for verification. This verification can be done by the destination
+chain miners natively (without ever connecting to the source blockchain), or by
+a smart contract. The latter case is the more interesting one, because it allows
+blockchains that were never designed to be interoperable to communicate. Once
+the smart contract has verified the proof, it may be able to take a decision
+immediately (for proof-of-stake sources), or it may need to wait for a short
+period to allow for \emph{contesting proofs} to appear (for proof-of-work
+sources). In case a fraudulent NIPoPoW pertaining to a shorter chain is
+submitted, a contesting proof allows any node monitoring both chains to make
+a counter-claim, via a new NIPoPoW, claiming that the original proof was
+fraudulent. The smart contract runs the NIPoPoW comparison algorithm and decides
+which of the two proofs is the legitimate one. To ensure users have incentives
+to submit such proofs, a successful contestation is accompanied by a reward
+which is paid out to the contester and is obtained by slashing a collateral
+deposited by the original prover. In case no proofs of fraudulence are
+submitted, the collateral is returned to the (honest) initial prover.
+
+As we can have both proof-of-work and proof-of-stake sources as well as
+proof-of-work and proof-of-stake destinations, this construction allows us to
+create communication bridges between any combination of consensus mechanisms.
+If the information is passed only one-way, then the communication is
+unidirectional. This application is still useful as a mechanism to bootstrap a
+new cryptocurrency from an old one. We present one way of doing that by
+destroying money on the source blockchain and proving that this happened by
+providing a relevant proof submitted to the destination chain. On the other
+hand, nothing prevents two blockchains from both functioning as a source and a
+destination for each other. This allows us to build fully bidirectional
+communication channels between blockchains, giving rise to full two-way pegs.
+
+In a two-way peg, the bidirectional communication can be used to move a coin
+from one blockchain to another while it retains its nature, decoupling the
+notion of a blockchain from that of a cryptocurrency. The lifecycle of the coin
+is as follows. Consider two blockchains A and B and an asset which is natively
+issued within chain A. Two smart contracts are deployed for interoperability
+purposes, one on chain A and one on chain B. Each of the two smart contracts
+records the address of its counterpart. Initially, a coin exists in its native
+blockchain A. The coin is locked into a special smart contract within the native
+blockchain, which ensures that it cannot be further spent. At this stage,
+blockchain A functions as a source blockchain for the communication protocol.
+The fact that the coin was locked is proven using a Proof of Proof. This proof
+is created by the user that locked her coin. The proof is submitted to a smart
+contract which lives on blockchain B. At this stage, blockchain B functions as a
+destination chain. The receiving smart contract verifies the Proof of Proof and
+waits to ensure there is no contestation. At this point, the receiving smart
+contract can be certain that the coin was locked into its counterpart which
+lives in chain A. Note that the smart contract never directly connected to the
+network of chain A. The receiving smart contract mints a new token coin within
+blockchain B, equal in nominal value to the value of the locked coin on chain A.
+The token on chain B is given the the public key that corresponds to the user
+who locked the initial coin on chain A. That token can then be used for exchange
+within chain B like a regular currency. However, it is dissimilar from the
+native currency of chain B (in fact, chain B may not even have a native currency
+of its own, as we will see).
+
+When any user who ends up holding the token within chain B decided to move it
+back to chain A, the reverse process is initiated. Chain B now functions as a
+source chain, while chain A functions as a destination chain. The token is sent
+to the smart contract in chain B. The contract destroys the token. The user who
+destroyed their token in chain B then creates a Proof of Proof of this fact.
+Again this is a short string which can be submitted to the smart contract that
+lives on chain A. The smart contract on chain A verifies the proof attesting to
+the destruction of the token on chain B, and waits for potential contestation.
+At this point, the smart contract on chain A can be certain that the token has
+been destroyed on chain B and can now unlock the corresponding value in native
+currency that it currently holds. Because tokens appear on chain B only after
+they have been locked in the smart contract of chain A, the smart contract in
+chain A will always have sufficient balance to unlock to respond to any
+withdrawals.
+
+Lastly, the process is voluntary and any users of A and B who do not wish to use
+it do not have to participate or even know about it. Importantly, the miners of
+the two chains can remain unaware that the cross-communication is taking place.
+Additionally, chain A is \emph{firewalled} from chain B. This means that a
+catastrophic failure in chain B, such as an honest majority violation, does not
+propagate to chain A beyond the amount of money that was locked in the
+cross-chain smart contract. As such, any nodes who are not participating in the
+cross-chain protocol will incur no financial losses from such a catastrophic
+failure.
+
+\ifdraft
+We explore superblocks and the \emph{charity} NIPoPoWs construction in detail in
+Chapter~\ref{chapter:work}. We extend them to logarithmic space mining in the
+\emph{distill} construction in Chapter~\ref{chapter:superlight}. These two
+chapters assume that the target $T$ does not change (the
+\emph{static difficulty} setting). We extend our results to the variable
+difficulty setting in Chapter~\ref{chapter:variable}.
+\fi
+
 \todo{applications to sidechains}
-\todo{applications to logspace mining}
-\todo{the variable difficulty and $\Delta$-delay setting}
-\todo{proofs of stake}
 
 \ifdraft
 \todo{Clean up paragraph}
-In this section, we introduce the first
-trustless construction for proof-of-work sidechains. We describe how to build
-generic communication between blockchains. As one application, we give the
+As one application, we give the
 construction of a \emph{two-way pegged} asset which can be moved from one
 blockchain to another while retaining its nature. We provide a high-level
 construction in Solidity. Our construction works across a broad range of
