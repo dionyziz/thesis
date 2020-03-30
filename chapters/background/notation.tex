@@ -5,11 +5,20 @@ notation, which is also introduced here for reference. The reader unfamiliar
 with this notation can consult some reference book in the subject such
 as~\cite{katz} for a more complete treatment.
 
+\glsxtrnewsymbol[description={sample from a distribution}]{gets}{$\gets$}\glsadd{gets}
+\glsxtrnewsymbol[description={uniform distribution}]{uniform}{$\uniform$}\glsadd{uniform}
+\glsxtrnewsymbol[description={sample uniformly}]{uniform-sample}{$\gets \$$}
+\glsadd{uniform-sample}
+
 Given a distribution $\mathcal{M}$, we denote by $m \gets \mathcal{M}$ the experiment by which the random variable $m$ is chosen according to the distribution $\mathcal{M}$. Given a finite set $M$, we use $\uniform(M)$ to denote the uniform distribution which assigns probability $1 / 2^{|M|}$ to each element $m \in M$. We will use $m \getsrandomly M$ to denote the experiment in which $m$ is sampled from $\uniform(M)$.
 
 As a shorthand for probabilities and to avoid excessive subscripting, we will write the experimental set up (such as the sampling of random variables) within the $\Pr[\cdot]$ prior to the predicate of interest and separated by $;\,$. For example, $\Pr[x \gets \mathcal{D}_1, y \gets \mathcal{D}_2; x + y = 1]$ denotes the experiment of independently sampling two random variables, $x$ and $y$, from the distributions $\mathcal{D}_1$ and $\mathcal{D}_2$ respectively, summing their values, and observing whether their sum is equal to $1$.
 
 \subsection{Asymptotic probabilistic security}
+\glsxtrnewsymbol[description={class of problems solvable in polynomial time}]{poly}{$\textsc{P}$}\glsadd{poly}
+\glsxtrnewsymbol[description={the adversary}]{adversary}{$\mathcal{A}$}\glsadd{adversary}
+\glsxtrnewsymbol[description={probabilistic polynomial-time Turing machine}]{PPT}{PPT}\glsadd{PPT}
+
 Following the extended Church--Turing definition, we consider the class of
 problems in $\textsc{P}$ to be \emph{easy}, and we call \emph{hard} those which
 are not easy~\cite{sipser}. We will talk about \emph{honest parties}, Turing
@@ -24,6 +33,7 @@ use $\lambda \in \mathbb{N}$ to denote this security parameter. This parameter a
 cryptographic primitives to be instantiated with the required level of security;
 for example, it provides the number of bits in the output of our hash function.
 
+\glsxtrnewsymbol[description={a negligible function}]{negl}{$\negl$}\glsadd{negl}
 \begin{definition}[Negligible]\index{Negligible}
   A function $f: \mathbb{N} \longrightarrow \mathbb{R}^+$ is
   \emph{negligible} if for all $k \in \mathbb{N}$ it holds that
@@ -41,18 +51,36 @@ We will use the notation $\negl$ to denote any negligible function.
 We will define the \emph{security} of various cryptographic protocols by making use of challenger-adversary games in which the challenger is a known Turing Machine defined by us, but the adversary is an \emph{arbitrary} Turing Machine. Herein lies the beauty of cryptography as a science; it allows us to create protocols which we prove secure against \emph{any} adversary, even those we cannot conceive. A protocol will be considered \emph{secure} if no PPT adversary can win the respective game, except with negligible probability.
 
 \subsection{Sequences}
+\glsxtrnewsymbol[description={natural numbers up to $n$}]{seq-n}{$[n]$}\glsadd{seq-n}
+\glsxtrnewsymbol[description={support of distribution $\mathcal{M}$ }]{support}{$[\mathcal{M}]$}\glsadd{support}
+\glsxtrnewsymbol[description={empty string}]{empty-string}{$\epsilon$}\glsadd{empty-string}
+\glsxtrnewsymbol[description={concatenate strings}]{concat}{$\concat$}\glsadd{concat}
+
 We use $[n]$ to denote the set of natural numbers from $0$ up to and including
 $n$. We also use $[\mathcal{M}]$ to denote the support of a distribution
 $\mathcal{M}$; the distinction between the two notations will be clear from the
 context.
-We use $\epsilon$ to denote the empty sequence (or empty string). We write
-one sequence next to another to denote string concatenation. Likewise, we
+We use $\epsilon$ to denote the empty sequence (or empty string). We will later
+also use $\epsilon \in \mathbb{R}^+$ to denote deviations from expectation, but
+it will be clear from the context whether this is a string or a real number. We
+write one sequence next to another to denote string concatenation. Likewise, we
 concatenate sequences to symbols by juxtaposition. If for clarity this needs to
 be made explicit, we will use the symbol $\concat$ for concatenation. We make
 the implicit assumption that concatenation encodes values into a string
 unambiguously, for example by separating them by a special character that never
 appears in the operands. This allows them to be uniquely extracted again.
 
+\glsxtrnewsymbol[description={length of the sequence $\chain$}]{seq-len}{$|\chain|$}\glsadd{seq-len}
+\glsxtrnewsymbol[description={$i^\text{th}$ element of sequence $C$}]{seq-get}{$\chain[i]$}\glsadd{seq-get}
+\glsxtrnewsymbol[description={$i^\text{th}$ element of sequence $C$ from the end}]{seq-get-neg}{$\chain[-i]$}\glsadd{seq-get-neg}
+\glsxtrnewsymbol[description={subsequence of $C$ from indices $i$ to $j$}]{subchain}{$\chain[i{:}j]$}\glsadd{subchain}
+\glsxtrnewsymbol[description={subsequence of $C$ from start to index $j$}]{subchain-begin}{$\chain[{:}j]$}\glsadd{subchain-begin}
+\glsxtrnewsymbol[description={subsequence of $C$ from index $i$ to end}]{subchain-end}{$\chain[i{:}]$}\glsadd{subchain-end}
+\glsxtrnewsymbol[description={subsequence of $C$ from elements $A$ to $Z$}]{subchain-element}{$\chain\{A{:}Z\}$}\glsadd{subchain-element}
+\glsxtrnewsymbol[description={subsequence of $C$ from element $A$ to end}]{subchain-element-end}{$\chain\{A{:}\}$}\glsadd{subchain-element-end}
+\glsxtrnewsymbol[description={subsequence of $C$ from start to element $Z$}]{subchain-element-begin}{$\chain\{{:}Z\}$}\glsadd{subchain-element-begin}
+\glsxtrnewsymbol[description={sequence prefix}]{prefix}{$\preceq$}
+\glsadd{prefix}
 Our sequences are indexed starting at $0$. Given a sequence $\chain$, we use
 $|\chain|$ to denote its length. We use Python notation to denote sequence
 addressing. For $i \in [n - 1]$, we denote the $i^\text{th}$ element from the
@@ -84,6 +112,14 @@ subsequent elements until the end of the sequence.
 We use the notation $A \preceq B$ to indicate that sequence $A$ is a prefix of
 $B$, namely that $B[{:}|A|] = A$.
 
+\glsxtrnewsymbol[description={element belongs to set or sequence}]{in}{$\in$}
+\glsadd{in}
+\glsxtrnewsymbol[description={union of chains}]{cup}{$\cup$}
+\glsadd{cup}
+\glsxtrnewsymbol[description={intersection of chains}]{cap}{$\cap$}
+\glsadd{cap}
+\glsxtrnewsymbol[description={filter chain $\chain$}]{filter}{$\{x \in \chain: p(x)\}$}
+\glsadd{filter}
 We will reuse some set notation when talking about sequences\footnote{Formally
 speaking, in the traditional build-up of mathematical foundations using
 axiomatic set theory, sequences are defined as sets, and this would be deemed
