@@ -42,5 +42,14 @@ latex.out/
 *.ind
 *.ist
 
+# makeglossary
+*.sls
+*.slo
+*.slg
+*.glsdefs
+*.gls
+*.glg
+*.glo
+
 # macOS files
 .DS_Store
