@@ -1,0 +1,99 @@
+\section{Future Work}
+
+As we have seen, the consensus compression primitives have numerous important
+applications which can have significant impact in the space. For these to be
+deployable in practice with confidence, more research is needed around the
+primitives. Around the topic of proof-of-stake sidechains, the central question
+that remains is whether it is possible to do so succinctly, i.e., in
+$\bigO(polylog(|\chain|))$. For NIPoPoWs, more research is needed to establish
+how much the model in which they achieve security can be relaxed.
+
+We identify three major directions for future work, which we summarize below.
+
+\textbf{Velvet NIPoPoWs.} In Chapter~\ref{chapter:work}, we discussed various
+deployment strategies for NIPoPoWs and we pointed out that deployment can be
+made using a hard fork, a soft fork, or a \emph{velvet fork}, and we described
+some algorithmic modifications to our protocols which make velvet forking
+possible. However, no proof of security was provided. In fact, velvet fork
+security is more complicated than what it seems on the surface. At first
+glance it seems that the adversary cannot benefit from including incorrect
+pointers: She can only include either altogether \emph{wrong} pointers, or
+pointers that point to the correct superblock level but are not the most recent
+superblock. The first ones can be filtered out by the verified who can check the
+hash of the superblock pointer. As for the wrong ones, it seems that the
+adversary can only submit pointers to older blocks in the same chain, which
+would only harm their success rate. However, upon closer inspection one observes
+the following interesting attack: The adversary is able to include pointers not
+only to older superblocks of the correct level \emph{on the same chain}, but
+also on different chains. These blocks, although they have necessary been
+created prior to the block in which their pointer is included, may not be
+ancestors of the block in question. This allows the adversary to play a game of
+\emph{chain sewing} by ``cutting'' and ``pasting'' chunks of the honestly
+generated chain into their dishonest fork. This cutting and pasting allows the
+velvet adversary to ``borrow'' proof-of-work from an honest chain which does not
+belong to its adversarial fork, making it potentially win when compared against
+an honest fork. In short, the tree containing all interlink pointers does not
+look like a tree at all in the velvet case, but it forms a Directed Acyclic
+Graph. Patching the protocol and proving security under these settings is
+challenging and is explored in follow-up work~\cite{velvet-nipopows}.
+
+\textbf{NIPoPoWs under dishonest majority.} While our analysis has used the
+assumption that honest majority holds for \emph{all} rounds, it is a known
+result that full nodes in proof-of-work settings can withstand
+temporary dishonest majority~\cite{dishonest}. More specifically, consider an
+execution in which honest majority holds \emph{most} of the time, but a spike of
+dishonest majority occurs for a limited number of rounds. The short period of
+dishonest majority is then followed by a much longer period of honest majority.
+While the ledger property of persistence can be lost for the duration of the
+dishonest majority spike and for an additional period thereafter, the protocol
+is \emph{self-healing} in that, given sufficient time during which honest
+majority holds, the protocol can recover and persistence will be restored. This
+stems from the fact that the \emph{common prefix} property of chains is
+self-healing. A natural question that arises is whether NIPoPoWs are also
+self-healing. More specifically, in a temporary dishonest execution, a NIPoPoW
+verifier can be convinced to choose a chain that does not correspond to the
+chain that a full node honest party would choose. For example, that chain could
+be a short chain (such that the full node would reject it) with many superblocks
+(such that the NIPoPoW verifier would accept it). However, it seems that such
+proofs will become superseded by honestly generated proofs that correspond to
+a chain adopted by an honest full node if sufficient time time with honest
+majority is allowed to pass. A full proof of this security claim in the
+temporary dishonest model would significantly increase our confidence in
+superblock-based NIPoPoWs.
+
+\textbf{Bribing-resilient NIPoPoWs.} One criticism of using superblocks to
+construct NIPoPoWs has been the susceptibility of these proofs to
+\emph{bribing}~\cite{flyclient}. The argument goes like this: While under the
+honest majority assumption the distribution of superblocks within chains will be
+as expected, the \emph{real} protocol does not have honest majority. Instead,
+parties behave \emph{rationally} and would be happy to deviate from the honest
+protocol if appropriate incentives are provided. The idea then is for the
+adversary to \emph{bribe} miners in exchange for keeping high-level superblocks
+withheld. Because high-level blocks are rare, the money needed to bribe these
+miners will be small. More specifically, suppressing $\mu$-level superblocks
+in expectation has a cost equal to the block reward multiplied by
+$|C|2^{-\mu}$ which is the number of blocks that the adversary wishes
+suppressed. In fact, the cost can be even less if not \emph{all} $\mu$
+superblocks are suppressed. In the case of our \emph{charity with goodness}
+construction, such bribes can only harm the succinctness of the proofs, not
+their security. However, a harm in succinctness can translate to a harm in
+security depending on the application. For example, a cross-chain smart contract
+as disucussed in Chapter~\ref{chapter:sidechains} has very limited gas
+available, and proofs that are $\omega(polylog(|\chain|))$ would easily exhaust
+those limits. A failure of the smart contract to receive proofs would not only
+cause a denial of service, but can easily have financial cost incured by the
+victims. That cost can be sufficient to provide capital to an adversary for
+bribing miners. On the other hand, our \emph{charity without goodness} and our
+\emph{distill} constructions directly rely on good distribution of superblocks
+within the chains even for security, not just for succinctness. As such, a bribe
+can directly harm security, and it is not hard to imagine a rational adversary
+who makes sufficient money from their attack to be able to use some of it for
+bribing purposes. To fix this issue, miner rewards have to be rebalanced
+according to superblock levels. As such, a $\mu$-level superblock must receive
+a reward equal to $2^\mu$ times the reward of a $0$-level block. This makes
+bribing for the purposes of block suppression as costly as bribing for
+suppressing the whole chain. Therefore, if the participants believe the chain
+itself to be secure and not bribable, the superblocks will also survive for the
+same reasons. In fact, it may be possible to allocate such rewards with a soft
+fork using a smart contract beneficiary. The exact mechanics needed for reward
+allocation to make NIPoPoWs bribing-resilient will be explored in future work.
