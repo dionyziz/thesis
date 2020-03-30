@@ -335,9 +335,11 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   \frac{m}{2}$ and $2^\mu|(\chain\setminus\chain')\upchain^\mu| >
   2^{\mu'}|(\chain'\setminus\chain)\upchain^{\mu'}|$.
 \end{lemma}
+\ifdraft
 \begin{proof}
   \todo{clean up and copy this proof from vardiff paper}
 \end{proof}
+\fi
 
 \begin{definition}[Admissible Chain]
   Consider a chain $\pi$ during a round $r$ and let $k'$
@@ -356,13 +358,15 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   Consider a NIPoPoW $\pi$ produced by an honest party during round $r$.
   Then $\pi$ is admissible at $r$.
 \end{lemma}
-\begin{proof}
+\begin{proof}[Sketch]
   Let $k'$
   be the \emph{minimum} parameter such that
   $\text{diff}(\pi[-k':]) \geq k \frac{n_r}{\eta n_0}$.
   Clearly $b = \pi[-k':][-1]$ belongs to the chain of the honest party that
   produced $\pi$. It suffices to show that $r_b \geq r - \frac{k}{\eta f}$.
-  Show that $m > k \geq k'$... \todo{clean up and copy proof from vardiff paper}
+  The condition holds because $m > k \geq k'$.
+  \todo{Expand this proof}
+  % Show that $m > k \geq k'$... \todo{clean up and copy proof from vardiff paper}
 \end{proof}
 
 \begin{theorem}[Variable NIPoPoW Admissibility]\label{thm:admissibility}
@@ -405,7 +409,8 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   \paragraph{Case 2b: $\mu \leq \mu^*$.}
   If the adversarial proof is chosen, then chopping off will get us to an
   honest fresh block because, from typicality,
-  $\diff(\pi'\{b:\}) < A(\{r_{b^*}, \cdots, r\}) < ?$ must also be small. \todo{finish this case}
+  $\diff(\pi'\{b:\}) < A(\{r_{b^*}, \cdots, r\}) < ?$ must also be small.
+  \todo{finish this case}
 \end{proof}
 
 \begin{remark}[Dropping difficulty]
