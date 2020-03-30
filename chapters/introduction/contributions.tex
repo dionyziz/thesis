@@ -113,6 +113,14 @@ cannot create a longer sequence of $\mu$-superblocks faster than the honest
 parties create one, for the same reason that an adversary cannot create a longer
 regular blockchain faster than the honest parties create one.
 
+Let us count how many different levels $\mu$ there are in a chain. If the chain
+has length $|\chain|$, then going up to level $1$ cuts the chain in half, and we
+expect to see only $\frac{|\chain|}{2}$ superblocks of level $1$. Moreover, this
+continues with subsequent increases in level, until at level $\mu =
+\log|\chain|$ we expect to find only $\frac{|\chain|}{2^\mu} = 1$ block. As soon
+as we get to level $\log|\chain| + 1$, we expect to find no more blocks of that
+level or above. The number of levels is therefore $\log|\chain|$.
+
 \todo{applications to superlight wallets}
 \todo{applications to sidechains}
 \todo{applications to logspace mining}
