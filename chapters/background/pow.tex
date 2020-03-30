@@ -4,6 +4,8 @@ their channels remain unauthenticated, we will assume that the \emph{majority}
 of the population is honest~\cite{backbone}. This assumption is summarized in
 the following equation:
 
+\glsxtrnewsymbol[description={honest advantage}]{delta}{$\delta$}\glsadd{delta}
+
 \[
 t \leq (1 - \delta)(n - t)
 \]
@@ -35,6 +37,7 @@ The honest majority assumption denotes a $\frac{1}{2}$-bounded adversary. If the
 number of parties changes from round to round, the respective assumption must be
 maintained throughout the whole execution.
 
+\glsxtrnewsymbol[description={queries per party per round}]{q}{$q$}\glsadd{q}
 While theoretically the honest majority assumption discusses population counts,
 in practice this is translated into a majority in computational power. To
 achieve this in our model, we bound the number of Random Oracle queries which
@@ -60,6 +63,7 @@ honest parties and the adversary. This is a form of \emph{voting}. The parties
 vote on a message $m$ by solving the \emph{proof-of-work equation}~\cite{pow}
 which is defined as follows.
 
+\glsxtrnewsymbol[description={Proof-of-Work target}]{T}{$T$}\glsadd{T}
 \begin{definition}[Proof-of-Work]\index{Proof-of-Work}\index{Target}
   Consider a hash function $H: \{0, 1\}^* \rightarrow \{0, 1\}^\kappa$ and some
   $T \leq 2^\kappa$.
@@ -102,6 +106,7 @@ We call a query to the Random Oracle that satisfies
 the proof-of-work equation a \emph{successful query}.
 \end{definition}
 
+\glsxtrnewsymbol[description={single query probability of success}]{p}{$p$}\glsadd{p}
 \begin{lemma}[Successful Query]\index{p}
 The probability of a new query being successful $p = \frac{T}{2^\kappa}$.
 \end{lemma}
@@ -109,7 +114,10 @@ The probability of a new query being successful $p = \frac{T}{2^\kappa}$.
 We now define the random variables $X_r$, $Y_r$ that specify whether a round
 was \emph{successful} and \emph{uniquely successful}.
 
-\begin{definition}\index{Successful Round}\index{Uniquely Successful Round}\index{X}\index{Y}
+\glsxtrnewsymbol[description={indicator variable for successful round}]{X}{$X$}\glsadd{X}
+\glsxtrnewsymbol[description={indicator variable for uniquely successful round}]{Y}{$Y$}\glsadd{Y}
+\glsxtrnewsymbol[description={number of adversarially successful queries}]{Z}{$Z$}\glsadd{Z}
+\begin{definition}\index{Successful Round}\index{Uniquely Successful Round}
 If an honest party has made a successful query during a round $r$, then we call
 $r$ a \emph{successful round} and set $X_r = 1$; otherwise, we set $X_r = 0$.
 If among the \emph{honest} queries during $r$ only
@@ -152,8 +160,9 @@ The expectation for the adversary assumes that she makes use of all
 her available Random Oracle queries. As we will only apply upper bounds to
 $\Ex[Z_r]$, this is without loss of generality.
 
+\glsxtrnewsymbol[description={probability of successful round}]{f}{$f$}\glsadd{f}
 The expectation $\Ex[X_r]$ is a value critical for our protocols and will be
-denoted $f$\index{f} throughout this work. If $f$ is too small, the
+denoted $f$ throughout this work. If $f$ is too small, the
 proof-of-work problem is too hard and there is no progress, harming liveness.
 If $f$ is large, the proof-of-work problem is too easy and the honest parties
 all solve proof-of-work simultaneously. In that case, there are no intermittent
@@ -169,6 +178,7 @@ $\Ex[X(S)]$, $\Ex[Y(S)]$, and $\Ex[Z(S)]$ will most likely be near their
 expectation, except with some small error $\epsilon$. This intuition is formally
 captured by the notion of a \emph{typical query distribution}:
 
+\glsxtrnewsymbol[description={Chernoff error}]{epsilon}{$\epsilon$}\glsadd{epsilon}
 \begin{definition}[Typical Query Distribution]
   \index{Typical Query Distribution}
   \index{$\epsilon$}\index{$\lambda$}
