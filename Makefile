@@ -8,6 +8,7 @@ thesis.pdf: $(SOURCES)
 	xelatex --halt-on-error thesis.tex
 	bibtex thesis
 	makeindex thesis.idx
+	makeglossaries thesis
 	xelatex --halt-on-error thesis.tex
 	xelatex --halt-on-error thesis.tex
 
