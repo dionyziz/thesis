@@ -82,10 +82,8 @@ Note that $\Mainchain$ as well as $\Sidechain$ may carry
 additional assets but for simplicity we will assume that staking and pegging is
 accomplished only via this single primary asset.
 
-The presentation of the construction is organized as follows. First, in Section~\ref{sec:ats} we introduce a novel
-cryptographic primitive, \emph{ad-hoc threshold multisignature (ATMS)}, which is the fundamental building block for cross-chain certification.
-Afterwards, in Section~\ref{sec:const} we use it as a black box to build secure
+The presentation of the construction is organized as follows.
+In Section~\ref{sec:const} we use the ATMS primitive (introduced in
+Chapter~\ref{chapter:stake}) as a black box to build secure
 pegged ledgers with respect to concrete instantiations of the functions $\merge$
 and $\effect$ and a validity language $\adalang$ for asset~$\ada$ given in Section~\ref{sec:inst}.
-Finally, we discuss specific instantiations of ATMS in
-Section~\ref{sec:auth}.
