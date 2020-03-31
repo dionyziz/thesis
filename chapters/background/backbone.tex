@@ -4,7 +4,19 @@ The Bitcoin protocol has been analyzed in a series of
 works~\cite{backbone,varbackbone,pass-asynchronous,composable-bitcoin}. Here, we
 give an overview.
 
-The Bitcoin protocol is illustrated in Algorithm~\ref{alg.backbone}.
+The Bitcoin protocol for the synchronous static difficulty model is illustrated
+in Algorithm~\ref{alg.backbone}. Every honest party runs the protocol. Each
+party maintains a chain $\chain$ which is initialized as the empty sequence
+\footnote{this is a formalism which in practice is replaced with a sequence
+starting with a well-known high entropy block, the Genesis block $\mathcal{G}$;
+the two formulations are theoretically equivalent}. Each party uses its $q$
+Random Oracle queries in each round in an attempt to mine a new block which
+extends its currently adopted chain. The block points to the tip of the
+currently adopted blockchain and contains any transactions that the party
+receives from its environment. We say that the environment attempts to
+\emph{inject} into the honest party, which, in turn, attempts to place them on
+the newly mined block. The environment's choice of transactions here plays the
+role of the mempool.
 
 \input{chapters/background/algorithms/alg.backbone}
 
