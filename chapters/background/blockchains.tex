@@ -60,6 +60,8 @@ transaction ledger given in the most recent version of~\cite{backbone}:
     will report $\tx \in \LView{\Ledger}{\party}{t}$.
 \end{description}
 
+\glsxtrnewsymbol[description={union of all ledger views}]{ledgercup}{$\Ledger_i^{\cup}$}\glsadd{ledgercup}
+\glsxtrnewsymbol[description={intersection of all ledger views}]{ledgercap}{$\Ledger_i^{\cap}$}\glsadd{ledgercap}
 For a ledger $\Ledger$ that satisfies persistence at time $t$, we denote by $\LView{\Ledger}{\cup}{t}$ (resp.
 $\LView{\Ledger}{\cap}{t}$) the sequence of transactions that are seen as
 included in the ledger by \emph{at least one} (resp., \emph{all}) of the honest

@@ -107,7 +107,7 @@ the proof-of-work equation a \emph{successful query}.
 \end{definition}
 
 \glsxtrnewsymbol[description={single query probability of success}]{p}{$p$}\glsadd{p}
-\begin{lemma}[Successful Query]\index{p}
+\begin{lemma}[Successful Query]
 The probability of a new query being successful $p = \frac{T}{2^\kappa}$.
 \end{lemma}
 
@@ -181,7 +181,6 @@ captured by the notion of a \emph{typical query distribution}:
 \glsxtrnewsymbol[description={Chernoff error}]{epsilon}{$\epsilon$}\glsadd{epsilon}
 \begin{definition}[Typical Query Distribution]
   \index{Typical Query Distribution}
-  \index{$\epsilon$}\index{$\lambda$}
   \index{Chernoff Error}\index{Wait Time}
   Let $\epsilon \in (0, 1)$ (the \emph{Chernoff error}) and integer $\lambda
   \geq \frac{2}{f}$ (the \emph{wait time}). Let $S$ be a set of rounds with $|S|
@@ -200,7 +199,7 @@ assumption requires that the honest majority gap $\delta$ is sufficient to
 account for both the Chernoff error $\epsilon$ as well as the the lack of
 silence due to a potentially large parameter $f$.
 
-\begin{definition}[Honest Majority Assumption]\index{Honest Majority}\index{$\delta$}
+\begin{definition}[Honest Majority Assumption]\index{Honest Majority}
   We say that a population has \emph{honest majority} if
 
   \[
@@ -255,8 +254,8 @@ the respective indicator random variables $X'_i, Y'_i$ for $\Delta$-isolated
 
 \begin{definition}[$\Delta$-isolated (Uniquely) Successful Round]
 \index{$\Delta$-isolated Successful Round}
-\index{$\Delta$-isolated Uniquely Successful Round}
-\index{X'}\index{Y'}
+\glsxtrnewsymbol[description={$\Delta$-isolated successful round indicator}]{X-prime}{$X'$}\glsadd{X-prime}
+\glsxtrnewsymbol[description={$\Delta$-isolated uniquely successful round indicator}]{Y-prime}{$Y'$}\glsadd{Y-prime}
 A round $r$ is a \emph{$\Delta$-isolated successful round} if $X_r = 1$
 and for all $r < r' < r + \Delta$ it holds that $X_{r'} = 0$. In that case we
 set $X'_r = 1$; otherwise, we set $X'_r = 0$.

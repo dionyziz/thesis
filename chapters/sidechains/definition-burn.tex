@@ -2,7 +2,7 @@
 
 Let $\kappa$ be the security parameter.
 
-\begin{definition}[Burn protocol]
+\begin{definition}[Burn protocol]\index{Burn Protocol}
   A \emph{burn} protocol $\Pi$ consists of two functions $\GenBurnAddr(1^\kappa, t)$ and $\BurnVerify(1^\kappa, t, \burnAddr)$ which work as follows:
 
   \begin{itemize}
@@ -43,7 +43,7 @@ To state that the protocol generates addresses which cannot be spent from, we in
 
 \import{./}{chapters/sidechains/algorithms/alg.spend-game.tex}
 
-\begin{definition}[Unspendability]
+\begin{definition}[Unspendability]\index{Unspendability}
   A burn protocol $\Pi$ is \emph{unspendable} with respect to a blockchain address protocol $\Pi_\alpha$ if
   for all probabilistic polynomial-time adversaries $\mathcal{A}$ there exists a negligible function $\negl$ such that
   $
@@ -55,7 +55,7 @@ To state that the protocol generates addresses which cannot be spent from, we in
 
 It is desired that a burn address encodes one and only one tag. Concretely, given a burn address $\burnAddr$, $\BurnVerify(1^\kappa, t, \burnAddr)$ should only evaluate to $\true$ for a single tag $t$. The game $\bindattack$ in Algorithm~\ref{alg.bind-game} captures this property.
 
-\begin{definition}[Binding]
+\begin{definition}[Binding]\index{Binding Burn}
   A burn protocol $\Pi$ is \emph{binding} if
   for all probabilistic polynomial-time adversaries $\mathcal{A}$ there is a
   negligible function $\negl$ such that
@@ -72,7 +72,7 @@ We are now ready to define what constitutes a \emph{secure proof-of-burn protoco
 
 The aforementioned properties form a good basis for a burn protocol. We observe that it may be possible to detect whether an address is a burn address. While this is desirable in certain circumstances, it allows miners to censor burn transactions. To mitigate this, we propose \emph{uncensorability}, a property which mandates that a burn address is indistinguishable from a regular address if its tag is not known. During the execution of protocols which satisfy this property, when the burn transaction appears on the network, only the user who performed the burn knows that it constitutes a burn transaction prior to revealing the tag. Naturally, as soon as the tag is revealed, \emph{correctness} mandates that the burn transaction becomes verifiable.
 
-\begin{definition}[Uncensorability]
+\begin{definition}[Uncensorability]\index{Uncensorability}
   Let $\mathcal{T}$ be a distribution of tags.
   A burn protocol $\Pi$ is \emph{uncensorable} if
   the distribution ensembles $\{(pk, sk) \gets \GenAddr(1^\kappa); pk\}_\kappa$ and

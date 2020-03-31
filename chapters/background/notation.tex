@@ -5,10 +5,10 @@ notation, which is also introduced here for reference. The reader unfamiliar
 with this notation can consult some reference book in the subject such
 as~\cite{katz} for a more complete treatment.
 
-\glsxtrnewsymbol[description={sample from a distribution}]{gets}{$\gets$}\glsadd{gets}
+\glsxtrnewsymbol[description={sample from a distribution}]{_sample}{$\gets$}\glsadd{_sample}
 \glsxtrnewsymbol[description={uniform distribution}]{uniform}{$\uniform$}\glsadd{uniform}
-\glsxtrnewsymbol[description={sample uniformly}]{uniform-sample}{$\gets \$$}
-\glsadd{uniform-sample}
+\glsxtrnewsymbol[description={sample uniformly}]{_sample-uniform}{$\gets \$$}
+\glsadd{_sample-uniform}
 
 Given a distribution $\mathcal{M}$, we denote by $m \gets \mathcal{M}$ the experiment by which the random variable $m$ is chosen according to the distribution $\mathcal{M}$. Given a finite set $M$, we use $\uniform(M)$ to denote the uniform distribution which assigns probability $1 / 2^{|M|}$ to each element $m \in M$. We will use $m \getsrandomly M$ to denote the experiment in which $m$ is sampled from $\uniform(M)$.
 
@@ -22,7 +22,7 @@ As a shorthand for probabilities and to avoid excessive subscripting, we will wr
 Following the extended Church--Turing definition, we consider the class of
 problems in $\textsc{P}$ to be \emph{easy}, and we call \emph{hard} those which
 are not easy~\cite{sipser}. We will talk about \emph{honest parties}, Turing
-Machines~\cite{turing} which run our code, and the \emph{adversary}, denoted $\mathcal{A}$\index{$\mathcal{A}$}, which is an arbitrary
+Machines~\cite{turing} which run our code, and the \emph{adversary}, denoted $\mathcal{A}$, which is an arbitrary
 Turing Machine that can run any code. It is assumed that all honest parties and the adversary have polynomial available time. Both the honest parties and the adversary have access to true randomness and are thus probabilistic Turing Machines.
 The shorthand \emph{PPT} is used to denote a probabilistic polynomial-time
 Turing machine.
@@ -51,10 +51,10 @@ We will use the notation $\negl$ to denote any negligible function.
 We will define the \emph{security} of various cryptographic protocols by making use of challenger-adversary games in which the challenger is a known Turing Machine defined by us, but the adversary is an \emph{arbitrary} Turing Machine. Herein lies the beauty of cryptography as a science; it allows us to create protocols which we prove secure against \emph{any} adversary, even those we cannot conceive. A protocol will be considered \emph{secure} if no PPT adversary can win the respective game, except with negligible probability.
 
 \subsection{Sequences}
-\glsxtrnewsymbol[description={natural numbers up to $n$}]{seq-n}{$[n]$}\glsadd{seq-n}
-\glsxtrnewsymbol[description={support of distribution $\mathcal{M}$ }]{support}{$[\mathcal{M}]$}\glsadd{support}
-\glsxtrnewsymbol[description={empty string}]{empty-string}{$\epsilon$}\glsadd{empty-string}
-\glsxtrnewsymbol[description={concatenate strings}]{concat}{$\concat$}\glsadd{concat}
+\glsxtrnewsymbol[description={natural numbers up to $n$}]{n-seq}{$[n]$}\glsadd{n-seq}
+\glsxtrnewsymbol[description={support of distribution $\mathcal{M}$ }]{M-support}{$[\mathcal{M}]$}\glsadd{M-support}
+\glsxtrnewsymbol[description={empty sequence or string}]{empty-string}{$\epsilon$}\glsadd{empty-string}
+\glsxtrnewsymbol[description={concatenate strings}]{_concat}{$\concat$}\glsadd{_concat}
 
 We use $[n]$ to denote the set of natural numbers from $0$ up to and including
 $n$. We also use $[\mathcal{M}]$ to denote the support of a distribution
@@ -70,17 +70,17 @@ the implicit assumption that concatenation encodes values into a string
 unambiguously, for example by separating them by a special character that never
 appears in the operands. This allows them to be uniquely extracted again.
 
-\glsxtrnewsymbol[description={length of the sequence $\chain$}]{seq-len}{$|\chain|$}\glsadd{seq-len}
-\glsxtrnewsymbol[description={$i^\text{th}$ element of sequence $C$}]{seq-get}{$\chain[i]$}\glsadd{seq-get}
-\glsxtrnewsymbol[description={$i^\text{th}$ element of sequence $C$ from the end}]{seq-get-neg}{$\chain[-i]$}\glsadd{seq-get-neg}
-\glsxtrnewsymbol[description={subsequence of $C$ from indices $i$ to $j$}]{subchain}{$\chain[i{:}j]$}\glsadd{subchain}
-\glsxtrnewsymbol[description={subsequence of $C$ from start to index $j$}]{subchain-begin}{$\chain[{:}j]$}\glsadd{subchain-begin}
-\glsxtrnewsymbol[description={subsequence of $C$ from index $i$ to end}]{subchain-end}{$\chain[i{:}]$}\glsadd{subchain-end}
-\glsxtrnewsymbol[description={subsequence of $C$ from elements $A$ to $Z$}]{subchain-element}{$\chain\{A{:}Z\}$}\glsadd{subchain-element}
-\glsxtrnewsymbol[description={subsequence of $C$ from element $A$ to end}]{subchain-element-end}{$\chain\{A{:}\}$}\glsadd{subchain-element-end}
-\glsxtrnewsymbol[description={subsequence of $C$ from start to element $Z$}]{subchain-element-begin}{$\chain\{{:}Z\}$}\glsadd{subchain-element-begin}
-\glsxtrnewsymbol[description={sequence prefix}]{prefix}{$\preceq$}
-\glsadd{prefix}
+\glsxtrnewsymbol[description={length of the sequence $\chain$}]{c-seq-len}{$|\chain|$}\glsadd{c-seq-len}
+\glsxtrnewsymbol[description={$i^\text{th}$ element of sequence $C$}]{c-seq-get}{$\chain[i]$}\glsadd{c-seq-get}
+\glsxtrnewsymbol[description={$i^\text{th}$ element of sequence $C$ from the end}]{c-seq-get-neg}{$\chain[-i]$}\glsadd{c-seq-get-neg}
+\glsxtrnewsymbol[description={subsequence of $C$ from indices $i$ to $j$}]{c-subchain}{$\chain[i{:}j]$}\glsadd{c-subchain}
+\glsxtrnewsymbol[description={subsequence of $C$ from start to index $j$}]{c-subchain-begin}{$\chain[{:}j]$}\glsadd{c-subchain-begin}
+\glsxtrnewsymbol[description={subsequence of $C$ from index $i$ to end}]{c-subchain-end}{$\chain[i{:}]$}\glsadd{c-subchain-end}
+\glsxtrnewsymbol[description={subsequence of $C$ from elements $A$ to $Z$}]{c-subchain-element}{$\chain\{A{:}Z\}$}\glsadd{c-subchain-element}
+\glsxtrnewsymbol[description={subsequence of $C$ from element $A$ to end}]{c-subchain-element-end}{$\chain\{A{:}\}$}\glsadd{c-subchain-element-end}
+\glsxtrnewsymbol[description={subsequence of $C$ from start to element $Z$}]{c-subchain-element-begin}{$\chain\{{:}Z\}$}\glsadd{c-subchain-element-begin}
+\glsxtrnewsymbol[description={sequence prefix}]{_prefix}{$\preceq$}
+\glsadd{_prefix}
 Our sequences are indexed starting at $0$. Given a sequence $\chain$, we use
 $|\chain|$ to denote its length. We use Python notation to denote sequence
 addressing. For $i \in [n - 1]$, we denote the $i^\text{th}$ element from the
@@ -107,14 +107,11 @@ subsequent elements until the end of the sequence.
 We use the notation $A \preceq B$ to indicate that sequence $A$ is a prefix of
 $B$, namely that $B[{:}|A|] = A$.
 
-\glsxtrnewsymbol[description={element belongs to set or sequence}]{in}{$\in$}
-\glsadd{in}
-\glsxtrnewsymbol[description={union of chains}]{cup}{$\cup$}
-\glsadd{cup}
-\glsxtrnewsymbol[description={intersection of chains}]{cap}{$\cap$}
-\glsadd{cap}
-\glsxtrnewsymbol[description={filter chain $\chain$}]{filter}{$\{x \in \chain: p(x)\}$}
-\glsadd{filter}
+\glsxtrnewsymbol[description={element belongs to set or sequence}]{_chainin}{$\in$}\glsadd{_chainin}
+\glsxtrnewsymbol[description={union of chains}]{_chaincup}{$\cup$}\glsadd{_chaincup}
+\glsxtrnewsymbol[description={intersection of chains}]{_chaincap}{$\cap$}\glsadd{_chaincap}
+\glsxtrnewsymbol[description={filter chain $\chain$}]{_chainfilter}{$\{x \in \chain: p(x)\}$}
+\glsadd{_chainfilter}
 We will reuse some set notation when talking about sequences\footnote{Formally
 speaking, in the traditional build-up of mathematical foundations using
 axiomatic set theory, sequences are defined as sets, and this would be deemed

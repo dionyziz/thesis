@@ -27,10 +27,10 @@ controlled by a single adversary. The situation where multiple adversaries are
 not colluding is also captured by our stronger model (this can be captured by a
 single adversary which simulates the multiple non-colluding adversaries).
 
-\glsxtrnewsymbol[description={environment}]{environment}{$\mathcal{Z}$}\glsadd{environment}
+\glsxtrnewsymbol[description={environment}]{Z-environment}{$\mathcal{Z}$}\glsadd{Z-environment}
 To model the distributed setting, we must speak of executions concretely.
 Towards this purpose, we conjure an \emph{environment} $\mathcal{Z}$
-\index{Environment}\index{$\mathcal{Z}$} which is an
+\index{Environment} which is an
 Interactive Turing Machine~\cite{interactive-tm} (ITMs) \index{Interactive
 Turing Machine (ITM)} and is responsible for
 orchestrating the whole execution. An Interactive Turing Machine is a Turing
@@ -39,7 +39,7 @@ output tapes that can be written to by external machines. The machine can decide
 to pause computation by entering a special state and its computation is resumed
 by writing to its input tape.
 
-\glsxtrnewsymbol[description={honest protocol}]{upper-pi}{$\Pi$}\glsadd{upper-pi}
+\glsxtrnewsymbol[description={honest protocol}]{pi-protocol}{$\Pi$}\glsadd{pi-protocol}
 The environment spawns $n - t$ honest parties running the honest protocol $\Pi$ as
 $n$ different Interactive Turing Machines. The environment also spawns one
 adversarial Interactive Turing Machine $\mathcal{A}$. The honest parties and the
