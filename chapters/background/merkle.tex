@@ -118,10 +118,11 @@ internal nodes as leafs.
 \end{remark}
 
 Security follows by a direct computational reduction from the collision
-resistance of $H$. As this proof is folklore and does not appear in the
-literature\footnote{The proof that appears in Modern
-Cryptography~\cite{katz} shows something weaker: that a Merkle Tree is a
-collision resistant hash function.}, we include our own version here.
+resistance of $H$. We give a novel version of this proof here\footnote{The proof
+that appears in Modern Cryptography~\cite{katz} shows something weaker: that a
+Merkle Tree is a collision resistant hash function. Dowling et
+al.\cite{dowling2016secure} show in a different style of proof that collision
+resistance of the root implies path consistency on the leaves.}.
 
 \input{chapters/background/algorithms/alg.merkle}
 
