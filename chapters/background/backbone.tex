@@ -20,7 +20,20 @@ role of the mempool.
 
 \input{chapters/background/algorithms/alg.backbone}
 
-\todo{Continuity}
+When an honest party successfully finds a proof-of-work for its candidate block,
+it appends that block to its adopted blockchain and broadcasts the new
+blockchain to the network.
+
+When it receives a blockchain from the network, it first checks to see if it is
+valid. Validation involves checking that each of its blocks has proof-of-work,
+that it has the blockchain property, and that its transaction sequences
+satisfies the validity language. It adopts it if it has more blocks than its
+currently adopted chain. This procedure, called \textsf{maxvalid}, is
+illustrated in Algorithm~\ref{alg.backbone-maxvalid}, where the \textsf{valid}
+predicate ensures that a chain respects proof-of-work and its contents belong
+to the validity language.
+
+\input{chapters/background/algorithms/alg.maxvalid}
 
 Chains maintained by honest parties running the backbone protocol in an honest
 majority setting satisfy the following three properties.

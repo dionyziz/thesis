@@ -1,0 +1,17 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.backbone-maxvalid} The \emph{maxvalid} algorithm which
+    chooses the longest valid chain}
+    \begin{algorithmic}[1]
+      \Function{$\textsf{maxvalid}$}{$\tilde{C}$}
+          \Let{\chain}{\mathcal{C}[0]}
+          \For{$\chain' \in \tilde{C}$}
+              \If{$\textsf{valid}(\chain') \land |\chain'| > |\chain|$}
+                  \Let{\chain}{\chain'}
+              \EndIf
+          \EndFor
+          \State\Return{$\chain$}
+      \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}
