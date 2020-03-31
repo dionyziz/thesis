@@ -2,17 +2,14 @@
 
 Over the last 5 years there has been an explosion of new cryptocurrencies. Unfortunately, it is hard for a new cryptocurrency to gain traction. Without traction, no market depth ensues and a cryptocurrency has difficulty getting listed in exchanges. But without being listed in exchanges, a cryptocurrency cannot gain traction.
 
-This chicken-and-egg situation presents the need for a solution that circumvents exchanges and allows users to acquire the cryptocurrency directly. We propose utilizing proof-of-burn to allow users to obtain capital on a new cryptocurrency by burning a legacy cryptocurrency. We call the legacy one the \emph{source} and the new one the \emph{target cryptocurrency}, and their blockchains the \emph{source} and \emph{target blockchain} respectively. The target blockchain may support burning from multiple source blockchains.
+This chicken-and-egg situation presents the need for a solution that circumvents exchanges and allows users to acquire the cryptocurrency directly. We propose utilizing proof-of-burn to allow users to obtain capital on a new cryptocurrency by burning a legacy cryptocurrency. In line with previous chapters, we call the legacy one the \emph{source} and the new one the \emph{target cryptocurrency}, and their blockchains the \emph{source} and \emph{target blockchain} respectively. The target blockchain may support burning from multiple source blockchains.
 
 \noindent
 \textbf{Workflow.}
-A user who wishes to acquire a target cryptocurrency first forms a burn address valid in the source blockchain which encodes her receiving address on the target blockchain by using it as a tag. She then sends an amount of source cryptocurrency to that address. She submits a proof of this burn to a smart contract~\cite{buterin} on the target blockchain, where it is verified and she is credited an equivalent amount of target cryptocurrency on her receiving address. Proof-of-burn verification happens in either a centralized manner which is lighter on computation, or in a decentralized manner using Non-Interactive Proofs of Proof-of-Work (NIPoPoWs)~\cite{popow,nipopows,compactsuperblocks,gtklocker}.
+A user who wishes to acquire a target cryptocurrency first forms a burn address valid in the source blockchain which encodes her receiving address on the target blockchain by using it as a tag. She then sends an amount of source cryptocurrency to that address. She submits a proof of this burn to a smart contract~\cite{buterin} on the target blockchain, where it is verified and she is credited an equivalent amount of target cryptocurrency on her receiving address. Proof-of-burn verification happens using NIPoPoWs in
+the work setting, or ATMs in the stake setting.
 
-Target blockchain miners need not be connected to every other source blockchain network. We call this property \emph{miner-isolation} and we propose methods to achieve it.
-
-We now describe how a smart contract on the target blockchain can verify a burn took place on the source blockchain. Note how this puts a constraint on the target blockchain to have smart contract capabilities. However there is no such constraint for the source blockchain.
-
-In accordance to the terminology laid out in~\cite{pow-sidechains}, we call the user the \emph{prover} and the smart contract the \emph{verifier}. The prover wishes to convince the verifier that an event occurred on the source blockchain. We define an event as a simple value transfer described by a transaction id \textsf{txid}, a receiving address \textsf{addr} and an amount \textsf{amount}. Simple value transfers are supported by all cryptocurrencies, allowing a verifier to process burns from a wide range of source blockchains. Note that this event type does not yet distinguish between burn and non-burn addresses.
+We define an event as a simple value transfer described by a transaction id \textsf{txid}, a receiving address \textsf{addr} and an amount \textsf{amount}. Simple value transfers are supported by all cryptocurrencies, allowing a verifier to process burns from a wide range of source blockchains. Note that this event type does not yet distinguish between burn and non-burn addresses.
 
 For a verifier to be convinced that an event occurred on a source blockchain, they ensure its transaction is contained in a stable block in the best source chain. Specifically, the following data are supplied to the smart contract as a proof:
 
@@ -37,9 +34,7 @@ Being able to verify events, we can grant target cryptocurrency to users who bur
 
 In the interest of keeping this implementation generic we assume that the user receives a token in return for his burn. However, instead of minting a token, the target cryptocurrency could allow the burn verifier contract to mint native cryptocurrency for any user who successfully claims an event. This would allow the target cryptocurrency to be bootstrapped entirely though burning as desired.
 
-\noindent
-\textbf{Verifying block connection.}
-We now shift our attention to the problem of verifying a block belongs in the best source chain. We provide multiple ways of implementing the aforementioned \textsf{in-best-chain} method.
+The problem of verifying a block belongs in the best source chain has been extensively addressed in the previous chapters. Here, we remark that there are multiple ways of implementing the aforementioned \textsf{in-best-chain} method.
 
 \noindent
 \textbf{Direct observation.}
@@ -47,8 +42,8 @@ Miners connect to the source blockchain network and have access to the best sour
 
 \noindent
 \textbf{NIPoPoWs.}
-Verifying block connection can be achieved through NIPoPoWs, as in~\cite{pow-sidechains}.
-We remark that with this setup a block connection proof may be considered valid provisionally, but there needs to be a period in which the proof can be disputed for the smart contract to be certain for the validity of the proof. Specifically, when a user performs a claim, they have to put down some collateral. If they have provided a valid NIPoPoW, a contestation period begins. Within that period a challenger can dispute the provided proof which -- provided that the dispute is successful -- would turn the result of \textsf{in-best-chain} to $\false$, abort the claim and grant the challenger the user's collateral. If the contestation period ends with the proof undisputed, then \textsf{in-best-chain} evaluates to $\true$, the collateral gets returned to the user and the claim is performed successfully.
+Verifying block connection can be achieved through NIPoPoWs.
+We remark that, as discussed in the previous chapter, with this setup a block connection proof may be considered valid provisionally, but there needs to be a period in which the proof can be disputed for the smart contract to be certain for the validity of the proof. Specifically, when a user performs a claim, they have to put down some collateral. If they have provided a valid NIPoPoW, a contestation period begins. Within that period a challenger can dispute the provided proof which -- provided that the dispute is successful -- would turn the result of \textsf{in-best-chain} to $\false$, abort the claim and grant the challenger the user's collateral. If the contestation period ends with the proof undisputed, then \textsf{in-best-chain} evaluates to $\true$, the collateral gets returned to the user and the claim is performed successfully.
 
 \noindent
 \textbf{Federation.}
