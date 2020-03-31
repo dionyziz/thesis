@@ -53,13 +53,13 @@ follows:
   $\GetRandomness(j)$
   returns the randomness $\rnd_j$ for epoch $j$ as derived during epoch $j-1$;
 \item
-  $\ValidConsLevel(\Chain)$
-  checks the consensus-level validity of a given chain $\Chain$: it verifies that all block hashes
+  $\ValidConsLevel(\chain)$
+  checks the consensus-level validity of a given chain $\chain$: it verifies that all block hashes
     are correct, signatures are valid and belong to eligible slot leaders;
 \item
-  $\PickWinningChain(\Chain,\mathcal{C})$
-    applies the chain-selection rule: from a set of chains $\{\Chain\}\cup\mathcal{C}$ it
-    chooses the longest one that does not fork from the current chain $\Chain$
+  $\PickWinningChain(\chain,\mathcal{C})$
+    applies the chain-selection rule: from a set of chains $\{\chain\}\cup\mathcal{C}$ it
+    chooses the longest one that does not fork from the current chain $\chain$
     more than $k$ blocks in the past;
 \item
   $\SlotLeader(U,j,sl,\SD_j,\rnd_{j})$

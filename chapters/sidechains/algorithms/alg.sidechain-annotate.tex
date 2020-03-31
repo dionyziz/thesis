@@ -1,16 +1,16 @@
-\Function{\textsc{annotatetx}$_\Sidechain$}{$\Chainsc, \Chainmc$}
+\Function{\textsc{annotatetx}$_\Sidechain$}{$\chainsc, \chainmc$}
     \Let{\vec\tx}{\emptyset}
     \label{alg.sidechain.interspersing}
     \For{\text{each time slot }$t$}
         \Let{\vec\tx'}{\epsilon}
-        \If{$\Chainsc$ has a block generated at slot $t$}
-            \Let{B}{\text{the block in }\Chainsc\text{ generated at }t}
+        \If{$\chainsc$ has a block generated at slot $t$}
+            \Let{B}{\text{the block in }\chainsc\text{ generated at }t}
             \For{$\tx \in B$}
                 \Let{\vec\tx'}{\vec\tx' \concat \tx}
             \EndFor
         \EndIf
-        \If{$\Chainmc$ has a block generated at slot $t$}
-            \Let{B}{\text{the block in }\Chainmc\text{ generated at }t}
+        \If{$\chainmc$ has a block generated at slot $t$}
+            \Let{B}{\text{the block in }\chainmc\text{ generated at }t}
             \For{$\tx \in B$}
                 \Let{\vec\tx'}{\vec\tx' \concat \tx}
             \EndFor

@@ -27,20 +27,20 @@
       \Let{\mathcal{C}_{\validtx}}{\Filter(\mathcal{C_{\valid}},\verifierMC(\cdot))}
         \label{line:filter}
       \CommentLine{Apply chain selection rule}
-      \Let{\ChainMC}{\Mainchain.\PickWinningChain(\ChainMC,\mathcal{C_{\validtx}})}
+      \Let{\chainMC}{\Mainchain.\PickWinningChain(\chainMC,\mathcal{C_{\validtx}})}
       \CommentLine{Decide slot leadership based on $\SD_j$ and $\rnd_{j}$}
       \If{$\Mainchain.\SlotLeader(U,j,sl,\SD_j,\rnd_{j})$}
         \label{line:leader}
-        \Let{\prev}{H(\ChainMC[-1])}
-        \Let{\vec\tx_{\state}}{\text{transaction sequence in $\ChainMC$}}
+        \Let{\prev}{H(\chainMC[-1])}
+        \Let{\vec\tx_{\state}}{\text{transaction sequence in $\chainMC$}}
         \Let{\vec\tx}{\text{current transactions in mempool}}
         \Let{\vec\tx_{\valid}}{\verifierMCtx(\vec\tx_{\state}\concat\vec\tx)[|\vec\tx_{\state}|:]}
           \label{line:filtertx}
         \Let{\sigma}{\Sig_{sk}(\prev,\vec\tx_{\valid})}
         \Let{B}{(\prev,\vec\tx_{\valid},\sigma)}
           \label{line:construct}
-        \Let{\ChainMC}{\ChainMC\concat B}
-        \State $\Diffuse(\ChainMC)$
+        \Let{\chainMC}{\chainMC\concat B}
+        \State $\Diffuse(\chainMC)$
       \EndIf
     \EndOn
     %\Function{$\SwitchMCEpoch$}{ }

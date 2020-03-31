@@ -74,10 +74,10 @@ $\Ledger$ so that they include it in the ledger eventually as prescribed by the
 protocol.
 Unless indicated otherwise, we also denote by $\stateMC$ (resp.
 $\stateSC$) the current \emph{ledger state} of the ledger $\Mainchain$ (resp. $\Sidechain$) as
-viewed by the party executing the protocol. Similarly, we denote by $\ChainMC$
-(resp. $\ChainSC$) the currently held \emph{chain} corresponding to the ledger
+viewed by the party executing the protocol. Similarly, we denote by $\chainMC$
+(resp. $\chainSC$) the currently held \emph{chain} corresponding to the ledger
 $\Mainchain$ (resp. $\Sidechain$). Hence, for example $\stateMC$ always represents the state
-stored in the stable part of the chain $\ChainMC$.
+stored in the stable part of the chain $\chainMC$.
 
 \paragraph{Helper Transactions and Data}
 The construction uses a set of \textit{helper transactions}
@@ -161,17 +161,17 @@ passed), the sidechain initialization is aborted.
 %%genesis block is created at the first slot of epoch $\epoch_j$.
 
 %The way $j$ is determined based on $j^*$ is as follows. Each sidechain defines
-%an \textit{activation predicate} $\on^{\ell_1, \ell_2, \ell_3}(\Chain[:-k])$,
+%an \textit{activation predicate} $\on^{\ell_1, \ell_2, \ell_3}(\chain[:-k])$,
 %parameterized by integers $\ell_1, \ell_2, \ell_3 \in \N$, which is evaluated on
-%the stable part $\Chain[:-k]$ of some chain $\Chain$. At every slot after epoch
+%the stable part $\chain[:-k]$ of some chain $\chain$. At every slot after epoch
 %$j^*$, the honest stakeholders on the network evaluate the predicate $\on$ on the
-%growing stable part of the mainchain $\Chain[:-k]$, where $\Chain$ is their
+%growing stable part of the mainchain $\chain[:-k]$, where $\chain$ is their
 %currently locally adopted mainchain.
 
-%The predicate $\on^{\ell_1, \ell_2, \ell_3}(\Chain)$ checks that all of the following conditions are
+%The predicate $\on^{\ell_1, \ell_2, \ell_3}(\chain)$ checks that all of the following conditions are
 %satisfied:
 %\begin{enumerate}
-%    \item The chain length is sufficient: $|\Chain| > \ell_1$.
+%    \item The chain length is sufficient: $|\chain| > \ell_1$.
 %    \item Sufficient stake has been moved into limbo: $|\SDb| > \ell_2$
 %          (the exact definition of stake movement will follow momentarily).
 %    \item Sufficient stake is aware of the sidechain: $|\SDb^*| > \ell_3$
@@ -190,15 +190,15 @@ passed), the sidechain initialization is aborted.
 %during which the sidechain was activated.
 
 %Each sidechain also defines an \textit{expiration predicate}
-%$\off^{\ell_4}(\Chain[:-k])$, parameterized by $\ell_4 \in \N$, which is also
+%$\off^{\ell_4}(\chain[:-k])$, parameterized by $\ell_4 \in \N$, which is also
 %evaluated on the stable part of the mainchain. As long as the sidechain has not
 %yet been activated, at every slot after epoch $j^*$, each honest maintainer
 %evaluates the predicate $\off$ on the growing stable part of the mainchain
-%$\Chain[:-k]$, where $\Chain$ is their currently locally adopted mainchain. The
-%predicate $\off$ checks whether the chain length is too large: $|\Chain| >
+%$\chain[:-k]$, where $\chain$ is their currently locally adopted mainchain. The
+%predicate $\off$ checks whether the chain length is too large: $|\chain| >
 %\ell_4$.
-%If at some slot the predicate $\off(\Chain)$ evaluates to \textit{true} while at
-%the same slot the predicate $\on(\Chain)$ evaluates to \textit{false}, then the
+%If at some slot the predicate $\off(\chain)$ evaluates to \textit{true} while at
+%the same slot the predicate $\on(\chain)$ evaluates to \textit{false}, then the
 %sidechain creation is abandoned and we say that the sidechain creation has
 %\textit{expired}. No sidechain genesis block $\Genesisb$ is created. Of course,
 %for meaningful sidechains, we have that $\ell_4 > \ell_1$ to give the sidechain
@@ -322,16 +322,16 @@ $\Mainchain$-chains from the network (modelled via the $\Diffuse$ functionality)
 filters them for both consensus-level validity (using $\Mainchain.\ValidConsLevel$) and
 transaction validity (using the $\verifierMC$ predicate given in
 Algorithms~\ref{alg.mainchain} and~\ref{alg.mainchain-tx}). Out of the remaining valid chains, he chooses
-his new state $\Chain_{\Mainchain}$ via $\PickWinningChain$. Then the stakeholder
+his new state $\chain_{\Mainchain}$ via $\PickWinningChain$. Then the stakeholder
 evaluates whether he is an eligible leader for this slot, basing its selection
 on the stake distribution $\SD_j$ and randomness $\rnd_j$, which are determined
 once per epoch
 %in the $\SwitchMCEpoch$ function
 in accordance with the Ouroboros protocol.
 If the stakeholder finds out he is a slot leader, he creates a new block $B$ by
-including all transactions currently valid with respect to $\Chain_{\Mainchain}$
+including all transactions currently valid with respect to $\chain_{\Mainchain}$
 (as per the predicate $\verifierMCtx$ given also in Algorithm~\ref{alg.mainchain-tx}),
-appends it to the chain $\Chain_{\Mainchain}$ and diffuses the result\footnote{
+appends it to the chain $\chain_{\Mainchain}$ and diffuses the result\footnote{
 As in~\cite{ouroboros,praos}, we simplify our
 presentation by diffusing the complete chains,
 although a practical implementation would only diffuse the block $B$.}
@@ -347,12 +347,12 @@ irrespectively of whether they own any stake on $\Sidechain$.
 Recall that the slots and epochs of the $\Sidechain$-instance of Ouroboros are aligned
 with the slots and epochs of $\Mainchain$.
 
-The first difference is that all ocurrences of $\Mainchain$ and $\ChainMC$ are
-naturally replaced by $\Sidechain$ and $\ChainSC$, respectively.  This also means that
+The first difference is that all ocurrences of $\Mainchain$ and $\chainMC$ are
+naturally replaced by $\Sidechain$ and $\chainSC$, respectively.  This also means that
 the validity of received chains (resp. transactions), determined on
 line~\ref{line:filter} (resp.~\ref{line:filtertx}), is decided based on
 predicate
-$\verifierSC(\cdot,\ChainMC)$ (resp.
+$\verifierSC(\cdot,\chainMC)$ (resp.
 $\verifierSCtx(\cdot)$)
 instead of
 the predicate

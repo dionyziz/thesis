@@ -92,9 +92,9 @@
 \begin{algorithm}%[htb]
     \caption{\label{alg.mainchain}The $\Mainchain$ chain verifier.}
     \begin{algorithmic}[1]
-        \Function{\textsc{verifier}$_\Mainchain$}{$\Chainmc$}
+        \Function{\textsc{verifier}$_\Mainchain$}{$\chainmc$}
             \Let{\vec\tx}{\emptyset}
-            \For{$B \in \Chainmc$}
+            \For{$B \in \chainmc$}
                 \For{$\tx \in B$}
                     \Let{\vec\tx}{\vec\tx \concat \tx}
                 \EndFor

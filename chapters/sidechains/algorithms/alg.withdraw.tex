@@ -30,14 +30,14 @@
       \Post{$\txsend$}{$\Sidechain$}
     \EndFunction
     \Function{\sf Receive}{$\txid,\sendAccount,\recAccount,\amount$}
-      \Wait{$\txsend\in\ChainSC$}
-      \Let{j'}{\text{epoch where $\ChainSC$ contains $\txsend$}}
+      \Wait{$\txsend\in\chainSC$}
+      \Let{j'}{\text{epoch where $\chainSC$ contains $\txsend$}}
       \If{($\txsend$ included in slot $sl\leq R-4$ of $\epoch_{j'}$)}
         \Let{\jsend}{j'}
       \Else
         \Let{\jsend}{j'+1}
       \EndIf
-      \Wait{$\sccert_{\jsend+1}\in\ChainMC$}
+      \Wait{$\sccert_{\jsend+1}\in\chainMC$}
       \Let{\pi}{\text{Merkle-tree proof of $\txsend$ in $\sccert_{\jsend + 1}$}}
       \Let{\sig}{\Sig_{sk}
         \left(

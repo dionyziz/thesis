@@ -121,10 +121,10 @@ lines of~\cite{ouroboros}.
   For every honest party $\party_1$ and $\party_2$
   both maintaining the same ledger (i.e., either both maintaining $\Mainchain$, or both
   maintaining $\Sidechain$) and for every slot $r_1$ and $r_2$ such that
-  $r_1 \leq r_2 \leq t$, let $\Chain_1$ be the adopted chain of $\party_1$ at
-  slot $r_1$ and $\Chain_2$ be the adopted chain of $\party_2$ at slot $r_2$.
+  $r_1 \leq r_2 \leq t$, let $\chain_1$ be the adopted chain of $\party_1$ at
+  slot $r_1$ and $\chain_2$ be the adopted chain of $\party_2$ at slot $r_2$.
   The \emph{$k$-common prefix property} for slot $t$ states
-  that $\Chain_2[:|\Chain_1[:-k]|] = \Chain_1[:-k]$.
+  that $\chain_2[:|\chain_1[:-k]|] = \chain_1[:-k]$.
 \end{definition}
 
 \subsubsection{The Firewall Property and $\Mainchain$-Receiving Transactions}
@@ -246,11 +246,11 @@ a certain situation, it must be an $\Mainchain$-receiving transaction.
   and we have a contradiction.
 
   \textbf{Case 2: } $\llid(\tx) = \Sidechain$.
-  Let $\Chainmc$ and $\Chainsc$ be the $\Mainchain$ and respectively $\Sidechain$ chain
+  Let $\chainmc$ and $\chainsc$ be the $\Mainchain$ and respectively $\Sidechain$ chain
   adopted by $\party_\Sidechain$ at slot~$t$ (and recall that $\party_\Sidechain$ maintains
-  both chains). Let $\Chainmc'$ be the chain adopted by
+  both chains). Let $\chainmc'$ be the chain adopted by
   $\party_\Mainchain$ at slot $t$. As before,
-  $\textsc{annotatetx}_\Sidechain(\Chainmc,\Chainsc)$ must be a fixpoint of
+  $\textsc{annotatetx}_\Sidechain(\chainmc,\chainsc)$ must be a fixpoint of
   $\textsc{verifytx}_\Sidechain$ (as $\textsc{verifytx}_\Sidechain$ checks for a fixpoint).
   As in the previous case, $\tx$ cannot violate (a), (b), (c) and in this case
   nor (d), as this would constitute a fixpoint violation. Hence $\tx$ is an
@@ -259,13 +259,13 @@ a certain situation, it must be an $\Mainchain$-receiving transaction.
 
   Let $\tx^{-1} \defeq \eff{\Mainchain}{\Sidechain}^{-1}(\tx)$. Since $\tx$ is accepted
   by $\textsc{verifytx}_\Sidechain$ on input
-  $\textsc{annotatetx}_\Sidechain(\Chainmc,\Chainsc)$, we deduce that
-  there exists some block $B \in \Chainmc[:-k]$
-  with $\tx^{-1} \in B$. But $\Chainmc'[:-k]$
+  $\textsc{annotatetx}_\Sidechain(\chainmc,\chainsc)$, we deduce that
+  there exists some block $B \in \chainmc[:-k]$
+  with $\tx^{-1} \in B$. But $\chainmc'[:-k]$
   is the longest stable chain among
   $\Mainchain$ maintainers (due to $\LState_\Mainchain^\cup[t] = \LState_\Mainchain^{\party_\Mainchain}[t]$),
-  hence $\Chainmc[:-k]$ is its prefix. Therefore
-  $B \in \Chainmc'[:-k]$.
+  hence $\chainmc[:-k]$ is its prefix. Therefore
+  $B \in \chainmc'[:-k]$.
   Hence, $\tx^{-1} \in \Ledger^{\party_\Mainchain}_\Mainchain[t]$.
   Due to the \emph{partioning property} of $\merge$, $\tx^{-1}$ must appear in
   the output of $\merge\left(
@@ -565,8 +565,8 @@ construction satisfies the firewall property.
   Let $\LState_1 = \LState_\Mainchain^{\party_\Mainchain}[t]$ and
   $\LState_2 = \LState_\Sidechain^{\party_\Sidechain}[t]$.
   The adversary obtains the stable portion of the
-  honestly adopted chain, namely $\Chain_1 = \LView{\Chain}{\party_\Mainchain}{t}[:-k]$ and the
-  transactions included in $\Chain_1$, namely $\LState'_1$ (note that
+  honestly adopted chain, namely $\chain_1 = \LView{\chain}{\party_\Mainchain}{t}[:-k]$ and the
+  transactions included in $\chain_1$, namely $\LState'_1$ (note that
   $\LState'_1 \neq \LState_1$ if $\LState'_1$ contains certificate
   transactions). $\mathcal{A}_1$ examines whether $\LState = \merge(\LState_1,
   \LState_2) \not\in\adalang$, to deduce whether $\mathcal{A}$ has succeeded.
@@ -596,7 +596,7 @@ construction satisfies the firewall property.
   that it will correspond to a unique epoch $\epoch_j$). $\sccert_j$ contains a
   message $m = (j,\langle\pending_j\rangle, avk^j)$ and a signature $\sigma_j$.
   $\mathcal{A}_1$ extracts the epoch $\epoch_j$ in
-  which $\sccert_j$ was confirmed in $\Chain_1$ (and note that we must have $j >
+  which $\sccert_j$ was confirmed in $\chain_1$ (and note that we must have $j >
   0$). $\mathcal{A}_1$ collects the public keys elected for the last $2k$ slots
   of epoch $\epoch_{j-1}$ according to the view of $\party_\Sidechain$
   into a set $\keyseq_{j-1}$ and similarly for $\keyseq_j$. $\mathcal{A}_1$
@@ -643,7 +643,7 @@ construction satisfies the firewall property.
   a $\Sidechain$ maintainer such that
   $\LState_\Mainchain^{\party_\Mainchain}[t] = \LState_\Mainchain^\cup[t]$ and
   $\LState_\Sidechain^{\party_\Sidechain}[t] = \LState_\Sidechain^\cup[t]$
-  and obtains the variables $\LState_1, \LState_2, \Chain_1,
+  and obtains the variables $\LState_1, \LState_2, \chain_1,
   \LState'_1$ as before. $\mathcal{A}_2$ examines whether $\LState =
   \merge(\LState_1, \LState_2) \not\in\adalang$, to deduce whether $\mathcal{A}$
   has succeeded. If $\mathcal{A}_2$ is not able to find such a time slot $t$ and
