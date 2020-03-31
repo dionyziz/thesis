@@ -1,16 +1,19 @@
 \chapter{Proofs of Proof-of-Stake}\label{chapter:stake}
 
 In this short chapter,
-we abstract the notion of this trust transition into a new cryptographic
-primitive called \emph{ad-hoc threshold multisignatures (ATMS)} that we
-implement in three distinct ways. The first one simply concatenates signatures
-of elected slot leaders. While secure, the disadvantage of this implementation
-is that the size of the sidechain certificate is $\Theta(k)$ signatures. An
-improvement can be achieved by employing multisignatures and Merkle-tree hashing
-for verification key aggregation;  using this we can drop the
-sidechain-certificate size to $\Theta(r)$ signatures where $r$  slot leaders do
-not participate in its generation; in the optimistic case $r\ll k$ and thus this
-scheme can be a significant improvement in practice. Finally, we show that
+we introduce a novel cryptographic primitive,
+\emph{ad-hoc threshold multisignatures (ATMS)},
+ fundamental building block for cross-chain certification in proof-of-stake.
+We discuss specific instantiations of ATMS in
+Section~\ref{sec:auth}.
+We implement them in three distinct ways. The first one simply concatenates
+signatures of elected slot leaders. While secure, the disadvantage of this
+implementation is that the size of the sidechain certificate is $\Theta(k)$
+signatures. An improvement can be achieved by employing multisignatures and
+Merkle-tree hashing for verification key aggregation;  using this we can drop
+the sidechain-certificate size to $\Theta(r)$ signatures where $r$  slot leaders
+do not participate in its generation; in the optimistic case $r\ll k$ and thus
+this scheme can be a significant improvement in practice. Finally, we show that
 STARKs and bulletproofs~\cite{ben2017scalable,bulletproofs} can be used to bring
 down the size of the certificate to be optimally succinct in the random oracle
 model.  We observe that in the case of an active sidechain (e.g., one that
