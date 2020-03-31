@@ -1,24 +1,37 @@
-\subsection{Blockchains and Ledgers}
-A \emph{blockchain} (or a \emph{chain}) (denoted e.g. $\Chain$)  is a sequence
-of blocks where each one is connected to the previous one by containing its
-hash.
+\subsection{Chains and Ledgers}
+\index{Genesis}
+\index{Anchored Chain}
+\index{Blockchain}
+\index{Block}
+\glsxtrnewsymbol[description={the genesis block}]{genesis}{$\mathcal{G}$}\glsadd{genesis}
+\glsxtrnewsymbol[description={blockchain}]{chain}{$\chain$}\glsadd{chain}
+Blockchains are finite block sequences obeying the \emph{blockchain property}:
+that in every block in the chain there exists a pointer to its previous block.
+We denote a blockchain (or simply \emph{chain}) by $\chain$. A special block
+generated at the beginning of the protocol execution called the \emph{genesis}
+block $\mathcal{G}$ is known by all parties. Every valid chain must begin with
+the genesis block. We call such a chain \emph{anchored}.
+
+\index{Block ID}
+\glsxtrnewsymbol[description={block}]{block}{$B$}\glsadd{block}
+Given chains $\chain_1, \chain_2$ and block $B$ we concatenate them as
+$\chain_1 \chain_2$ or $\chain_1 B$. $\chain_2[0]$ must point to $\chain_1[-1]$
+and $B$ must point to $\chain_1[-1]$. The \emph{id} function on a block returns
+the hash of the block header data $\textsf{id} = H(ctr, x,
+h')$.
 
 In blockchain protocols, each honest party $\party$ maintains a currently
-adopted chain. We denote $\LView{\Chain}{\party}{t}$ the chain adopted by party
-$\party$ at slot~$t$.
+adopted chain. We denote $\LView{\chain}{\party}{t}$ the chain adopted by party $\party$ at slot~$t$.
 
 A \emph{ledger} (denoted in bold-face, e.g. $\Ledger$) is a mechanism for
 maintaining a sequence of transactions, often stored in the form of a
-blockchain.  In this paper, we slightly abuse the language by letting $\Ledger$
-(without further qualifiers) interchangeably refer to the algorithms used to
-maintain the sequence, and all the views of the participants of the state of
-these algorithms when being executed.  For example, the (existing) ledger
-Bitcoin consists of the set of all transactions that ever took place in the
-Bitcoin network, %the Bitcoin protocol,
-the current UTXO set, as well as the
-local views of all the participants.
+blockchain.
 
-In contrast, we call a \emph{ledger state}
+\glsxtrnewsymbol[description={ledger state}]{ledgerstate}{$\LState$}\glsadd{ledgerstate}
+\glsxtrnewsymbol[description={stable ledger view by party $\party$ at time $t$}]{ledgerview}{$\LView{\Ledger}{\party}{t}$}\glsadd{ledgerview}
+\glsxtrnewsymbol[description={unstable ledger view by party $\party$ at time $t$}]{ledgerunstable}{$\check{\Ledger}{\party}[t]$}\glsadd{ledgerunstable}
+\index{Ledger State}
+We call a \emph{ledger state}
 %$\LState$
 a concrete sequence of transactions
 $\tx_1,\tx_2, \ldots$ stored in the \emph{stable} part of a ledger $\Ledger$, typically as viewed by a
@@ -41,24 +54,6 @@ $\party$ at the beginning of a time slot $t$,
 and by $\check{\Ledger}^P[t]$ the complete state of the ledger (at time
 $t$) including all
 pending transactions that are not stable yet.
-For two ledger states (or, more generally, any sequences), we denote by
-$\preceq$ the prefix relation.
-
-Recall the definitions of persistence and liveness of a robust public
-transaction ledger given in the most recent version of~\cite{backbone}:
-
-\begin{description}
-  \item[Persistence.]
-    For any two honest parties $\party_1,\party_2$ and two time slots $t_1\leq t_2$,
-    it holds  $\LView{\Ledger}{\party_1}{t_1} \preceq
-    \LView{\check{\Ledger}}{\party_2}{t_2}$.
-
-  \item[Liveness.]
-    If all honest parties in the system attempt to include a  transaction
-    then, at any slot $t$ after $u$ slots (called the
-    liveness parameter), any honest party $\party$, if queried,
-    will report $\tx \in \LView{\Ledger}{\party}{t}$.
-\end{description}
 
 \glsxtrnewsymbol[description={union of all ledger views}]{ledgercup}{$\Ledger_i^{\cup}$}\glsadd{ledgercup}
 \glsxtrnewsymbol[description={intersection of all ledger views}]{ledgercap}{$\Ledger_i^{\cap}$}\glsadd{ledgercap}
