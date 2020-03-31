@@ -7,10 +7,10 @@
         \Let{st}\varepsilon
         \Let{round}1
         \Function{$\textsf{Backbone}$}{$1^\lambda$}
-            \Let{\tilde\chain}{\mathsf{maxvalid}( \chain, \mbox{any chain $\chain'$ found in  \textsc{Receive}()}) }
-            \If{$\textsc{Input}()\mbox{ contains }\textsc{Read}$}
-		        \State{ {\bf write} $R(\chain)$ to \textsc{Output}()}
-            \EndIf
+            \Let{\tilde\chain}{\mathsf{maxvalid}( \chain, \mbox{any chain $\chain'$ received from the network}) }
+%            \If{$\textsc{Input}()\mbox{ contains }\textsc{Read}$}
+%		        \State{ {\bf write} $R(\chain)$ to \textsc{Output}()}
+%            \EndIf
             \Let{\langle st, x\rangle}{I(st,\tilde\chain, round, \textsc{Input}(), \textsc{Receive}())}
             \Let{\chain_\mathsf{new}}{\Call{\sf pow}{x, \tilde\chain}}
             \If{$\chain\ne\chain_\mathsf{new}$}
