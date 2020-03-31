@@ -44,14 +44,14 @@ blockchain by dropping the last $k$ blocks and serializing the transactions in
 the remaining blocks).
 We maintain the typographic convention that a ledger state (e.g. $\LState$) always
 belongs to the bold-face ledger of the same name (e.g. $\Ledger$).
-We denote by $\LView{\Ledger}{P}{t}$ the ledger state of a ledger $\Ledger$ as viewed by a party
+We denote by $\LView{\Ledger}{\party}{t}$ the ledger state of a ledger $\Ledger$ as viewed by a party
 $\party$ at the beginning of a time slot $t$,
 %Finally, recall that a transaction is called \emph{stable} if it is contained in a block
 %at least $k$ blocks away from the end of the blockchain. For a blockchain
 %$\Chain$, we denote by $\stable{\Chain}$ the stable part of $\Chain$ (which
 %implicitly depends on $k$). Moreover, for a  chain $\Ledger$ we
 %denote by $\Ledger^t$ its form in some past time slot $t$.
-and by $\check{\Ledger}^P[t]$ the complete state of the ledger (at time
+and by $\check{\Ledger}^\party[t]$ the complete state of the ledger (at time
 $t$) including all
 pending transactions that are not stable yet.
 
