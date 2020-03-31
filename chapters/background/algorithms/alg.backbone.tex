@@ -15,7 +15,7 @@
             \Let{\chain_\mathsf{new}}{\Call{\sf pow}{x, \tilde\chain}}
             \If{$\chain\ne\chain_\mathsf{new}$}
                 \Let{\chain}{ \chain_\mathsf{new}}
-                \State\textsc{Diffuse}{$(broadcast)$}
+                \State\textsc{Diffuse}{$(\chain)$}
             \Else
                 \State\textsc{Diffuse}{$(\bot)$}
             \EndIf
