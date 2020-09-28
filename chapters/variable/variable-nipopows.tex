@@ -200,6 +200,9 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   rounds $U$ has a subset $S$ of $\Delta$-isolated uniquely successful rounds
   such that:
   \begin{itemize}
+    % I think this needs to say Q(S) \geq ... instead of |S| \geq ...
+    % But this is sufficient because honest parties mine in a low enough level
+    % to warrant that, given large Q(S), we can deduce that |S| is also large
     \item $|S| \geq Q(U) - 3A(U) - 2\ell(1 + \epsilon)\tau\alpha(J)/\epsilon$
     \item at any round after $\dexpand{S}$, every honest party has a
           chain which contains all the blocks corresponding to $S$.
@@ -209,8 +212,9 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
 \begin{proof}[Sketch]
   Let $U' = \{\min U - \ell, \cdots, \max U + \ell\}$.
   Let $S$ contain all those $r \in U$ such that for any $S' \subseteq U'$
-  it holds that $Q(S') > A(S')$. From typicality it follows that
-  any $S'$ with elements outside of $U'$ cannot have $Q(S') > A(S')$,
+  it holds that $Q(S') > A(J')$ where $J'$ denotes the set of adversarial
+  queries in $\dexpand{S'}$. From typicality it follows that
+  any $S'$ with elements outside of $U'$ cannot have $Q(S') > A(J')$,
   as $|S'| \geq \lambda$.
   Consider the minimum collection $\mathcal{T}$ of sets of consecutive rounds
   with the following properties:
@@ -246,11 +250,14 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   $T_1, T_2 \in \mathcal{T}$. Consider the
   largest round $r' < r$ with $r' \in U \setminus S$, and note that such a round
   must exist. Necessarily, $r'$ will be covered be either $T_1$ or $T_2$, or
-  both, but by no other span: As $r - r' \geq \Delta$, any span $T'$ which
-  covers rounds prior to $r'$ cannot extend to the right to cover $r$; that is,
-  $\max{\dexpand{T'}} < r$. A symmetric argument can be made for any spans on the
-  right side of $r$. Therefore, non-sentinel rounds can only be covered by up to
-  two spans in $\dexpand{\mathcal{T}}$.
+  both, but by no other span (to see this, observe that if, say, $r'$ was covered
+  by $T_2$ and not $T_1$ but also by some other span $T_3$, then $T_2$ would be
+  needless and this would contradict the minimality of $\mathcal{T}$). As $r -
+  r' \geq \Delta$, any span $T'$ which covers rounds prior to $r'$ cannot extend
+  to the right to cover $r$; that is, $\max{\dexpand{T'}} < r$. A symmetric
+  argument can be made for any spans on the right side of $r$. Therefore,
+  non-sentinel rounds can only be covered by up to two spans in
+  $\dexpand{\mathcal{T}}$.
 
 %  If $r$ is a sentinel that is not a right-sentinel, then it is covered by
 %  a span $T \in \mathcal{T}$ and must
@@ -275,7 +282,7 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
 
   Let $q = Q(U)$ and $a = A(U)$.
   We need to show that
-  $a - |S| \leq 3a + 2\ell (1 + \epsilon) \tau \alpha(J) / \epsilon$.
+  $q - |S| \leq 3a + 2\ell (1 + \epsilon) \tau \alpha(J) / \epsilon$.
 
   \begin{align*}
   q - |S| = Q(U \setminus S) \leq \sum_{T \in \mathcal{T}} Q(T)
@@ -530,7 +537,7 @@ $S$. The following lemma makes this more precise:
   \]
 \end{lemma}
 \begin{proof}[Sketch]
-  The first inequality follows from Lemma~\ref{balloon-honest}. For the second,
+  The first inequality follows from Lemma~\ref{lem:balloon-honest}. For the second,
   observe that the adversary cannot use any queries made prior to $r$.
 \end{proof}
 
