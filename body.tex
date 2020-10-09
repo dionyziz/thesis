@@ -1,6 +1,8 @@
 % TODO: list of figures, list of tables
 \input{chapters/preface/prelude}
+\ifuniversity\else
 \input{chapters/preface/preface}
+\fi
 \input{chapters/introduction/introduction}
 \input{chapters/background/background}
 \input{chapters/work/work}
@@ -9,7 +11,10 @@
 \input{chapters/stake/stake}
 \input{chapters/sidechains/sidechains}
 \input{chapters/conclusion/conclusion}
+\ifuniversity
+\backmatter
+\fi
 \input{bibliography/bibliography}
 \input{index}
-\appendix
-\input{chapters/appendix}
+\input{chapters/appendix/appendix}
+%

@@ -1,0 +1,13 @@
+\ifuniversity
+\begin{appendix}
+\appendixstartedtrue
+\phantomsection
+\addcontentsline{toc}{chapter}{APPENDICES}
+\import{./}{chapters/appendix/body}
+\end{appendix}
+\else
+\appendix
+\begin{appendices}
+\import{./}{chapters/appendix/body}
+\end{appendices}
+\fi

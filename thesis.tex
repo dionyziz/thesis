@@ -3,7 +3,11 @@
 \newif\ifdraft
 % \drafttrue
 
+\ifuniversity
+\documentclass[inscr,ack,preface,lop]{diphdthesis}
+\else
 \documentclass[a4paper,openright,twoside]{report}
+\fi
 \usepackage{preamble/preamble}
 
 \begin{document}

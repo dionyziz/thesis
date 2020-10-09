@@ -1,20 +1,41 @@
-\ProvidesPackage{preamble}
+\ProvidesPackage{preamble/preamble}
 
 % Files
 \usepackage{import}
 
 % Geometry
+\ifuniversity
+\usepackage{booktabs}
+\usepackage{hyperref}
+\hypersetup{
+    unicode=true,                     % non-Latin characters in bookmarks
+    pdffitwindow=true,                % page fit to window when opened
+    pdfnewwindow=true,                % links in new window
+    pdfkeywords={},                   % list of keywords
+    colorlinks=true,                  % false: boxed links; true: colored links
+    linkcolor=black,                  % color of internal links
+    citecolor=black,                  % color of links to bibliography
+    filecolor=black,                  % color of file links
+    urlcolor=black,                   % color of external links
+    pdftitle={},                      % title
+    pdfauthor={},                     % author
+    pdfsubject={}                     % subject of the document
+}
+\else
 \usepackage[lmargin=142pt,rmargin=95pt,tmargin=127pt,bmargin=123pt]{geometry}
 \raggedbottom
+\fi
 
 % Input
 % \usepackage[utf8]{inputenc}
 % \usepackage[english]{babel}
+\ifuniversity\else
 \usepackage{fontspec}
 \setmainfont{CMU Serif}
 \setsansfont{CMU Sans Serif}
 \newfontfamily{\greekfont}{CMU Serif}
 \newfontfamily{\greekfontsf}{CMU Sans Serif}
+\fi
 \usepackage[Greek,Latin]{ucharclasses}
 \usepackage{polyglossia}
 \setdefaultlanguage{english}
@@ -55,3 +76,7 @@
 \input{preamble/hyphenation}
 \input{preamble/title}
 \input{preamble/environments}
+
+\ifuniversity
+\input{chapters/preface/university-metadata.tex}
+\fi

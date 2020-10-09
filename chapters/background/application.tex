@@ -365,7 +365,9 @@ $\overline{\tx}$ and is defined as follows.
 
   The \emph{UTXO validity language} $\ValLang_{\textsc{UTXO}}$ with macroeconomic
   policy $\textsf{mints}$ is defined as
-  $\ValLang^{\textsf{extends}_{\textsc{UTXO}},\textsf{mints}}$.
+  \[
+    \ValLang^{\textsf{extends}_{\textsc{UTXO}},\textsf{mints}}\,.
+  \]
 \end{definition}
 
 \subsection{The Account Model}\index{Account Model}
@@ -438,13 +440,14 @@ We are now ready to define the validity language for an account-based system.
 Again, we will
 define our validity language by extension according to
 Definition~\ref{def:lang-extension}.
-The $\textsf{extends}_{\textsc{account}}(\overline{\tx}, \tx)$ predicate checks that
+
+The $\textsf{extends}_{\textsc{account}}(\overline{\tx},\allowbreak \tx)$ predicate checks that
 the transaction $\tx$ can be applied on top of the existing transaction sequence
 $\overline{\tx}$ and is defined as follows.
 
 \begin{definition}[Account validity]
   Let $\overline{\tx} \in \Trans_\textsc{account}^*$ and $\tx \in \Trans_{\textsc{account}}$.
-  Let $\tx = (\textsf{from}, \textsf{to}, \textsf{amount}, \textsf{ctr}, \sigma)$
+  Let $\tx = (\textsf{from},\allowbreak \textsf{to},\allowbreak \textsf{amount},\allowbreak \textsf{ctr},\allowbreak \sigma)$
   and let $\textsf{mint}$ be a \emph{minting predicate}.
   Let $S = (\Gen, \Sig, \Ver)$ be a secure signature scheme.
 

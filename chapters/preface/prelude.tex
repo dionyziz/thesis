@@ -1,15 +1,19 @@
-\input{chapters/preface/cover}
 \ifuniversity
-\input{chapters/preface/committee.tex}
-\fi
-
+\frontmatter
+\else
 \blankpage
 \blankpage
 \blankpage
 \blankpage
 
 \thispagestyle{empty}
-\input{chapters/preface/dedication}
+\vspace*{4cm}
+\begin{center}
+  \itshape
+  \raggedleft
+  \input{chapters/preface/dedication}
+\end{center}
+
 \newpage
 
 \blankpage
@@ -20,5 +24,7 @@
 
 \blankpage
 
-\tableofcontents
-\newpage
+\fi
+% \tableofcontents
+% \newpage
+%
