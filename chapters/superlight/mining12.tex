@@ -47,8 +47,7 @@ satisfies the block property or not.
 	\[
 		(1+\eps)\xi_Qp|W'|+3\lambda\xi_Qf
 	.\]
-	To upper bound the number of $Q$-blocks the adversary can suppress we
-	are going to apply Lemma~\ref{lemma:negbin}.
+	We upper bound the number of $Q$-blocks the adversary can suppress.
 	Consider every block computed in $S$ that was suppressed by the
 	adversary. Each such block has an associated adversarial block (see
 	Lemma~\ref{lemma:balanced} and the paragraph following its proof).
@@ -58,8 +57,8 @@ satisfies the block property or not.
 	more than $k$ blocks deep at the time its associated block was
 	created.
 	Let $M_j=1$ if the suppressed block was a valid $Q$-block.
-	By Lemma~\ref{lemma:negbin}, the adversary suppressed at most
-	$(1+\eps)\xi_Qp|W|$. Thus
+	The adversary suppressed at most
+	$(1+\eps)\xi_Qp|W|$ blocks. Thus
 	the number of $Q$-blocks on $\chain\setminus\chain^*$ is at least
 	\[
 		Y_Q(S)-(1+\eps)\xi_Qp|W|
