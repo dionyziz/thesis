@@ -22,8 +22,8 @@ can be garbage collected and pruned from the blockchain, and hence do not need
 to be stored by any miner, in memory or in hard drives, and they never need to
 be sent on the network. The remaining blocks that need to be kept in the state
 form a set of blocks $\Pi$ and are exponentially fewer than the original chain
-$\chain$. Of course it will hold that $\Pi \subseteq \chain$. Given that the
-pointers described in Section~\ref{sec.interlink} are introduced to every block,
+$\chain$. Of course it will hold that $\Pi \subseteq \chain$. Given that
+interlink pointers are introduced to every block,
 we will ensure that the remaining blocks $\Pi$ that are stored in the state
 still form a chain, meaning that they can be placed in chronological order and
 every block $\Pi[i]$ will include a pointer to its immediately preceding block
