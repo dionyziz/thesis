@@ -170,10 +170,10 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   We will use Lemma~\ref{lem:pairing} to pair the difficulty of block $b''$
   against adversarially generated difficulty.
   We distinguish two cases.
-  \paragraph{Case $b'' \not\in \chain':$} As $r'' + \Delta \leq r'$, therefore
+  \textbf{Case $b'' \not\in \chain':$} As $r'' + \Delta \leq r'$, therefore
   $\diff(\chain''b'') \leq \diff(\chain')$ and $b''$ can be paired against
   adversarial difficulty in $\chain'$.
-  \paragraph{Case $b'' \in \chain':$}
+  \textbf{Case $b'' \in \chain':$}
   Since $r$ is $\Delta$-isolated uniquely successful, we must have
   $r'' \leq r - \Delta$ or $r'' \geq r + \Delta$.
   If $r'' \leq r - \Delta$ then $\diff(\chain'' b'') \leq \diff(\chain B)$,
@@ -393,11 +393,11 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   Therefore, we will show that, if $\pi'$ is chosen, then it is admissible.
   Let $\mathcal{M} =
   \{\mu: \pi\upchain^\mu \cap \pi'\upchain^\mu \neq \emptyset\}$.
-  \paragraph{Case 1: $\mathcal{M} = \emptyset$.}
+  \textbf{Case 1: $\mathcal{M} = \emptyset$.}
   Consider $r^* = 0$ and let $S = \{0, \cdots, r\}$.
   If $\mathcal{M} = \emptyset$ then... chopping off will get us to genesis,
   which is honest and recent. \todo{finish this case}
-  \paragraph{Case 2: $\mathcal{M} \neq \emptyset$.}
+  \textbf{Case 2: $\mathcal{M} \neq \emptyset$.}
   Let
   $\mu = \min\mathcal{M}$. Let
   $b = (\pi\upchain^\mu \cap \pi'\upchain^\mu)[-1]$
@@ -405,7 +405,7 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   Let $r^*$ be the round during which $b^*$ was generated
   and set $S = \{r^*, \cdots, r\}$.
   Let $\mu^* = \lceil\lg\frac{n_{r_\pi}}{n_0}\rceil$.
-  \paragraph{Case 2a: $\mu > \mu^*$.}
+  \textbf{Case 2a: $\mu > \mu^*$.}
   By the minimality of $\mu$, it will hold that
   $|\pi\{b{:}\}\upchain^\mu| \geq m$ (otherwise
   $b \in D[\mu - 1] \cap D'[\mu - 1] \neq \emptyset$).
@@ -413,10 +413,10 @@ $Z^S\upchain^\mu = \sum_{r \in S}Z_r\upchain^\mu$.
   Apply Theorem~\ref{thm:varscp} to obtain
   $|\pi\{b{:}\upchain^\mu\}| > |\pi'\{b{:}\}\upchain^\mu|$.
   Therefore, in this case, $\pi$ will be chosen.
-  \paragraph{Case 2b: $\mu \leq \mu^*$.}
+  \textbf{Case 2b: $\mu \leq \mu^*$.}
   If the adversarial proof is chosen, then chopping off will get us to an
   honest fresh block because, from typicality,
-  $\diff(\pi'\{b:\}) < A(\{r_{b^*}, \cdots, r\}) < ?$ must also be small.
+  $\diff(\pi'\{b:\}) < A(\{r_{b^*}, \cdots, r\})$ must also be small.
   \todo{finish this case}
 \end{proof}
 
@@ -564,7 +564,7 @@ epoch completes, the NIPoPoW verifier can use the difficulty estimate as before.
    Consider an $(\epsilon, \eta, \theta)$-typical execution in the variable
    difficulty $\Delta$-bounded delay setting so that for every $i$
    we have $t_i < (\frac{1}{4} - \delta)n_i$.
-   Then the NIPoPoW prover of Algorithm~\ref{alg.nipopow-variable-verifier},
+   Then the NIPoPoW prover of Algorithm~\ref{alg.nipopow-prover},
    coupled with the verifier which follows the balloon technique, is
    a secure PoPoW protocol.
 \end{theorem}
