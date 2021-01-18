@@ -31,7 +31,7 @@
                 \For{$(i, j) \in \textsf{spawn}$}\Comment{Spawn new honest parties as clones of old ones}
                     \State{$\textsf{assert}(P_j \neq \bot)$}
                     \Let{P_i}{P_j}
-                    \Let{\textsf{seen}[i]}{\textsf{seen}[i]}
+                    \Let{\textsf{seen}[i]}{\textsf{seen}[j]}
                     \Let{I}{I \cup \{i\}}
                 \EndFor
                 \For{$i \in \textsf{kill}$}\Comment{Kill honest parties of the adversary's choice}
