@@ -1,4 +1,4 @@
-SOURCES := $(shell find . -iname '*.tex' -o -iname '*.bib' -o -iname '*.sty' -o -ipath '*figures/*.pdf')
+SOURCES := $(shell find . -iname '*.tex' -o -iname '*.bib' -o -iname '*.sty' -o -iname '*.cls' -o -ipath '*figures/*.pdf')
 
 .PHONY: all clean
 
