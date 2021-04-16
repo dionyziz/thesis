@@ -27,7 +27,7 @@ place. Secondly, that this money rightfully belongs to the party who is about to
 spend it, and has not been spent before, to protect against \emph{double spending}.
 
 The problem of consensus is solved differently in different monetary systems. Gold
-coins had stamps whose veracity could be checked, while paper bills have chemical
+coins had stamps whose veracity could be checked, while paper bills have watermarking
 features making them difficult to duplicate. Such physical features ensure the
 legitimacy of minting. The problem of double spending is trivial when it comes to
 physical matter: If I give a
@@ -64,8 +64,9 @@ be known as \emph{Bitcoin Core}\index{Bitcoin Core}, the first cryptocurrency
 wallet. Satoshi, whose name was soon deified within
 the blockchain community, was nothing but a Japanese pseudonym, the
 physical identity and whereabouts of the author or authors still unknown. Never
-short on drama, the space was shaken again when Satoshi mysteriously disappeared
-without a trace in 2011, leaving the community leaderless, perhaps in an attempt
+short on drama, the space was shaken again when Satoshi mysteriously ceased
+all his online activity in 2011.
+His online persona disappeared without a trace, leaving the community leaderless, perhaps in an attempt
 to, in a sense, remove the last standing trusted third party from the picture.
 
 As an electronic currency, Bitcoin enjoys many advantages. The transfer of
@@ -170,8 +171,8 @@ after time $\Delta$, causing the network to disagree about whether the first
 transaction is valid.
 
 \subsection{Chains of blocks}
-To solve this problem, nodes must place transactions in chronological order. As
-Eve can lie about the timestamps of her transactions or broadcast them at a
+To solve this problem, Bitcoin mandates that nodes place transactions in chronological
+order. As Eve can lie about the timestamps of her transactions or broadcast them at a
 delayed time, timestamps cannot be trusted.
 
 Transactions on the network are collected by nodes into bundles called
@@ -197,9 +198,9 @@ creates a \emph{chain of blocks} or \emph{blockchain}. As each block contains
 transactions, reading the transactions within the blockchain in order gives a
 unique ledger signifying which transaction happened before which other
 transaction. The validity of the blockchain requires that the transactions in
-the new block do not conflict with transactions in the previous chain, and so
+the new block do not conflict with transactions in the past chain, and so
 reading the transaction sequence of a valid blockchain always gives a valid
-transaction sequence. Whenever a node receives a blockchain from the
+transaction sequence, without any double spends. Whenever a node receives a blockchain from the
 network, if it is longer than its own blockchain in the number of blocks it
 contains, then it abandons its own blockchain and adopts the longer one. This is
 known as the \emph{longest chain rule}. The first block of the blockchain,
@@ -222,8 +223,10 @@ block to travel through the peer-to-peer network, so that honest parties will ad
 happens that two blocks are found almost simultaneously by chance, some parties
 will mine on top of one chain, while others will mine on top of another. Once a
 new block is found, one of the two chains will grow longer and the population
-will migrate to the longest chain, abandoning the shorter chain and reaching
-consensus. These are known as \emph{temporary forks}\index{Temporary Fork}. The
+will migrate to the longest chain, abandoning the shorter chain. If no other
+blocks are found and broadcast in close temporal proximity to this one block,
+all honest will adopt this newly generated block and converge.
+These situations are known as \emph{temporary forks}\index{Temporary Fork}. The
 chance of two blocks being found simultaneously again and again is small, and
 hence eventually the network will converge to a common view. This is illustrated
 in Figure~\ref{fig.blockchain}. The honest parties may have some small
@@ -268,6 +271,9 @@ to $0$. As the hash function has an unpredictable output, this problem becomes
 more difficult as $T$ becomes smaller. The only known way to solve the problem
 is by brute forcing the $\textsf{nonce}$ until a suitable value is found. This
 process is known as \emph{proof-of-work}.
+While $T$ is constant for short periods
+of time, it is adjusted over longer periods of time to achieve the desired
+block production rate. This is known as \emph{variable difficulty}.
 
 Proof-of-work systems take significant computational resources to secure,
 because they must ensure honest parties are putting in more effort than any
@@ -291,7 +297,9 @@ a block occasionally using the same key that signifies money ownership.
 Therefore, a node is asked to sign off a block every once in a while. This node,
 known as a \emph{leader}, is a representative among the rest of the stakeholders
 and is chosen at random among the stakeholders as follows. Among all the coins
-in the system, a coin is selected uniformly at random. As richer participants
+in the system, a coin is selected uniformly at random.
+This is known as \emph{following the satoshi}.
+As richer participants
 own more coins, their probability of being selected is higher. While this
 sampling process will sometimes elect adversarial nodes, it elects nodes
 according to the underlying stake distribution. We know that following this
@@ -314,7 +322,7 @@ way that allows anyone holding the respective public key to verify the evolution
 was truthful. The old key is then destroyed. This is useful to ensure that each
 key corresponds to a particular epoch. A key corresponding to an epoch cannot be
 used to create votes on blocks corresponding to older epochs, giving the system
-\emph{forward secrecy}. This protects against an event in which a majority
+\emph{forward security}. This protects against an event in which a majority
 stakeholder, due to stake shifting, becomes a minority stakeholder. The honest
 majority assumption allows that stakeholder to then become corrupt. It is
 important that the adversary corrupting the minority stakeholder cannot reuse

@@ -49,7 +49,7 @@ expected.
     \label{fig.superblocks}
 \end{figure}
 
-When a chain $\chain$ is mined, there will therefore exist a \emph{subchain} of
+When a chain $\chain$ is mined, there will therefore exist a subsequence of
 it, consisting only of blocks of level $\mu$, which is going to be only
 $\frac{|\chain|}{2^\mu}$ blocks long. The core idea of the construction is this:
 Instead of sending the full chain, the prover chooses a level $\mu$ and sends
@@ -138,9 +138,8 @@ miner upgrade in what we introduce as a \emph{velvet fork}.
 
 \begin{figure}[ht]
     \caption{The interlinked blockchain. Each superblock is drawn taller
-    according to its achieved level. Each block links to all the blocks that are
-    not being overshadowed by their descendants. The most recent (right-most)
-    block links to the four blocks it has direct line-of-sight to.}
+    according to its level. A new block links to all previous blocks that
+    have not been overshadowed by higher levels in the meantime.}
     \centering
     \includegraphics[width=0.9\columnwidth,keepaspectratio]{chapters/introduction/figures/level-shadows.pdf}
     \label{fig.hierarchy}
@@ -314,7 +313,8 @@ rest of the network and update their local state by evolving their NIPoPoW in
 light of the new block. As long as the majority of the mining power is honest,
 even \emph{all} miners can upgrade to this logarithmic protocol so that no one
 really has to ever save the whole chain. The idea here is that the full history
-of transactions is not necessary to achieve economic consensus; what is needed
+of transactions is not necessary to achieve economic consensus (i.e., who holds
+how much money or how much money remains unspent); what is needed
 is to be able to determine whether a new transaction is valid, and for this it
 suffices to know the current state of the system, be it unspent transaction
 outputs or account balances. This technique, which provides exponential
@@ -432,7 +432,15 @@ ATMS. As the proof is a short string, it can be submitted to the destination
 blockchain for verification. This verification can be done by the destination
 chain miners natively (without ever connecting to the source blockchain), or by
 a smart contract. The latter case is the more interesting one, because it allows
-blockchains that were never designed to be interoperable to communicate. Once
+blockchains that were never designed to be interoperable to communicate.
+In this setting, the code for checking the validity of the NIPoPoW as well
+as the code for their comparison is written into smart contract format.
+This allows the smart contract running in one blockchain to consume NIPoPoWs
+generated about other blockchains. In this case, the miners of the smart
+blockchain simply execute the smart contract code as if it were any other smart
+contract, without any regard for its
+semantics or knowledge that inter-chain communication is taking place.
+Once
 the smart contract has verified the proof, it may be able to take a decision
 immediately (for proof-of-stake sources), or it may need to wait for a short
 period to allow for \emph{contesting proofs} to appear (for proof-of-work
@@ -468,10 +476,12 @@ records the address of its counterpart. Initially, a coin exists in its native
 blockchain A. The coin is locked into a special smart contract within the native
 blockchain, which ensures that it cannot be further spent. At this stage,
 blockchain A functions as a source blockchain for the communication protocol.
-The fact that the coin was locked is proven using a Proof of Proof. This proof
+The fact that the coin was locked is proven using a Proof of Proof-of-Work or
+Stake. This proof
 is created by the user that locked her coin. The proof is submitted to a smart
 contract which lives on blockchain B. At this stage, blockchain B functions as a
-destination chain. The receiving smart contract verifies the Proof of Proof and
+destination chain. The receiving smart contract verifies the Proof of Proof-of-Work
+or Stake and
 waits to ensure there is no contestation. At this point, the receiving smart
 contract can be certain that the coin was locked into its counterpart which
 lives in chain A. Note that the smart contract never directly connected to the
@@ -563,7 +573,7 @@ adversaries (Chapter~\ref{chapter:variable}). In the synchronous variable model
 (Chapter~\ref{chapter:variable}), our distill construction is secure against a
 $\frac{1}{3}$ adversary as long as difficulty is non-decreasing. Our charity
 without goodness construction is secure against a $\frac{1}{3}$ adversary even
-if difficult is not limited to non-decreasing. Both are succinct as long as
+if difficulty is not limited to non-decreasing. Both are succinct as long as
 difficulty is not exponentially decreasing. Lastly, in the $\Delta$-bounded
 delay setting (Chapter~\ref{chapter:variable}), both constructions are secure
 and succinct under the same limitations, but only against a $\frac{1}{4}$
@@ -578,7 +588,7 @@ We make use of these primitives to build \textbf{cross-chain transfer}
 applications, which give rise to interoperability among blockchains, allowing
 generic information transfer among work/work, work/stake, and stake/stake
 chains. We give the definition of what constitutes a secure sidechain protocol
-(Chapter~\ref{chapter:sidechains}) and put forth cross-chain protocols which we
+(Chapter~\ref{chapter:sidechains}) and put forth a cross-chain protocol which we
 prove secure. Our protocols can work natively or by leveraging smart contract
 functionality. We show how they can be utilized to create one-way and two-way
 pegs and discuss several deployment mechanisms which allow them to be deployed
@@ -586,7 +596,7 @@ as soft forks or better. Our protocols can also be used to build superlight
 clients. Lastly, we show that our proof-of-work protocols specifically can be
 utilized to build logarithmic-space miners (Chapter~\ref{chapter:superlight}),
 providing exponential improvements over the state and communication complexity
-of existing blockchain protocols.
+of existing proof-of-work blockchain protocols.
 
 \begin{figure}
     \caption{

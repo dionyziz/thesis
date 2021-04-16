@@ -73,13 +73,13 @@ blockchain has grown and contains many blocks. The verifier wishes to know
 whether a transaction is confirmed to decide if a payment has been made. It
 connects to multiple other \emph{full nodes}, that we term \emph{provers}
 throughout this work, who maintain the whole blockchain. At least one connection
-will be to an \emph{honest node}. All the provers send some claims to the
+will be to an \emph{honest node}. All the provers send claims to the
 verifier, some claiming that the transaction is confirmed, while others that it
 is not. The goal of the verifier is to decide which of these claims is true. The
 claims are accompanied by \emph{evidence} to illustrate them, but must be short
 in length so that the client can synchronize quickly. In particular, we aim for
 exponentially shorter messages $\bigO(polylog(|\chain|))$ instead of the
-standard $\bigO(|\chain|)$ than an SPV node requires. These superlight nodes are
+standard $\bigO(|\chain|)$ that an SPV node requires. These superlight nodes are
 useful when a client such as a mobile wallet wishes to synchronize with the
 network quickly. Other facts beyond transaction inclusion, such as account
 balances, are also useful to prove.
@@ -110,7 +110,7 @@ limitations of such a model?
 \subsection{Interoperability}
 Since the invention of Bitcoin in 2009, numerous other cryptocurrencies have
 followed, improving upon Bitcoin on several aspects. The most prolific of these
-is \emph{Ethereum}~\cite{buterin}, which introduces the concept of \emph{smart
+is \emph{Ethereum}~\cite{buterin}, which explores the concept of \emph{smart
 contracts}. These Turing-complete programs enable developers to define complex
 conditions which must be satisfied to spend money, beyond the simple signatures
 that Bitcoin allows as conditions for spending. They are programmed in
@@ -247,8 +247,8 @@ way around is straightforward.
 While sidechains were not originally proposed for scalability purposes, they can
 also be used to off-load the load of a blockchain in terms of transactions
 processed. For this purpose, a particular blockchain, which we will call the
-\emph{main chain}, that wishes to off-load its load can create multiple separate
-chains, the \emph{side chains}, that maintain consensus independently. A
+\emph{mainchain}, that wishes to off-load its load can create multiple separate
+sidechains, that maintain consensus independently. A
 cross-chain protocol can then be used to connect each side chain to the main
 chain, with the main chain functioning as a financial hub. While communication
 protocols between the main chain and the side chain can be symmetric, their use
