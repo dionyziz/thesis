@@ -104,7 +104,7 @@ In practice, our scheme can be implemented using the following technique to
 avoid commitments. Query $H(H(ctr) || x || s) \leq T$ to check if the query gives
 a valid block. If so, then reveal $H(ctr) || x || s$. Anyone on the network can
 check the block's validity. Whether the block is a Q-block can be determined by
-checking whether $H(ctr || H(H(ctr) || x || s)) \leq 2^{-\mu}$ for some
+checking whether it holds that $H(ctr || H(H(ctr) || x || s)) \leq 2^{-\mu}$ for some
 $\mu \in \mathbb{N}$.
 This can only be checked once $ctr$ is revealed (provided $ctr$ contains
 sufficient entropy), which corresponds to the Trapdoor Random Oracle secret.

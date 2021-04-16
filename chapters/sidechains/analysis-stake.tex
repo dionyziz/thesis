@@ -259,13 +259,13 @@ a certain situation, it must be an $\Mainchain$-receiving transaction.
 
   Let $\tx^{-1} \defeq \eff{\Mainchain}{\Sidechain}^{-1}(\tx)$. Since $\tx$ is accepted
   by $\textsc{verifytx}_\Sidechain$ on input
-  $\textsc{annotatetx}_\Sidechain(\chainmc,\chainsc)$, we deduce that
-  there exists some block $B \in \chainmc[:-k]$
-  with $\tx^{-1} \in B$. But $\chainmc'[:-k]$
+  $\textsc{annotatetx}_\Sidechain\allowbreak(\chainmc,\chainsc)$, we deduce that
+  there exists some block $B \in \chainmc[{:}-k]$
+  with $\tx^{-1} \in B$. But $\chainmc'[{:}-k]$
   is the longest stable chain among
   $\Mainchain$ maintainers (due to $\LState_\Mainchain^\cup[t] = \LState_\Mainchain^{\party_\Mainchain}[t]$),
-  hence $\chainmc[:-k]$ is its prefix. Therefore
-  $B \in \chainmc'[:-k]$.
+  hence $\chainmc[{:}-k]$ is its prefix. Therefore
+  $B \in \chainmc'[{:}-k]$.
   Hence, $\tx^{-1} \in \Ledger^{\party_\Mainchain}_\Mainchain[t]$.
   Due to the \emph{partioning property} of $\merge$, $\tx^{-1}$ must appear in
   the output of $\merge\left(
@@ -775,7 +775,7 @@ construction satisfies the firewall property.
   \end{equation}
   Therefore, we have a chain of certificates, each of which is signed with a
   valid key $avk^{j-1}$ and attests to the validity of the next key $avk^j$.
-  For all of these certificates, $\VerCombined(m, avk^{j-1}, \sigma_j)$ holds,
+  For all of these certificates, $\VerCombined(m,\allowbreak avk^{j-1},\allowbreak \sigma_j)$ holds,
   as it has been verified by $\party_\Mainchain$.
   Furthermore, by an induction argument (where the base case comes from the
   construction of $avk^0$ and the induction step follows
@@ -786,9 +786,9 @@ construction satisfies the firewall property.
   (with some index $\sccert_k$), the above implication also holds for $\tx'$,
   and so does its premise
   $
-    \VerCombined(m, avk^{k-1}, \sigma_k)
-    \land
-    \Comprises(\keyseq_{k-1}, avk^{k-1})
+    \VerCombined(m,\allowbreak avk^{k-1},\allowbreak \sigma_k)\allowbreak
+    \allowbreak\land\allowbreak
+    \Comprises(\keyseq_{k-1},\allowbreak avk^{k-1})
   $.
   Therefore, the conclusion of the implication
   $\langle\pending_k\rangle = \langle\pending'_k\rangle$ holds.
@@ -808,9 +808,9 @@ construction satisfies the firewall property.
 
   From the assumption that
   \textsc{atms-forge} has occurred, at epoch $\epoch_j$ we have that
-  $\VerCombined(m, avk^{j-1}, \sigma_j)$ and $\Comprises(\keyseq_{j-1},
+  $\VerCombined(m,\allowbreak avk^{j-1},\allowbreak \sigma_j)$ and $\Comprises(\keyseq_{j-1},
   avk^{j-1})$, but $\lnot \Comprises(\keyseq_j, avk^j)$ or
-  $\langle\pending_j\rangle \neq \langle\pending'_j\rangle$. From
+  $\langle\pending_j\rangle\allowbreak\neq\allowbreak\langle\pending'_j\rangle$. From
   Lemma~\ref{lem:honest-subsequence} and using $\Assum_{\hm}(\Sidechain)[t]$, we deduce that in the last $2k$ slots of epoch
   $\epoch_{j-1}$, at least $k+1$ must be honest. Since $\epoch_j$ is the
   earliest epoch in which this occurs, this means that $\keyseq_{j-1}$

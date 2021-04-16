@@ -65,7 +65,7 @@ The definition of an ATMS is given below.
     \emph{false}, determining whether $\mathcal{VK}$ were used to produce $avk$.
   \item $\SigCombine\left(m,\VK,\left<(vk_1,\sigma_1),\cdots, (vk_d, \sigma_d)\right>\right)$
     is the signature-aggregation algorithm that takes a message $m$, a sequence of
-    public keys $\mathcal{VK}$ and a sequence of $d$ pairs $\left<(vk_1,\sigma_1), \cdots, (vk_d, \sigma_d)\right>$
+    public keys $\mathcal{VK}$ and a sequence of $d$ pairs $\left<(vk_1,\sigma_1),\allowbreak \cdots,\allowbreak (vk_d, \sigma_d)\right>$
     where each $\sigma_i$ is a local signature on $m$ verifiable by $vk_i$ and
     each $vk_i$ is in a distinct position within $\mathcal{VK}$, $\SigCombine$
     combines these into a multisignature $\sigma$ that can later be verified with
