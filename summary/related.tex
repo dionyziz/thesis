@@ -1,0 +1,20 @@
+\noindent
+\textbf{Related work.}
+Forking mechanisms in blockchains have been a topic of contention.
+A complete overview of hard forks and soft forks is given by
+Buterin~\cite{buterinforks} (who also presents some convincing
+arguments of why hard forks can sometimes be preferable). In addition
+to soft forks, velvet forks~\cite{nipopows,velvet} present an interesting, and softer, alternative,
+although they are not always possible and great care must be taken
+when adopting them~\cite{velvet-nipopows}. Even in the case of hard forks,
+core changes to consensus mechanisms must be deployed with
+prudence~\cite{ciampi2020updatable}.
+
+Smart contracts~\cite{buterin} were first used to distribute mining
+proceeds in the work of Luu et al.~\cite{luu2017smartpool}. Our construction
+is inspired by their clever approach.
+Non-Interactive Proofs of Proof-of-Work (NIPoPoWs) were introduced by
+Kiayias et al.~\cite{nipopows}. The bribing attack against them, which
+we patch in this work, was discovered by B{\"u}nz et al.~\cite{flyclient}.
+Karantias et al.~\cite{compactsuperblocks} perform convincing measurements
+that illustrate such attacks have not happened in the wild (yet).

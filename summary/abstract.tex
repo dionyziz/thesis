@@ -1,0 +1,32 @@
+\begin{abstract}
+We put forth the first decentralized communication mechanism
+between proof-of-work and proof-of-stake blockchains, or combinations thereof.
+To construct it, we propose two new cryptographic primitives
+which function as cross-chain certificates. For proof-of-stake sources, the ATMS
+primitive (Ad-Hoc Threshold Multisignatures) allows attesting to the shifting of
+stake from epoch to epoch. For proof-of-work sources, the NIPoPoWs primitive
+(Non-Interactive Proofs of Proof-of-Work) allows compressing proof-of-work into
+succinct strings that shrink a long blockchain into a succinct polylogarithmic
+proof. We provide the first ATMS and NIPoPoWs constructions. For work, we prove
+our constructions are secure in both the static and the variable difficulty
+setting and we achieve security in the synchronous and bounded delay settings
+with concrete adversary bounds in each case. We put forth the first definition
+of sidechain security and formally prove our constructions secure.
+
+Our cross-chain certificates allow transmission of generic information
+between blockchains. We describe multiple applications,
+including proof-of-burn-based one-way pegs and two-way pegs.
+In addition to interoperability, our protocols enable transmission of
+blockchain information for its own use. This allows the construction of
+\emph{superlight} clients with exponentially smaller communication complexity
+than traditional clients. These superlight clients are the first asymptotic
+improvement upon SPV. Additionally, our protocols can be used in the work
+setting to create \emph{superlight miners}, which need only logarithmic state
+to mine and are an exponential improvement over standard proof-of-work
+blockchain protocols. We demonstrate the feasibility of our schemes with
+experiments, simulations, and implementations, including measurements of
+security and performance metrics. We give concrete proposals for deployment
+security parameters. We have worked with the industry to implement our schemes
+in practice: Our protocols have been implemented and deployed in the real world
+blockchains ERGO, nimiq, WebDollar, Midnight, and Cardano.\\
+\end{abstract}

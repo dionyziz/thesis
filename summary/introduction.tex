@@ -1,0 +1,202 @@
+\section{Introduction}
+Over the past decade, the blockchain space has evolved with hundreds of
+different cryptocurrencies and technologies being developed. These systems
+are generally isolated and no information can be passed from one to the
+other. The critical question this thesis answers is how to move information
+from one blockchain to another in a \emph{decentraliazed} manner, i.e.,
+without leveraging trusted third parties or groups of third parties.
+
+\section{Dissertation Summary}
+
+\subsection{Problem Statement}
+Blockchains are decentralized systems in which a population of maintainers
+or \emph{miners} keep track of a series of \emph{transactions} on a public
+append-only \emph{ledger}. In Proof-of-Work systems, it is assumed that the
+majority of computational power is honest, while in Proof-of-Stake systems,
+it is assumed that the majority of the money is in honest hands. Blockchain
+nodes maintaining a blockchain do not connect to other blockchains, and,
+while it is possible to run complex code on blockchain networks in the form
+of smart contracts, these contracts remain isolated and do not have any
+networking abilities.
+
+While information from one blockchain can easily be submitted to another,
+the critical problem is verifying that the information submitted is
+\emph{authentic}, i.e., it corresponds to events that really did take place
+in another blockchain.
+
+This problem is closely related to the problem of \emph{light
+synchronization}, in which a light wallet booting up with limited state
+and memory after being offline for a long time, needs to synchronize
+with the rest of the network and verify the validity of transactions.
+
+In both cases, the consensus state of the blockchain, such as the
+proof-of-work in work-based blockchains, must be \emph{compressed} so
+that it can be submitted for processing either by a smart contract (in
+the case of the interoperability problem) or by the light client (in the
+case of the synchronization problem). If the compression is
+\emph{logarithmic} with respect to the original chain, the protocol
+is said to be \emph{succinct}. This is an important property for both
+of these problems.
+
+\subsection{Related Work}
+
+The original Bitcoin paper~\cite{bitcoin} includes a mechanism for synchronization
+which removes transactions from the picture, but still requires transmission
+linear in the blockchain size. Previous attempts at compressing consensus
+state are by Miller~\cite{highway} and Kiayias et al.~\cite{popow}.
+
+The problem of interoperability was posited early in the space~\cite{sidechains}.
+There have been numerous attempts to interconnect blockchains, but all
+have limitations. Atomic swaps~\cite{tiernolan,herlihy2018atomic} allow the swapping of value
+between chains, but not the generic exchange of information.
+BTCRelay~\cite{btcrelay} is linear in the size of the source chain.
+Drivechains~\cite{drivechains} require direct observation for miners
+between different chains. Polkadot~\cite{polkadot}, Tendermint, Cosmos~\cite{tendermint},
+Liquid~\cite{federated-interoperability}, Interledger~\cite{interledger},
+and XCLAIM~\cite{xclaim} all make use of trusted third parties, although with various
+trust assumptions and each leveraging different cryptoeconomics.
+
+\subsection{Our Contributions}
+
+\subsubsection{Superblocks and NIPoPoWs}
+
+We create a decentralized blockchain verifier which, having only
+\emph{genesis}, connects to multiple provers, at least one of which is honest,
+is able to ascertain the confirmation of a transaction. Using its full local
+chain, each prover generates a succinct proof and sends it to the verifier.
+By comparing the
+proofs in terms of the amount of proof-of-work they encode, the verifier deduces
+which blockchain contains the most proof-of-work without receiving and
+validating every block header. The proofs the provers send are only generated
+once and do not require multiple interrogation questions from the verifier. As
+such, these proofs are non-interactive and we call them \emph{Non-Interactive
+Proofs of Proof-of-Work} (NIPoPoWs).
+
+To create such succinct representations of work, we look at the distribution of
+block hashes in the chain. Every valid block $B$ satisfies the proof-of-work
+equation $H(B) \leq T$ where $T$ is the mining target, but some blocks satisfy
+it better than others. Some blocks so happen to have a hash with value
+\emph{much} lower than $T$, even though this is not required for validity and is
+not intentional. For example, some blocks will satisfy $H(B) \leq \frac{T}{2}$.
+Because the hash function is uniformly distributed, in expectation
+\emph{half} the blocks will satisfy $H(B) \leq \frac{T}{2}$, a \emph{quarter} of
+them will satisfy $H(B) \leq \frac{T}{4}$, and in general only a $\frac{1}{2^\mu}$ fraction of blocks
+will satisfy $H(B) \leq \frac{T}{2^\mu}$. If a block satisfies this inequality
+for some $\mu \in \mathbb{N}$, we say that it is of \emph{level} $\mu$ and call
+it a $\mu$-superblock.
+
+When a chain $\chain$ is mined, there will therefore exist a subsequence of
+it, consisting only of blocks of level $\mu$, which is going to be only
+$\frac{|\chain|}{2^\mu}$ blocks long. The core idea of the construction is this:
+Instead of sending the full chain, the prover chooses a level $\mu$ and sends
+this as a \emph{representative of the underlying work}. Presenting a block of
+level $\mu$ captures the fact that work of about $2^\mu$ has happened around it
+without presenting that work itself. As such, a superblock is a way for the
+prover to \emph{sample} the blockchain in a way that can convince the verifier:
+When the verifier receives $m$ blocks of level $\mu$, it can deduce that
+approximately $m 2^\mu$ regular blocks must exist around those superblocks.
+Constructions based on this simple idea instantiate NIPoPoWs by leveraging
+superblocks and we call them \emph{superblock NIPoPoWs}.
+
+We create a different protocol, \emph{Proofs of Proofs-of-Stake}, achieving
+similar goals for proof-of-stake blockchains.
+
+\subsubsection{Interoperability}
+
+Given two chains, the \emph{source chain} and the
+\emph{destination chain} which are maintained by independent mining populations,
+we want to have the destination chain react to an \emph{event} that took place
+in the source chain. The miners on one chain are \emph{isolated} from the other,
+and they do not connect to its network. However, users interested in the
+cross-chain events can connect to both networks. Because users can be
+adversarial, the destination chain miners cannot simply trust the users' claim
+that an event took place on the source chain -- it needs to be verified.
+
+Events that can be passed from blockchain to blockchain can be virtually any
+predicate pertaining to a small amount of data such as a constant number of
+transactions or blocks. In practice, these events can be, for example, about the
+fact that a transaction with particular metadata took place on the source
+blockchain, that a particular amount has been sent or received, that a
+particular account holds a certain amount of balance at some point in time, that
+some transaction output remains unspent, that a smart contract method was
+called with some particular arguments, or that a smart contract's state
+variables held certain values at some point in time.
+
+We create support for cross-chain communication for blockchain systems in which
+the source blockchain can produce Non-Interactive Proofs of
+Proof-of-Work-or-Stake.
+
+The core idea of our sidechain construction is as follows. Whenever an event
+takes place within the source blockchain, information about the event as and its
+corresponding blockchain is compressed into a Proof of Proof-of-Work (or Stake).
+As the proof is a short string, it can be submitted to the destination
+blockchain for verification. This verification can be done by the destination
+chain miners by
+a smart contract. This allows
+blockchains that were never designed to be interoperable to communicate.
+In this setting, the code for checking the validity of the NIPoPoW as well
+as the code for their comparison is written into smart contract format.
+This allows the smart contract running in one blockchain to consume NIPoPoWs
+generated about other blockchains.
+
+As we can have both proof-of-work and proof-of-stake sources as well as
+proof-of-work and proof-of-stake destinations, this construction allows us to
+create communication bridges between any combination of consensus mechanisms.
+If the information is passed only one-way, then the communication is
+unidirectional. This application is still useful as a mechanism to bootstrap a
+new cryptocurrency from an old one. We present one way of doing that by
+destroying money on the source blockchain and proving that this happened by
+providing a relevant proof submitted to the destination chain. On the other
+hand, nothing prevents two blockchains from both functioning as a source and a
+destination for each other. This allows us to build fully bidirectional
+communication channels between blockchains, giving rise to full two-way pegs.
+
+In a two-way peg, the bidirectional communication can be used to move a coin
+from one blockchain to another while it retains its nature, decoupling the
+notion of a blockchain from that of a cryptocurrency. The lifecycle of the coin
+is as follows. Consider two blockchains A and B and an asset which is natively
+issued within chain A. Two smart contracts are deployed for interoperability
+purposes, one on chain A and one on chain B. Each of the two smart contracts
+records the address of its counterpart. Initially, a coin exists in its native
+blockchain A. The coin is locked into a special smart contract within the native
+blockchain, which ensures that it cannot be further spent. At this stage,
+blockchain A functions as a source blockchain for the communication protocol.
+The fact that the coin was locked is proven using a Proof of Proof-of-Work or
+Stake. This proof
+is created by the user that locked her coin. The proof is submitted to a smart
+contract which lives on blockchain B. At this stage, blockchain B functions as a
+destination chain. The receiving smart contract verifies the Proof of Proof-of-Work
+or Stake. At this point, the receiving smart
+contract can be certain that the coin was locked into its counterpart which
+lives in chain A. Note that the smart contract never directly connected to the
+network of chain A. The receiving smart contract mints a new token coin within
+blockchain B, equal in nominal value to the value of the locked coin on chain A.
+The token on chain B is given the the public key that corresponds to the user
+who locked the initial coin on chain A. That token can then be used for exchange
+within chain B like a regular currency. However, it is dissimilar from the
+native currency of chain B.
+Coins can be moved back by using the reverse mechanism.
+
+\subsection{Impact}
+We are the first to create both generic decentralized interoperability between
+blockchains, and to build superlight clients. Our light client protocols for
+proof-of-work are \emph{exponentially} better than previously known solutions.
+In the interoperability space, the problem had been long standing almost
+since the inception of cryptocurrencies~\cite{sidechains}.
+
+Beyond light clients and interoperability, our protocols can be used in
+a multitude of areas that seem unrelated on the surface. As some such examples,
+we have leveraged our protocols to
+exponentially improve the space requirements for proof-of-work miners,
+unilaterally burn cryptocurrency in a provable manner, and to develop financial derivatives
+on top of smart contracts in important decentralized finance applications.
+
+Our work has inspired a vibrant and challenging line of research by other
+groups. Following our paradigm and definitions, a different
+construction named FlyClient~\cite{flyclient} was introduced. Other follow-up
+works include Coda~\cite{coda}.
+
+Our protocols have seen wide implementation and deployment in the real world.
+Some blockchains implementing our ideas in production are ERGO, nimiq, WebDollar,
+Midnight, and Cardano. At the time of writing, they hold tens of billion of
+dollars in market capitalization.

@@ -1,0 +1,46 @@
+\section{Preliminaries}
+
+Blockchain systems maintain consensus through the dissemination of chains.
+A \emph{chain} $\chain$ is a finite sequence of \emph{blocks}, and each
+block $B$ is a triplet $(x, s, \textsf{ctr})$. A block id is the cryptographically
+secure hash of the triplet $H(x, s, \textsf{ctr})$. Here, $x$ denotes the set of
+confirmed messages (transactions), $s$ denotes the block id of the previous
+block in the chain, and $\textsf{ctr}$ denotes the \emph{leader election information},
+a nonce in the case of proof-of-work systems or a signature in the case of proof-of-stake
+systems. The first block in the chain is the genesis block $\mathcal{G}$ in which $s$
+is taken to be the empty string $\epsilon$ by convention. We write
+$\chain \preccurlyeq \chain'$ if $\chain$ is a (not necessarily strict) prefix of $\chain'$.
+We denote by $\chain[i]$ the $i^\text{th}$ block of the chain (zero-based).
+We use the Python range notation $\chain[i{:}j]$ to denote the subsequence of blocks,
+or \emph{subchain}, from $i$ (inclusive) to $j$ (exclusive).
+Omitting an index takes the subchain from the beginning or to the end
+respectively.
+
+We denote $\mathcal{E}$ an \emph{execution} of our blockchain
+protocol~\cite{EC:GarKiaLeo15,C:GarKiaLeo17}. The execution captures the messages exchanged
+by all parties throughout, as well as the random coins produced during the mining process.
+We use $\kappa$ to denote the security parameter.
+
+The \emph{block language} $\mathcal{L}_B$ is the set of all syntactically valid blocks and
+the \emph{chain language} $\mathcal{L}_\chain \subseteq \mathcal{L}_B^*$ is the set of all
+valid chains.
+
+Recall that a blockchain can be upgraded with a \emph{soft fork} or a \emph{hard fork}. In
+both cases, the code of the node is modified and the new software is distributed to the users.
+Some of the users adopt the new code and those are known as \emph{new} or \emph{upgraded} miners.
+The ones that do not upgrade are the \emph{old} or \emph{unupgraded miners} who are running the
+old version of the node. Once downloaded, the new code is activated after a designated
+\emph{activation block height}. The upgraded software contains new rules that govern the
+generation and validation of blocks. In both cases, the old rules are \emph{not} forwards compatible
+with the new rules: If an old node generates an old-style block, it will not be validated by
+upgraded miners. In the case of a soft fork, the new rules are backwards compatible with the
+old rules: If a new node generates a new-style block, it will be validated by old miners.
+Provided the upgraded miners constitute a majority, unupgraded nodes will still follow
+the longest chain, which will contain only upgraded blocks. Their own blocks will be
+rejected, so they will be economically pushed to upgrade their software.
+However, in a hard fork, the new rules are \emph{not} backwards compatible with the
+old rules: New nodes generate blocks that do not validate according to old rules.
+As such, the two populations create two distinct chains after the activation block
+height, which constitutes a chain fork. This is sometimes viewed as dangerous.
+Nevertheless, even in the case of hard forks, the old population typically
+eventually upgrades to the new rules and their temporary fork is abandoned.
