@@ -4,7 +4,7 @@ We now move on to the analysis of our scheme. As the scheme is deterministic,
 its correctness is straightforward to show.
 
 \begin{theorem}[Correctness]
-  The proof-of-burn protocol $\Pi$ of Section~\ref{sec:construction} is \emph{correct}.
+  The proof-of-burn protocol $\Pi$ of Section~\ref{sec:construction-burn} is \emph{correct}.
 \end{theorem}
 \begin{proof}
   Based on Algorithm~\ref{alg.construction-ro}, $\BurnVerify(1^\kappa, t, \GenBurnAddr(1^\kappa, t)) = \textsf{true}$ if and only if $\GenBurnAddr(1^\kappa, t) = \GenBurnAddr(1^\kappa, t)$, which always holds as $\GenBurnAddr$ is deterministic.
@@ -23,7 +23,7 @@ outputs.
 We will now apply the above lemma to show that our scheme is unspenable.
 
 \begin{theorem}[Unspendability]
-  If $H$ is a \emph{Random Oracle}, then the protocol $\Pi$ of Section~\ref{sec:construction} is \emph{unspendable}.
+  If $H$ is a \emph{Random Oracle}, then the protocol $\Pi$ of Section~\ref{sec:construction-burn} is \emph{unspendable}.
 \end{theorem}
 \begin{proof}
   Let $\mathcal{A}$ be an arbitrary probabilistic polynomial time $\spendattack$ adversary.
@@ -52,7 +52,7 @@ resistant and is in the standard model.
 \import{./}{chapters/sidechains/algorithms/alg.collision-adversary.tex}
 
 \begin{theorem}[Binding]
-  If $H$ is a \emph{collision resistant} hash function then the protocol of Section~\ref{sec:construction} is \emph{binding}.
+  If $H$ is a \emph{collision resistant} hash function then the protocol of Section~\ref{sec:construction-burn} is \emph{binding}.
 \end{theorem}
 \begin{proof}
   Let $\mathcal{A}$ be an arbitrary adversary against $\Pi$.
@@ -105,7 +105,7 @@ Appendix~\ref{sec:proofs:comp-ind}.
   Let $S = (\Gen, \Sig, \Ver)$ be a \emph{secure signature scheme},
   $H$ be a \emph{Random Oracle},
   and $\mathcal{T}$ be an unpredictable tag distribution.
-  Then the protocol of Section~\ref{sec:construction} instantiated with
+  Then the protocol of Section~\ref{sec:construction-burn} instantiated with
   $H, S, \mathcal{T}$ is \emph{uncensorable}.
 \end{theorem}
 \begin{proof}

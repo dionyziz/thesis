@@ -1,11 +1,11 @@
 \subsection{Security of Sidechains}
-\label{sec:security}
+\label{sec:sidechain-security}
 
 In this section we give a formal argument
 establishing that the
 %validity language $\adalang$ is correct according to
 %Definition~\ref{def:correctness} and the
-construction from Section~\ref{sec:construction} achieves
+construction from Section~\ref{sec:construction-stake} achieves
 %pegging correctness and
 pegging security of
 Definition~\ref{def:security}.
@@ -54,7 +54,7 @@ Proving our construction secure requires some case analysis. We summarize the
 intuition behind this endeavour before we proceed with the formal treatment.
 
 The proof of Theorem~\ref{thm:security} that shows that
-our construction from Section~\ref{sec:construction} has pegging security with overwhelming probability will be
+our construction from Section~\ref{sec:construction-stake} has pegging security with overwhelming probability will be
 established as follows. We will borrow the fact that our construction achieves
 persistence and liveness
 from the original analysis~\cite{ouroboros} and state
@@ -107,7 +107,7 @@ construction, they both follow directly from the guarantees shown for the
 standalone Ouroboros blockchain in~\cite{ouroboros}.
 
 \begin{lemma}[Persistence and Liveness]\label{lem:perslive}
-  Consider the construction of Section~\ref{sec:construction} with
+  Consider the construction of Section~\ref{sec:construction-stake} with
   the assumptions $\Assum_\Sidechain, \Assum_\Mainchain$. For all slots $t$, if
   $\Assum_\Sidechain[t]$ (resp. $\Assum_\Mainchain[t]$) holds, then $\Sidechain$ (resp. $\Mainchain$)
   satisfies persistence and liveness up to slot $t$ with overwhelming probability in $k$.
@@ -174,7 +174,7 @@ a certain situation, it must be an $\Mainchain$-receiving transaction.
 %\end{definition}}}}
 
 \begin{lemma}\label{lem:firewall-tx-types}
-  Consider an execution of the protocol of Section~\ref{sec:construction} at
+  Consider an execution of the protocol of Section~\ref{sec:construction-stake} at
   slot $t$ in
   which $\Mainchain$ and $\Sidechain$ satisfy persistence.
   Suppose
@@ -448,7 +448,7 @@ Lemma~\ref{lem:plausibility}.
 \end{proof}
 
 \begin{lemma}[$\Sidechain$ failure firewall]\label{lem:catastrophe-firewall}
-  Consider any execution of the construction of Section~\ref{sec:construction}
+  Consider any execution of the construction of Section~\ref{sec:construction-stake}
   in which persistence holds for $\Mainchain$.
   For all slots $t$ such that $\Secure_t = \{\Mainchain\}$
   we have that
@@ -515,7 +515,7 @@ construction satisfies the firewall property.
 
 \begin{lemma}[Firewall]\label{lem:firewall}
   For all PPT adversaries $\mathcal{A}$, the construction of
-  Section~\ref{sec:construction} with a secure ATMS and a collision-resistant
+  Section~\ref{sec:construction-stake} with a secure ATMS and a collision-resistant
   hash function satisfies the firewall property with respect to assumptions
   $\Assum_\Mainchain, \Assum_\Sidechain$ with overwhelming probability in $k$.
 \end{lemma}
@@ -870,7 +870,7 @@ construction satisfies the firewall property.
   \label{thm:security}
   In the synchronous setting
   with $2R$-semiadaptive corruptions, the construction of
-  Section~\ref{sec:construction} using a secure ATMS and a collision resistant
+  Section~\ref{sec:construction-stake} using a secure ATMS and a collision resistant
   hash function is \textit{pegging secure} with liveness parameter
   $u=2k$
   with respect to

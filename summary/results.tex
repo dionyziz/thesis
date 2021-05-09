@@ -65,7 +65,7 @@ will have a pointer to the most recent block of its own level.
 
 The number of pointers that need to be included in this manner is small because
 the number of levels the blockchain will ever reach is $\log|\chain|$. This
-interlinking is illustrated in Figure~\ref{fig.hierarchy}. To avoid premining of
+interlinking is illustrated in Figure~\ref{fig.hierarchy4}. To avoid premining of
 superblocks (blocks that were mined prior to the creation of the genesis block),
 we require that the interlink vector of every block also contains a pointer to
 the genesis block. By having miners add these extra pointers to blocks, the
@@ -84,7 +84,7 @@ miner upgrade in what we introduce as a \emph{velvet fork}.
     have not been overshadowed by higher levels in the meantime.}
     \centering
     \includegraphics[width=0.9\columnwidth,keepaspectratio]{../chapters/introduction/figures/level-shadows.pdf}
-    \label{fig.hierarchy}
+    \label{fig.hierarchy4}
 \end{figure}
 
 Because the two provers may send chains of different levels, it may be necessary
