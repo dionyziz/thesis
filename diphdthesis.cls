@@ -370,8 +370,8 @@ publications}\gdef\@lopfileinternal{#1}}
 	\@advisorOrgGr{}\\
 \fi
 }
-%\linebreak\linebreak
-%\linebreak
+\linebreak\linebreak
+\linebreak
 
 {
 \ifenglishcommitteepage
@@ -398,6 +398,8 @@ publications}\gdef\@lopfileinternal{#1}}
 \@boardThreeOrgGr{}\\
 \fi
 }
+\pagebreak
+\cleardoublepage
 
 \begin{center}
 {\bfseries
@@ -542,23 +544,25 @@ publications}\gdef\@lopfileinternal{#1}}
 %
 \renewcommand{\frontmatter}{
     \pagestyle{empty}
-    % frontpage - greek version
-    \input{chapters/preface/cover}
-
     % frontpage - english version
     \englishfrontpagetrue
     \input{chapters/preface/cover}
 
-    % examination committe page - greek version
-    \@committeepage
+    % frontpage - greek version
+    \englishfrontpagefalse
+    \input{chapters/preface/cover}
 
     % examination committe page - greek version
     \englishcommitteepagetrue
     \@committeepage
 
+    \englishcommitteepagefalse
+    % examination committe page - greek version
+    \@committeepage
+
     % abstract (greek and english version)
-    \@absGr
     \@absEn
+    \@absGr
 
     % thesis synopsis (greek version only, OPTIONAL)
     \@synopsis
