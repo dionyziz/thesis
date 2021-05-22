@@ -162,6 +162,20 @@ Multisignatures primitive, which we introduce in this work. Threshold
 multi-signatures were considered before~\cite{pass-asynchronous}, but  without
 the ad-hoc characteristic we consider here.
 
+Our work focuses on compressing \emph{consensus data},
+i.e., the block headers exchanged and stored. There has been significant
+work in compressing \emph{application data} in a way that maintains consensus.
+Such examples include moving transactions and smart contract execution off-chain
+in Layer 2 constructions such as payment channels~\cite{lightning,composable-lightning,brick,cerberus}
+and networks, rollups of
+the optimistic~\cite{truebit} or zero-knowledge~\cite{starks} kind, and
+sidechains~\cite{plasma,plasma,pow-sidechains,pos-sidechains}.
+Other systems allow (quite successfully) compressing multiple transactions
+into fewer or smaller, such as in the case of EDRAX~\cite{edrax},
+bulletproofs~\cite{bulletproofs}, or Mimblewimble~\cite{mimblewimble}. These systems do not compress
+consensus state; all block headers must still be sent and stored,
+even though the actual \emph{application data} is reduced.
+
 \subsection{Interoperability}
 Blockchain interoperability is a problem that has attracted a lot of interest in
 the space. Since 2011, the Namecoin~\cite{namecoin} blockchain used the concept
