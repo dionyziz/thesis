@@ -1,5 +1,13 @@
 \ProvidesPackage{preamble/preamble}
 
+% Compilation requirements; these "if"s are only used by the \ifuniversity
+% condition, but they must be redefined here so that LaTeX does not complain
+% when they are encountered, even if they are never processed.
+\ifuniversity\else
+\newif\ifenglishfrontpage
+\englishfrontpagetrue
+\fi
+
 % Files
 \usepackage{import}
 

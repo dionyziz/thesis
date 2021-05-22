@@ -1,96 +1,105 @@
 \ifuniversity
-  \begin{center}
-  \includegraphics{chapters/preface/figures/athena-black}
-  \end{center}
-  \begin{minipage}[t]{\textwidth}
-      \begin{center}
-        {\large \bfseries
-        \ifenglishfrontpage
-          NATIONAL AND KAPODISTRIAN UNIVERSITY OF ATHENS
-        \else
-          ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ
-        \fi
-        }
-        \linebreak
+ \begin{center}
+ \includegraphics{chapters/preface/figures/athena-black}
+ \end{center}
+ \begin{minipage}[t]{\textwidth}
+     \begin{center}
+       {\large \bfseries
+       \ifenglishfrontpage
+         NATIONAL AND KAPODISTRIAN UNIVERSITY OF ATHENS
+       \else
+         ΕΘΝΙΚΟ ΚΑΙ ΚΑΠΟΔΙΣΤΡΙΑΚΟ ΠΑΝΕΠΙΣΤΗΜΙΟ ΑΘΗΝΩΝ
+       \fi
+       }
+       \linebreak
 
-        {\bfseries
-        \ifenglishfrontpage
-          SCHOOL OF SCIENCES \\ DEPARTMENT OF INFORMATICS AND TELECOMMUNICATIONS
-        \else
-          ΣΧΟΛΗ ΘΕΤΙΚΩΝ ΕΠΙΣΤΗΜΩΝ \\ ΤΜΗΜΑ  ΠΛΗΡΟΦΟΡΙΚΗΣ ΚΑΙ ΤΗΛΕΠΙΚΟΙΝΩΝΙΩΝ
-        \fi
-        }
-        \linebreak
+       {\bfseries
+       \ifenglishfrontpage
+         SCHOOL OF SCIENCES \\ DEPARTMENT OF INFORMATICS AND TELECOMMUNICATIONS
+       \else
+         ΣΧΟΛΗ ΘΕΤΙΚΩΝ ΕΠΙΣΤΗΜΩΝ \\ ΤΜΗΜΑ  ΠΛΗΡΟΦΟΡΙΚΗΣ ΚΑΙ ΤΗΛΕΠΙΚΟΙΝΩΝΙΩΝ
+       \fi
+       }
+       \linebreak
 
-        {\bfseries
-        \ifenglishfrontpage
-          PROGRAM OF POSTGRADUATE STUDIES
-        \else
-          ΠΡΟΓΡΑΜΜΑ  ΜΕΤΑΠΤΥΧΙΑΚΩΝ ΣΠΟΥΔΩΝ
-        \fi}
-        \linebreak\linebreak\linebreak
-        \linebreak\linebreak\linebreak
+       {\bfseries
+       \ifenglishfrontpage
+         PROGRAM OF POSTGRADUATE STUDIES
+       \else
+         ΠΡΟΓΡΑΜΜΑ  ΜΕΤΑΠΤΥΧΙΑΚΩΝ ΣΠΟΥΔΩΝ
+       \fi}
+       \linebreak\linebreak\linebreak
+       \linebreak\linebreak\linebreak
 
-        {\bfseries
-        \ifenglishfrontpage
-          PhD THESIS
-        \else
-          ΔΙΔΑΚΤΟΡΙΚΗ ΔΙΑΤΡΙΒΗ
-        \fi}
-        \linebreak\linebreak\linebreak
+       {\bfseries
+       \ifenglishfrontpage
+         PhD THESIS
+       \else
+         ΔΙΔΑΚΤΟΡΙΚΗ ΔΙΑΤΡΙΒΗ
+       \fi}
+       \linebreak\linebreak\linebreak
 
-        {\Large \bfseries
-        \ifenglishfrontpage
-          Decentralized Blockchain Interoperability
-        \else
-          Αποκεντρωμένη Blockchain Διαλειτουργικότητα
-        \fi}
-        \linebreak\linebreak\linebreak
+       {\Large \bfseries
+       \ifenglishfrontpage
+         Decentralized Blockchain Interoperability
+       \else
+         Αποκεντρωμένη Blockchain Διαλειτουργικότητα
+       \fi}
+       \linebreak\linebreak\linebreak
 
-        {\bfseries
-        \ifenglishfrontpage
-        Dionysis S. Zindros
-      \else
-        Διονύσης Σ. Ζήνδρος
-      \fi}
-      \end{center}
-  \end{minipage}
-  \vfill
-  \begin{center}
-  {\bfseries
-    \ifenglishfrontpage
-    ATHENS
-    \else
-  ΑΘΗΝΑ
-    \fi
-  }
-  \linebreak
+       {\bfseries
+       \ifenglishfrontpage
+       Dionysis S. Zindros
+     \else
+       Διονύσης Σ. Ζήνδρος
+     \fi}
+     \end{center}
+ \end{minipage}
+ \vfill
+ \begin{center}
+ {\bfseries
+   \ifenglishfrontpage
+   ATHENS
+   \else
+ ΑΘΗΝΑ
+   \fi
+ }
+ \linebreak
 
-  {\bfseries
-    \ifenglishfrontpage
-    APRIL 2020
-    \else
-    ΑΠΡΙΛΙΟΣ 2020
-    \fi
-    }
-  \end{center}
-  \clearpage
+ {\bfseries
+   \ifenglishfrontpage
+   APRIL 2020
+   \else
+   ΑΠΡΙΛΙΟΣ 2020
+   \fi
+   }
+ \end{center}
+ \clearpage
 
-  \newpage\null\newpage
+ \newpage\null\newpage
 \else
+\def\@primarycover[#1][#2]{
  \begin{titlepage}
-   \centering
-   \includegraphics[width=\textwidth]{chapters/preface/figures/uoa.pdf}\par\vspace{1cm}
-   {\scshape\Large Department of Computer Science\par}
-   \vspace{1cm}
-   {\scshape A dissertation submitted for the degree of Doctor of Philosophy\par}
-   \vspace{1cm}
-   {\huge\bfseries Decentralized Blockchain Interoperability\par}
-   \vspace{2cm}
-   {\Large\itshape Dionysis
-                   Zindros\par}
- 	\vfill
- 	{\large Athens\\\today\par}
+  \centering
+  \includegraphics[width=\textwidth]{chapters/preface/figures/uoa.pdf}\par\vspace{1cm}
+  {\scshape\Large Department of Computer Science\par}
+  \vspace{1cm}
+  {\scshape A dissertation submitted for the degree of Doctor of Philosophy\par}
+  \vspace{1cm}
+  {\huge\bfseries Decentralized Blockchain Interoperability\par}
+  \vspace{2cm}
+  {\Large\itshape Dionysis
+                  Zindros\par}
+  \vfill
+  {\large Athens\\
+          \vspace{1cm}
+          #1\\
+          #2\par
+          }
  \end{titlepage}
- \newpage\null\thispagestyle{empty}\newpage
+}
+\@primarycover[April 2020][]
+\clearpage\null\thispagestyle{empty}
+\@primarycover[Defended on: April 3, 2020][Last revision: \today]
+\thispagestyle{empty}\newpage
 \fi
