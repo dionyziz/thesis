@@ -1,0 +1,23 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.nipopow-variable-verifier}The state comparison algorithm for variable difficulty.}
+
+    \begin{algorithmic}[1]
+        \Function{{\sf maxvalid}$_{m,k}$}{$\Pi, \Pi'$}
+            \If{$\Pi' \text { is not a chain}
+                \lor |\Pi'| = 0 \lor \Pi'[0] \neq \mathcal{G}$}
+                \State\Return{$\Pi$}
+            \EndIf
+            \Let{(\chi, \ell, \mathcal{D})}{\textsf{Dissolve}_{m,k}(\Pi)}
+            \Let{(\chi', \ell', \mathcal{D'})}{\textsf{Dissolve}_{m,k}(\Pi')}
+            \Let{b}{(\Pi \cap \Pi')[-1]}
+            \Let{\mu}{\min\{\mu: b \in \mathcal{D}[\mu]\}}
+            \Let{\mu'}{\min\{\mu: b \in \mathcal{D}'[\mu]\}}
+            \Let{\mu_c}{\max\{\mu,\mu'\}} %:b\in\mathcal{D}[\mu]\cap\mathcal{D'}[\mu]\}}
+            \If{$|\Pi'\{b{:}\}\upchain^{\mu_c}| > |\Pi\{b{:}\}\upchain^{\mu_c}|$}
+              \State\Return{$\Pi'$}
+            \EndIf
+            \State\Return{$\Pi$}
+        \EndFunction
+    \vskip2pt
+    \end{algorithmic}
+\end{algorithm}

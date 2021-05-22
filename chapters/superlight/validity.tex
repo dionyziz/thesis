@@ -1,16 +1,12 @@
-\subsection{Computational Ledgers}
+\section{Computational Ledgers}
 
-\todo{Consider merging this into background chapter}
-
-We give some extensions to the validity languages described in
-Chapter~\ref{chapter:background}, which will allow us to construct clients that
-maintain shorter state than the full historical sequence of transactions.
+We note here that a full analysis of the logspace mining protocol would require
+a redefinition of the concepts of \emph{persistence} and \emph{liveness} to account
+for the fact that the blockchain application state at which the network converges
+is a valid historical possibility. We sketch these definitions for reference here.
 
 The blockchain protocol is parametrized by a \emph{blockchain application}
 tuple $(\mathcal{L}, \mathcal{S}, S_0, \delta)$ which consists of the following:
-
-\todo{Use a different notation for $\delta$ as this is reserved for the honest
-majority gap}
 
 \begin{enumerate}
   \item $\mathcal{L}$: A (potentially infinite) \emph{transaction language} containing all valid
@@ -79,9 +75,9 @@ be deemed successful.
 \begin{definition}[Computational persistence]
   A protocol $\Pi$ has \emph{computational persistence} if there is a negligible
   function $\negl$ such that for all probabilistic
-  polynomial time adversaries $(\mathcal{A}_1, \mathcal{A}_2)$ and all environments $\mathcal{Z}$
+  polynomial-time adversaries $(\mathcal{A}_1, \mathcal{A}_2)$ and all environments $\mathcal{Z}$
   there exists a probabilistic
-  polynomial time simulator $\mathcal{A}^*$ such that
+  polynomial-time simulator $\mathcal{A}^*$ such that
 
   \[
   \Pr[\validityattack_{\mathcal{A}_1,\mathcal{A}_2,\mathcal{Z},\mathcal{A}^*,\Pi}(\kappa)]
@@ -108,9 +104,9 @@ of party $p$.
 \begin{definition}[Computational liveness]
   A protocol $\Pi$ has \emph{computational liveness} if there is a negligible
   function $\negl$ such that for all probabilistic
-  polynomial time adversaries $(\mathcal{A}_1, \mathcal{A}_2)$ and all environments $\mathcal{Z}$
+  polynomial-time adversaries $(\mathcal{A}_1, \mathcal{A}_2)$ and all environments $\mathcal{Z}$
   there exists a probabilistic
-  polynomial time simulator $\mathcal{A}^*$ such that
+  polynomial-time simulator $\mathcal{A}^*$ such that
 
   \[
   \Pr[\livenessattack_{\mathcal{A}_1,\mathcal{A}_2,\mathcal{Z},\mathcal{A}^*,\Pi}(\kappa)]

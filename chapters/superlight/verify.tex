@@ -1,0 +1,160 @@
+\section{Fast Synchronization}
+
+We have seen how a full miner can compress their state
+into a polylogarithmic \emph{sample} $\pi\chi$ of blocks.
+But what is the use of this? We will now build the other
+side of the protocol: A node, and future miner, booting to
+the network for the first time, but holding only genesis
+$\mathcal{G}$. The node is also parametrized by the security
+parameters $m$ and $k$. This node wishes to learn where to mine.
+
+For now, let us
+assume that the rest of the network consists of full miners,
+and only one node is a light node. The first step of the neophyte
+is to determine \emph{what the current tip and snapshot} are.
+The light miner can then start mining on top of that tip, extending
+its application data snapshot. It does not need to know
+the blocks preceding the tip! Of course, this node will not be
+helpful towards bootstrapping \emph{yet more} nodes, but no
+matter --- it can still mine as if it were a full miner,
+and just as securely, as long as the tip can be correctly discerned.
+
+The protocol works as follows. Initially, the newly booting
+node (a NIPoPoW verifier),
+connects to multiple full nodes (the NIPoPoW prover)
+Each of these full nodes \emph{compresses} their state using
+Algorithm~\ref{alg.compress} and sends the compressed state, or \emph{proof} $\Pi = \pi\chi$,
+to the verifier. More concretely, the full node sends the block headers
+corresponding to the blocks in $\pi$ (of size $c \cdot poly\log(n)$). For the blocks in $\chi$, the full
+node sends the whole application snapshot (of size $a$) stored in $\chi[-k]$ and the
+transactions (of size $k\delta$) stored in $\chi$.
+Naturally, the adversary can send any string as a claimed proof.
+The verifier checks that $\Pi$ forms a chain,
+i.e., that all blocks are connected with interlinks and so they have
+been produced in the chronological order presented, and also that
+the first block in $\Pi$ is the genesis block $\mathcal{G}$ that it knows.
+It then extracts the last $k$ blocks as $\chi$ and the rest as $\pi$.
+It inspects the application data snapshot from $\chi[-k]$
+and ensures that the transactions in $\chi$ can be cleanly applied.
+This allows it to obtain the application state at the end of $\pi\chi$,
+which, in honest cases, is the same as the application snapshot at
+the end of the underlying blockchain.
+If any of these checks
+fail, the particular connection is considered compromised and closed.
+
+The verifier receives and verifies a series of such proofs,
+each consisting of a stable part $\pi$ and an unstable part $\chi$,
+with $|\chi| = k$.
+Given multiple such proofs $\Pi_1, \Pi_2, \cdots, \Pi_v$,
+the prover begins inspecting the proofs and comparing one against the other
+in a pairwise fashion. First, $\Pi_1$ is compared against $\Pi_2$,
+and one of them is deemed to be the best (using a mechanism we will soon study).
+The process continues until only one of them remains. As long as at least
+one proof was honestly generated, our protocol will arrive at a suffix $\chi$
+that is \emph{admissible}. This means that our light node will arrive at a snapshot
+which a \emph{full node miner} booting for the first time from genesis \emph{could} also
+have arrived at. Upon taking this decision, the light miner stores $\pi\chi$ in its state.
+
+The light miner can then start mining on top of $\chi[-1]$ to produce further blocks
+and to fully verify the validity of incoming network transactions in its mempool.
+After all, it is holding onto an application snapshot. These blocks can
+be broadcast to the network and will be accepted by the rest of the miners, despite
+our light miner not holding the full chain leading from genesis up to the newly mined
+block. The light miner can also understand and verify newly mined blocks of others.
+It can also deal with chain reorganizations: In case a reorganization of up to $k$
+blocks occurs, the light miner holds the whole of $\chi$ and can verify the
+state transitions completely. As for reorganizations of more than $k$ blocks long, these
+will never occur (except with negligible probability) due to the Common Prefix
+property.
+
+As this miner is not interested in helping bootstrap others, it can even throw away
+$\pi$ once it has booted up. Furthermore, every time a new block is mined (either by
+itself or by someone else), it can append it to $\chi$ and then truncate $\chi$ to only
+keep the $k$ most recent blocks. However, in the full protocol, described in the
+next section, the miner will need to hold on to (and update) $\pi$ to allow others
+to bootstrap.
+
+Let us now study the security-critical portion of our protocol, namely how the verifier
+compares two different proofs $\Pi$ and $\Pi'$. Given two proofs $\Pi$ and $\Pi'$, the algorithm
+must decide which one is \emph{best} or captures the most proof of work. In other words,
+it must conceptually correspond to the \emph{longest underlying chain}, or the underlying chain with the
+most work. The comparison algorithm is illustrated
+in Algorithm~\ref{alg.nipopow-verifier-distill}. The comparison is performed as follows. Initially,
+the two proofs $\Pi$ and $\Pi'$ are verified for syntactic validity: That $\Pi$ begins
+with $\mathcal{G}$, it is a chain, and that $\chi$ contains valid transactions extending
+the application data snapshot contained in $\chi[0]$. The comparison continues by
+invoking the $\textsf{Dissolve}_{m,k}(\Pi)$ function of Algorithm~\ref{alg.compress}
+on each of $\Pi$ and $\Pi'$.
+As before, this function extracts the maximum level $\ell$ containing at least $2m$
+blocks. Then it picks the required blocks from each level, with at least $2m$ blocks
+per level, but also a sufficient number of blocks per level to \emph{span} the last $m$
+blocks in the level above.
+Contrary to the invocation in Algorithm~\ref{alg.compress}, we are not passing
+the full chain to the function; instead, we are passing a chain which has already
+undergone compression. As such, if the compressed state was honestly generated,
+the triplet $(\chi, \ell, \mathcal{D})$ on the verifier end will be the same
+as the triplet on the prover end, because
+$\textsf{compress}_{m,k}(\chain) = \textsf{compress}_{m,k}(\textsf{compress}_{m,k}(\chain))$
+(but may be something else in case of adversarial
+proofs).
+
+\import{./}{chapters/superlight/algorithms/alg.nipopow-verifier-distill.tex}
+
+Only once the two proofs are stratified into levels $\mathcal{D}$,
+the comparison algorithm attempts to choose a level $\mu$ at which the comparison
+will be performed. This level is the \emph{minimum} level $\mu$ for which both provers
+have provided blocks (note that it is not sufficient that both provers have provided
+the same block at the same level; it must also have been selected in the same index
+of $\mathcal{D}$). In the edge case that \emph{no} such level can be found, the prover
+with the higher $\ell$ wins (if no such level is found \emph{and} they share the
+same level, it is irrelevant which prover will win). In the normal case that a level
+\emph{is} found, then the comparison takes place by taking account \emph{only} blocks of
+that level. The comparison begins by finding the most recent block shared by
+the two parties at that level, $(\mathcal{D}[\mu] \cap \mathcal{D}'[\mu])[-1]$.
+We call this the \emph{lowest common ancestor} $b$.
+The blocks of the selected level \emph{following} block $b$ (which must necessarily
+be disjoint by the definition of $b$) are then counted, and the party with the
+most blocks wins.
+
+Note the difference between the construction of this chapter (the \emph{distill
+construction}) and the construction of Chapter~\ref{chapter:work} (the
+\emph{charity construction}): The comparison here is performed in a unified
+level $\mu$, and no weighting is applied.
+
+Let us give a high-level intuition of why this protocol chooses the longest chain.
+The key idea is that, in addition to the Common Prefix property holding for
+regular blocks, this property also holds for $\mu$-superblocks at any level.
+More precisely, if there is a forking point $b$, the adversary could not have
+produced more than $m$ superblocks of level $\mu$ faster than the honest parties
+can produce $m$ superblocks of level $\mu$. This property stands at the heart
+of the following theorem.
+
+\begin{theorem}[Security]
+  When the honest verifier of Algorithm~\ref{alg.nipopow-verifier-distill} receives
+  a proof $\Pi$ constructed by an honest party using Algorithm~\ref{alg.compress}
+  and a proof $\Pi'$ constructed by the adversary, it will decide in favour
+  of the honest proof, unless the adversary is playing honestly and $\Pi'$
+  was generated according to protocol.
+\end{theorem}
+\begin{proof}[Sketch]
+  First, consider the case that $M \neq \emptyset$.
+  If the comparison is performed at level $\mu = 0$, this is akin to comparing
+  traditional chains and the theorem holds due to the Common Prefix property.
+
+  If the comparison is performed at a level $\mu > 0$, then we apply the extended
+  Common Prefix property at level $\mu$. By the minimality of $\mu$, there will be at least
+  $m$ blocks of the appropriate level following $b$ and so the honest parties will
+  win.
+
+  Lastly, if $M = \emptyset$, then we can apply the extended Common Prefix property
+  at the highest level $\ell$ achieved by the honest party. By construction, the
+  honest party holds at least $2m$ blocks at this level. Because the adversary
+  must have achieved a better $\ell' > \ell$ to win, she must also have at least
+  $2m$ blocks of a higher level, but these are also of level $\ell$. But this contradicts
+  the extended Common Prefix property, giving us the desired result.
+\end{proof}
+
+While this gives some intuition about why the protocol is designed the way it is,
+the core security argument pertains to arguing why the extended Common Prefix property
+holds. We formally prove this statement in the Analysis section for $1/3$ adversaries,
+where we also make the security theorem more precise.

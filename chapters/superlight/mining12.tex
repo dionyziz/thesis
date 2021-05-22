@@ -1,4 +1,5 @@
-\section{Logspace mining against 1/2}\label{sec.mining12}
+\section{Logspace mining against 1/2}\label{sec.mining12}%<<<
+
 
 Based on the trapdoor oracle implementation of the previous section,
 we modify the mining protocol so that the proof-of-work equation becomes
@@ -24,7 +25,9 @@ block. This information is broadcast and included in a transaction which is
 confirmed in blocks following $\chain$. This condition ``unfreezes'' the
 coinbase payout of the miner.
 
-\subsection{Security}
+%>>>
+
+\subsection{Security}%<<<
 
 We show how to strengthen the Common-Prefix Lemma
 (Lemma~\ref{lemma:qblockcommonprefix}), taking advantage of the fact
@@ -47,7 +50,8 @@ satisfies the block property or not.
 	\[
 		(1+\eps)\xi_Qp|W'|+3\lambda\xi_Qf
 	.\]
-	We upper bound the number of $Q$-blocks the adversary can suppress.
+	To upper bound the number of $Q$-blocks the adversary can suppress we
+	are going to apply Lemma~\ref{lemma:negbin}.
 	Consider every block computed in $S$ that was suppressed by the
 	adversary. Each such block has an associated adversarial block (see
 	Lemma~\ref{lemma:balanced} and the paragraph following its proof).
@@ -57,8 +61,8 @@ satisfies the block property or not.
 	more than $k$ blocks deep at the time its associated block was
 	created.
 	Let $M_j=1$ if the suppressed block was a valid $Q$-block.
-	The adversary suppressed at most
-	$(1+\eps)\xi_Qp|W|$ blocks. Thus
+	By Lemma~\ref{lemma:negbin}, the adversary suppressed at most
+	$(1+\eps)\xi_Qp|W|$. Thus
 	the number of $Q$-blocks on $\chain\setminus\chain^*$ is at least
 	\[
 		Y_Q(S)-(1+\eps)\xi_Qp|W|
@@ -72,6 +76,8 @@ satisfies the block property or not.
 	.\end{multline*}
 	The first and the last inequality use Lemma~\ref{lemma:typical}. For
 	the middle inequality, observe that if in a typical execution
-	$|S|\le3\lambda/\eps$, then less than $12\lambda\xi_Qf/\eps$ $Q$-blocks
+	$|S|\leq3\lambda/\eps$, then less than $12\lambda\xi_Qf/\eps$ $Q$-blocks
 	have been computed in total.
 \end{proof}
+
+%>>>

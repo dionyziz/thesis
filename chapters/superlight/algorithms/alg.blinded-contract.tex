@@ -1,0 +1,54 @@
+\begin{figure}
+\begin{algorithm}[H]
+    \caption{\label{alg.blinded-contract}The \textsf{BlindedMining} smart
+    contract used as a beneficiary in mining for soft fork deployment on Ethereum}
+    \begin{algorithmic}[1]
+        \Contract{\sf BlindedMining$_{k,\ell}$}
+          \Let{\textsf{uint earlyPeriod}}{2k + 2\ell}
+          \Let{\textsf{uint desiredPeriod}}{\textsf{earlyPeriod} + k + \ell}
+          \Let{\textsf{float slashingFraction}}{0.1}
+
+          \State\textsf{mapping}$(\textsf{uint} \rightarrow \textsf{addr})$ \textsf{blockClaimed}
+          \State\textsf{mapping}$(\textsf{uint} \rightarrow \textsf{bool})$ \textsf{blockRevealed}
+          \State\textsf{mapping}$(\textsf{uint} \rightarrow \textsf{mapping}(\textsf{addr} \rightarrow \textsf{string}))$ \textsf{commitments}
+          \State\textsf{mapping}$(\textsf{uint} \rightarrow \textsf{uint})$ \textsf{blockValue}
+%
+          \Payable{$\oplus$}{}
+             \Let{\textsf{blockValue}[\textsf{block.number}]}{\textsf{msg.value}}
+          \EndPayable
+          \Function{ClaimBlock}{}
+             \State \textsf{require}$(\textsf{blockClaimed}[\textsf{block.number}] = \textsf{address}(0))$
+             \Let{\textsf{blockClaimed}[\textsf{block.number}]}{\textsf{msg.sender}}
+             \Let{\textsf{blockNonce}[\textsf{block.number}]}{\textsf{ctr}}
+          \EndFunction
+          \Function{IsEarly}{\textsf{idx}}
+             \State\Return{$\textsf{block.number} < \textsf{idx} + \textsf{earlyPeriod}$}
+          \EndFunction
+          \Function{IsLate}{idx}
+             \State\Return{$\textsf{block.number} > \textsf{idx} + \textsf{desiredPeriod}$}
+          \EndFunction
+          \Function{IsOnTime}{idx}
+             \State\Return{$\lnot \textsc{IsEarly}(\textsf{idx}) \land \lnot \textsc{IsLate}(\textsf{idx})$}
+          \EndFunction
+          \Function{EarlyCommit}{\textsf{idx}, \textsf{commitment}}
+             \Let{\textsf{commitments}[\textsf{idx}][\textsf{msg.sender}]}
+              {\textsf{commitment}}
+          \EndFunction
+          \Function{EarlyReveal}{$\textsf{idx}, \textsf{ctr'}, \alpha, \beta$}
+             \State \textsf{require}$(\textsc{BlockHash}(\textsf{idx}) = H(\alpha || H(\textsf{ctr'}) || \beta) \land \textsc{IsEarly}(\textsf{idx}))$
+             \State\textsf{require}($\textsf{commitments}[\textsf{idx}][\textsf{msg.sender}] = H(\textsf{ctr'} || \textsf{salt} || \textsf{msg.sender})$)
+             \Let{v}{\textsf{slashingFraction} * \textsf{blockValue}[\textsf{idx}]}
+             \Let{\textsf{blockRevealed}[\textsf{idx}]}{\textsf{true}}
+             \State\textsf{msg.sender.transfer}(v)
+          \EndFunction
+          \Function{OnTimeReveal}{$\textsf{idx}, \textsf{ctr'}, \alpha, \beta$}
+             \State \textsf{require}$(\textsc{BlockHash}(\textsf{idx}) = H(\alpha || H(\textsf{ctr'}) || \beta))$
+             \State \textsf{require}($\textsc{IsOnTime}(idx) \land \lnot blockRevealed[idx]$)
+             \Let{\textsf{blockRevealed}[\textsf{idx}]}{\textsf{true}}
+             \State \textsf{blockClaimed}[\textsf{idx}].\textsf{transfer}(\textsf{blockValue}[\textsf{idx}])
+          \EndFunction
+        \EndContract
+    \vskip2pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

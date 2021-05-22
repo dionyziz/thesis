@@ -1,0 +1,73 @@
+\section{Discussion}
+
+We have presented a scheme in which full miners are replaced with log\-a\-rith\-mic-space
+miners. Our new mining protocol allows miners to only keep storage growing logarithmically
+in time. Furthermore, the data communicated to newly bootstrapped nodes is also logarithmic.
+We focused on optimizing the \emph{consensus data} portion of blockchains (i.e., block
+headers) without concern for the \emph{application data} portion. Our techniques can
+be composed with application data optimization techniques.
+
+We have proven our scheme succinct and secure against all $1/3$ adversaries.
+Our treatment requires \emph{uninterrupted} honest computational majority
+throughout the execution, is in the \emph{static} difficulty model, and works
+only for \emph{proof-of-work} blockchains. Let us discuss these
+aspects of our construction.
+
+Using our new mathematical framework, the \emph{charity} construction of
+Chapter~\ref{chapter:work} (with \emph{certificates of badness} removed) can also be
+proven secure against $1/3$ adversaries. However, now that we have the tooling of unsupressibility
+available to us, and we can prove the \emph{distill} construction secure and succinct,
+we have the additional benefit of the simplicity of comparison at a uniform level.
+However, as we will see in Chapter~\ref{chapter:variable}, this \emph{distill} construction
+will not work in the variable difficulty setting, and we will have to resort back to the
+\emph{charity} construction explored previously.
+
+\noindent
+\textbf{Temporary dishonest majority.} One important difference between our scheme
+and the existing blockchain protocols is that traditional full nodes are able to verify the \emph{whole}
+state evolution of the system from genesis. This allows them to recover in case of
+temporary dishonest majority~\cite{dishonest-majority,supremacy}, while our system cannot
+do so. Let us consider what could happen in case an adversary temporarily
+has the upper hand in a blockchain where everybody is mining using our protocol. Let
+$\chain$ denote the chain of the honest parties that has converged. The adversary
+begins mining on top of the honest tip. She eventually produces $k+1$ new blocks on
+top of $\chain[-1]$, generating an adversarial chain $\chain^*$, prior to the honest
+parties advancing by $k+1$ blocks --- a Common Prefix violation. In the block $\chain^*[-k - 1]$,
+the adversary places an invalid snapshot; say, a snapshot in which she owns a lot of
+money. The rest of the blocks in $\chain^*[-k{:}]$ are filled with valid transactions.
+This adversary can then compress this consensus state into a convincing proof,
+as state transitions buried $k + 1$ blocks beyond the tip are never checked.
+As soon as the honest parties transition to this adversarial chain, the attack
+concludes, and no more adversarial supremacy is required. It is critical to understand
+what assumptions our protocol mandates: An \emph{uninterrupted} honest majority throughout the
+execution. It remains an open question whether it is possible to construct
+logarithmic space mining protocols that can withstand temporary adversarial
+supremacy.
+
+\noindent
+\textbf{Variable difficulty.} We have built and analyzed our logarithmic mining protocol in the
+\emph{constant} difficulty setting, i.e., requiring that the target $T$ is a constant.
+We strongly suspect, but have not provided proof, that similar protocols to ours work in the
+variable difficulty setting. One important change in the protocol that is required
+before it can be adapted to variable difficulty settings is that the $\chi$ portion
+of the proofs cannot be a constant number of blocks long. Instead, it must be a
+suffix which corresponds to \emph{sufficient work having been performed}, the
+difficulty of which must correspond to the current target. Simply pruning $k$ blocks
+long is insufficient. As such, the verifier
+must first gauge the difficulty of the network prior to taking conclusive decisions.
+We explore variable difficulty constructions in Chapter~\ref{chapter:variable}.
+
+\noindent
+\textbf{Comparison to other NIPoPoWs.} The protocol explored in this chapter
+\emph{is} a Non-In\-ter\-active Proof of Proof-of-Work,
+akin to the charity NIPoPoWs of the previous chapters, and FlyClient~\cite{flyclient}. Our difference with
+FlyClient is the ability to generate \emph{online} proofs, proofs that can be updated as the
+blockchain grows. Contrary to our construction, FlyClient requires the sampling of past blocks
+to change as new blocks are added to the tip of the blockchain. This is due to their use of the
+Fiat--Shamir heuristic~\cite{fiatshamir}. More concretely, a block that was not sampled in the
+past may need to be sampled in the future. In our protocol, previously pruned blocks never need
+to be salvaged. As \emph{any} block has a potential for future samplability in FlyClient, no
+blocks can be discarded, and mining cannot be logarithmic.
+We are thus the first to propose a NIPoPoW which is \emph{online}, \emph{succinct}, and
+\emph{secure} against all minority ($1/3$) adversaries. All of these are necessary prerequisites
+to achieve the desired goal of logarithmic-space mining.

@@ -1,0 +1,36 @@
+\begin{algorithm}[H]
+    \caption{\label{alg.miner} The final logspace miner.}
+
+    \begin{algorithmic}[1]
+        \Let{\Pi}{\emptyset}
+
+        \Function{\sf Init$_{m,k}$}{$\overline{\Pi}$}
+            \For{$\Pi' \in \overline{\Pi}$}
+                \Let{\Pi}{\textsf{maxvalid}_{m,k}(\Pi', \Pi)}
+            \EndFor
+        \EndFunction
+        \Function{\sf Mine$_{m,k}$}{x}
+            \Let{b}{\textsf{pow}(\Pi[-1], x)}
+            \If{$b \neq \epsilon$}
+                \Let{\Pi}{\textsf{Compress}_{m,k}(\Pi b)}
+                \State{$\textsc{broadcast}(\Pi)$}
+            \EndIf
+        \EndFunction
+        \On{$\textsc{BootstrapRequest}$}
+            \State\Return{$\Pi$}
+        \EndOn
+        \On{$\textsc{NewBlockReceived}(\chi')$}
+            \Let{\chi}{\Pi[-k{:}]}
+            \Let{\pi}{\Pi[{:}-k]}
+            \If{$\chi' \text{ is a chain} \land \chi'[0] \in \chi$}
+                \Let{b}{(\chi \cap \chi')[-1]}
+                \If{$|\chi'\{b{:}\}| > |\chi\{b{:}\}|$}
+                    \State{Validate $\chi'$ state transitions starting from $b$}
+                    \Let{\Pi}{\textsf{Compress}_{m,k}(\pi \chi\{{:}b\} \chi'\{b{:}\})}
+                    \State{$\textsc{broadcast}(\Pi)$}
+                \EndIf
+            \EndIf
+        \EndOn
+    \vskip2pt
+    \end{algorithmic}
+\end{algorithm}

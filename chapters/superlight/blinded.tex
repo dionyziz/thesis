@@ -1,6 +1,6 @@
 \section{Blinded mining}
 
-The protocol presented in Section~\ref{sec.mining13} is secure against
+The protocol presented in the previous section is secure against
 $\frac{1}{3}$-bounded adversaries. We note that the reason why an adversary with more
 mining power is able to attack the scheme is because they are able to see which
 blocks are $Q$-blocks so that they can selectively supress them. This motivates
@@ -37,6 +37,7 @@ commitment opening for that particular block.
 To incentivize this honest behavior, we mandate that the miners are paid only
 \emph{after} opening their commitment. However, if a commitment opening is done
 prior to $k$ blocks after the commitment is placed in a block, the rewards are
-slashed and the miner is not paid.
+slashed and the miner is not paid. For more details, see
+Section~\ref{sec.deploy}.
 
 \import{./}{chapters/superlight/trapdoor}

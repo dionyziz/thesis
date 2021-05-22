@@ -1,0 +1,101 @@
+\section{Full definition of a $Q$-block}
+In order to define what a $Q$-block is, we begin by describing what an execution
+prefix is:
+
+\begin{definition}[Execution prefix]
+	Let $\textsf{EXEC}_1$ and $\textsf{EXEC}_2$ be two executions.
+	Suppose that $\textsf{EXEC}_1$ runs for $L_1$ rounds and $\textsf{EXEC}_2$
+	runs for $L_2$ rounds.
+	We will say that $\textsf{EXEC}_1$ is a \emph{prefix} of execution
+	$\textsf{EXEC}_2$
+	and write that $\textsf{EXEC}_1 \prec \textsf{EXEC}_2$
+	if $L_1 < L_2$ and
+	$\textsf{EXEC}_1$ is identical to $\textsf{EXEC}_2$ for the first rounds $L_1$
+	rounds.
+\end{definition}
+
+We are now ready to define our execution extension experiment, which is
+illustrated in Algorithm~\ref{alg.extension}. The experiment is parameterized by
+an execution $\textsf{EXEC}$ and a block predicate $Q$ (which, in some cases,
+will be a $Q$-block). There are two ways to execute the experiment: Either with
+a block $B$ specified, or without one. If no block is specified, the experiment
+considers all execution extensions $\textsf{EXEC'}$ such that the next random
+oracle query is honest and successful and extracts the truth value of $Q$ for
+the honestly generated block generated through that honest successful random
+oracle query. Here, we use $H_\textsf{EXEC}$ to denote the random oracle
+queries of execution $\textsf{EXEC}$, and so
+$H_\textsf{EXEC'}[|H_\textsf{EXEC}|]$ denotes the first random oracle query
+which exists in $\textsf{EXEC'}$ but not in $\textsf{EXEC}$. If block $B$ is
+specified, then the experiment considers all execution extensions
+$\textsf{EXEC'}$ such that the next random oracle query is adversarial,
+successful, and extending block $B$ and extracts the truth value of $Q$ for that
+adversarially generated block generated through that adversarial successful
+random oracle query extending $B$.
+
+\import{./}{chapters/superlight/algorithms/extension.tex}
+
+We can now define the \emph{performance} of an adversary with respect to a
+predicate $Q$.
+
+\begin{definition}[Honest performance]
+	Given a block predicate $Q_{\textsf{EXEC}}(\cdot)$ parameterized by an
+	execution
+	$\textsf{EXEC}$ under security parameter $\kappa$, we say that the
+	\emph{honest performance} against predicate $Q$ is $\xi_Q$ if for all
+	probabilistic polynomial-time adversaries $\mathcal{A}$ there exists some
+	negligible function negl such that:
+
+	\[
+		\Pr_{\textsf{EXEC}}[
+			\Pr[\textsf{extend}_{\mathcal{A},\textsf{EXEC},Q,\eps} = T|\textsf{extend}_{\mathcal{A},\textsf{EXEC},Q,\eps} \neq \bot] = \xi_Q(\kappa)
+		] \geq 1 - \text{negl}(\kappa)
+		\; ,
+	\]
+
+	The outside
+	probability is taken over all executions $\textsf{EXEC}$.
+	The inside probability is taken over the coins of the experiment
+	$\textsf{extend}$ (including the choice of execution extension
+	$\textsf{EXEC'}$).
+\end{definition}
+
+\begin{definition}[Adversarial performance]
+	Given a block predicate $Q_{\textsf{EXEC}}(\cdot)$ parameterized by an
+	execution
+	$\textsf{EXEC}$ under security parameter $\kappa$ and a probabilistic
+	polynomial-time adversary $\mathcal{A}$, we say that the \emph{adversarial performance}
+	of $\mathcal{A}$ against predicate $Q$ is $\xi_{Q,\mathcal{A}}$ if there exists a
+	negligible function negl such that:
+
+	\[
+		\Pr_{\textsf{EXEC}}[
+			\forall B \text{ in } \textsf{EXEC}: \Pr[\textsf{extend}_{\mathcal{A},\textsf{EXEC},Q,B} = T|\textsf{extend}_{\mathcal{A},\textsf{EXEC},Q,B} \neq \bot] = \xi_{Q,\mathcal{A}}(\kappa)
+		] \geq 1 - negl\\
+	\]
+
+	Not all adversaries have such a $\xi$. We collect those that do into a set of
+	adversaries:
+
+	\[
+		\overline{\mathcal{A}_Q} = \{\xi_{Q,\mathcal{A}}: \mathcal{A} \text{ has adversarial performance } \xi_{Q,\mathcal{A}}\}
+	\]
+
+	Then, if the set $\overline{\mathcal{A}_Q}$ is non-empty, we can define the
+	following quantities:
+
+	\begin{align*}
+		\xi_{min} &= \min\{\xi_{\mathcal{A},Q}\}\\
+		\xi_{max} &= \max\{\xi_{\mathcal{A},Q}\}\\
+		\mathcal{A}^Q_{min} &= \argmin_{\mathcal{A} \in \overline{\mathcal{A}_Q}}\{\xi_{Q,\mathcal{A}}\}\\
+		\mathcal{A}^Q_{max} &= \argmax_{\mathcal{A} \in \overline{\mathcal{A}_Q}}\{\xi_{Q,\mathcal{A}}\}
+	\end{align*}
+\end{definition}
+
+\begin{definition}[$Q$-block]
+	A block predicate $Q_{\textsf{EXEC}}(\cdot)$ parameterized by an execution
+	$\textsf{EXEC}$ under security parameter $\kappa$ is a
+	\emph{$Q$-block} with honest performance $\xi(\kappa) \in [0, 1]$ and adversarial
+	performances $\xi_{max}(\kappa) \in [0, 1]$ and $\xi_{min}(\kappa) \in [0, 1]$
+	if $\xi$ is the honest performance against $Q$ and $\xi_{min}, \xi_{max}$ are
+	well-defined.
+\end{definition}

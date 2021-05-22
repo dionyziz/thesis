@@ -1,0 +1,127 @@
+\section{State Compression}
+
+How can a newly booting miner synchronize with the rest of the network if
+block headers have been pruned? It seems impossible to do so securely.
+The constructions explored in the previous chapters give a glimpse on
+how this can be achieved.
+
+Among all the block headers that would be
+maintained by a traditional blockchain protocol, we only keep a
+small sample of superblocks.
+\emph{Most} of the block headers headers will be pruned.
+The small sample of block headers that remains will be
+polylogarithmic in size and used
+as evidence that \emph{work} took place throughout history.
+These sample block headers will be stored by our miners, and will
+also be sent to new bootstrapping miners when they boot. No other
+block headers will be stored or communicated beyond these carefully
+chosen samples. The samples will be chosen to be the same for all
+miners. As such, some block headers will survive throughout the
+network, while others will be gone for ever.
+Once we describe which block headers to keep and which
+ones to throw away, the construction of our prover will be complete.
+The rest of the chapter will be to construct a verifier that can
+distinguish between honest and adversarial application state claims
+by examining these samples and, of course, proving that this
+operation is secure.
+
+The key idea is that, once NIPoPoWs have been developed, no blockchains
+need to be maintained. Miners can only store NIPoPoWs. When mining, they
+can extend their existing NIPoPoWs into new NIPoPoWs. The data broadcast
+on the network can consist of NIPoPoWs only.
+
+Let us begin our discussion by pinpointing which samples among all block headers will
+be maintained. We will slightly change the sampling process as compared to the previous chapters.
+We first present our \emph{compression algorithm}:
+The code that can take in a full chain and perform the sampling.
+These block header samples will be the only ones that survive in our
+final protocol design. The compression algorithm takes in a full chain
+and produces the desired samples, but will not form part of our final
+protocol. In the final protocol, no full chain is to be found. However,
+the compression algorithm will prove educational in understanding the
+final protocol (and can also be used, once, to transition a full miner
+into a light miner). We will also reuse our compression algorithm
+in the final light miner construction, despite no full chains ever
+appearing.
+
+Similar to the charity construction of Chapter~\ref{chapter:work},
+our sampling will be performed by \emph{only keeping sufficiently high-level superblocks}
+and throwing away blocks of low levels. We will keep very high levels (so, very few blocks)
+near genesis and far back in history. As we get closer to the present, we will start
+including more and more samples, and so the threshold in our superblock level will decrease.
+Near the tip (the most recent block) of the blockchain, we will eventually get down to
+level $0$ and keep all blocks.
+
+The samples that we keep will \emph{evolve} as
+the blockchain grows. A sample that was once selected for inclusion may be thrown away
+later. However, any sample that is thrown away at some point will never again be needed
+in the future. This property, of ensuring that the sampling is safe and that no samples
+discarded will be needed again in the future, is the \emph{online} property of our
+protocol. It will eventually allow us to build a protocol where no full chain is needed,
+anywhere.
+
+Given a chain $\chain$ that we wish to compress, first, we keep the most recent $k$
+blocks aside, and let us call them $\chi$.
+These are \emph{unstable} and will need to always be stored.
+Besides, any miner that wishes to synchronize with us will need to look at them
+to arrive at a valid snapshot.
+For the
+next part, we only consider the \emph{stable} part of the chain.
+For our sampling process, we
+begin by \emph{the highest} level $\ell$ that has \emph{at least} $2m$ blocks in it.
+We will include this level in earnest: All $\ell$-superblocks will be included in our
+sampling. For every level below $\ell$, we will include at least the $2m$ most recently
+generated blocks of that level, but occassionally more. To consider whether to include more
+blocks than $2m$ blocks in a level $\mu$, we look at the $m^\text{th}$ most recent
+block $b$ in the level $\mu + 1$ \emph{immediately above}. We include all $\mu$-superblocks
+that are \emph{more recent} than block $b$. Let us make this description more precise
+by writing it out in pseudocode.
+
+Our chain compression algorithm
+$\textsf{Compress}_{m,k}\allowbreak(\chain)$ is
+illustrated in Algorithm~\ref{alg.compress}. It uses the helper function
+$\textsf{Dissolve}_{m,k}(\chain)$ to obtain the highest level $\ell$, the unstable
+suffix $\chi$ and a set $\mathcal{D}[\mu]$ of blocks sampled from the stable part of
+the chain at each level $\mu \leq \ell$. All of these levels are combined into a big
+chain $\pi$, which is sparse at the beginning and dense towards the end. The final
+compressed state consists of $\pi$, the stable part, and $\chi$, the unstable part.
+Together, these form a chain. Let us now examine the inner workings of
+$\textsf{Dissolve}_{m,k}(\chain)$. This function separates the stable part $\chain^*$
+of the chain and the unstable part $\chi$. In the trivial case that our stable chain
+has no more than $2m$ blocks, all of them are included. Otherwise, the highest level
+$\ell$ with at least $2m$ blocks is extracted and included in earnest. Then, the
+levels are traversed downwards. For every level $\mu$, the last $2m$ blocks are always
+included. This is captured by the term $\chain^*\upchain^\mu[-2m{:}]$. Additionally,
+we look at the $m^\text{th}$ most recent block $b$ from the end at level $\mu+1$, that is
+$\chain^*\upchain^{\mu+1}[-m]$. For level $\mu$, we also include all the blocks succeeding
+$b$, that is $\chain^*\upchain^\mu\{b{:}\}$.
+
+\import{./}{chapters/superlight/algorithms/alg.compress.tex}
+
+It may not yet be clear why this selection of block headers will lead to a secure
+protocol, but let us argue that this sampling is polylogarithmic in $|\chain|$,
+considering that $m$ and $k$ are constants that do not grow as the execution
+progresses.
+
+\begin{theorem}[Succinctness]
+  The construction of Algorithm~\ref{alg.compress} samples a polylogarithmic
+  number of blocks with respect to the length of the chain $\chain$.
+\end{theorem}
+\begin{proof}[Sketch]
+Firstly, the number $\ell$ of levels of interest is
+$\Theta(\log|\chain|)$. Next, each level $\mu$ has either $2m$ blocks or more.
+$2m$ is a constant, so this is irrelevant. But the \emph{more} blocks cannot be
+many more either: We are counting the $\mu$-superblocks following the
+$m^\text{th}$ block $b$ at the level $\mu + 1$ above. How many can these be? They
+are indeed about $2m$. For, suppose for contradiction that they were many more
+than $2m$. But every block of level $\mu$ has a $\frac{1}{2}$ probability of
+also being a $\mu+1$ level block. If there were, say, $4m$ instead of $2m$ superblocks
+of level $\mu$ following block $b$, then $b$ would not be the $m^\text{th}$ block
+from the end, but the $2m^\text{th}$ one! With high probability (with foresight,
+utilizing a Chernoff bound), $4m$ can be taken
+as an upper bound. As such, there will be $2m \log(|\chain|) + k$
+blocks sampled in expectation, and, with high probability, not many more.
+\end{proof}
+
+We make this bound and argument more precise in the Analysis
+section.

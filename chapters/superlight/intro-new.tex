@@ -1,0 +1,104 @@
+Will blockchain systems handle the whole world's economic data
+for the centuries to come? While such lofty visions are often
+ubiquitous in the cryptocurrency space, it is a practical reality
+that today's blockchain technology simply does not scale~\cite{divide-and-scale}.
+One aspect of scalability difficulty stems from the data
+required to be stored and sent over the network when blockchain
+nodes synchronize with each other or bootstrap from the network
+for the first time.
+
+As explain in Chapter~\ref{chapter:background},
+these data contains two pieces of information: First,
+the \emph{application data}. This includes transactions, account
+balances, and smart contract state evolution, and everything else
+that is included in the block data itself. Secondly, the
+\emph{consensus data}. This includes consensus-critical information
+such as proof-of-work (or proof-of-stake) and nonces required to discover
+the longest chain among a sea of shorter forks --- everything that
+is part of the \emph{block header}. Nodes also need
+to reach consensus on the application data and ensure it follows the
+protocol rules for validity, but the application
+data is not what makes consensus happen. While application data can
+grow (or shrink) depending on the implementation,
+consensus data grows unboundedly at a
+constant linear rate in time. For example, in Bitcoin, while items can be
+added or removed from the UTXO~\cite{sok}, the number of block headers that
+need to be stored and communicated to newly bootstrapping nodes grows
+at a constant rate of $1$ block header per $10$ minutes in expectation~\cite{bitcoin-dev-guide}.
+Similarly,
+in Ethereum, while smart contracts can be added or destroyed~\cite{eip6},
+and smart contract state variables added or removed, block headers
+still grow at a constant rate of $1$ block header per $12.5$ seconds
+in expectation.
+
+In this chapter, we leverage the NIPoPoWs developed in Chapter~\ref{chapter:work}
+to build superlight clients. We modify our previous construction, \emph{charity}
+superblock NIPoPoWs of Chapter~\ref{chapter:work}, and introduce the
+\emph{distill} construction, which we prove both secure and succinct
+against all (1/3) adversaries (recall that the construction of Chapter~\ref{chapter:work}
+was secure against all adversaries, but only optimistically succinct).
+One critical difference of the construction is that the verifier compares
+competing proofs against the \emph{same} level $\mu$, and so the weighting
+with the factors $2^{\mu_A}$ and $2^{\mu_B}$ becomes unnecessary. However,
+proving these constructions secure and succinct requires some additional
+theoretical developments.
+
+Our mechanism permanently
+\emph{prunes} the consensus data in a way that maintains the
+blockchain's security.
+Our protocol compresses the amount of consensus
+data that needs to be stored and exchanged by nodes from linear to
+polylogarithmic --- an exponential improvement. These reductions affect
+full nodes and miners alike, and, to our knowledge, are the first of their
+kind. Our protocol is the first to suggest that nodes need not
+hold onto chains at all; instead, full nodes and miners collectively only
+hold a small \emph{sample} of blocks. The rest of the blocks are lost
+for ever, unless maintained by archival nodes, and are not necessary
+for achieving consensus or bootstrapping new nodes. We note here that
+our proposed scheme is not a sharding-based solution. \emph{All} the miners
+of our protocol will store the \emph{same} data. Sharding solutions can be
+\emph{composed} with our solution in a per-shard basis to achieve even
+better scalability.
+
+To achieve these reductions securely, we develop a mathematical framework
+for the analysis of blockchain systems under \emph{suppression attacks} in
+which an adversary attempts to silence the generation of selected
+blocks. For our system to work correctly, it is imperative that
+the adversary faces difficulty in suppressing \emph{superblocks}
+(c.f. the suppression attacks and the necessity of certificates of
+badness in Chapter~\ref{chapter:work}).
+We prove that, while a $1/2$ can perform suppression attacks as
+explored previously, these blocks cannot be silenced
+by a $1/3$ mining adversary. We begin by giving a construction
+that allows for logarithmic space mining against $1/3$ adversaries,
+and later improve it to withstand $1/2$ adveraries using the technique
+of \emph{blinded mining}.
+
+In summary, this chapter develops the following notions:
+
+\begin{enumerate}
+  \item We put forth a mechanism which provides exponential improvements
+        in the \emph{consensus} data stored and exchanged between full nodes
+        and miners in proof-of-work settings. Our protocol requires the
+        storage and exchange of only \emph{polylogarithmic} data, even
+        when a new miner is bootstrapping from genesis.
+  \item We develop a mathematical framework for the analysis of
+        \emph{suppression} attacks, and analyze the security of our protocol
+        therein. Our protocol is secure under honest majority assumptions
+        (a $1/3$ adversary for the simple construction, and a $1/2$ adversary
+         for the blinded construction) in the random oracle model.
+\end{enumerate}
+
+We present this chapter's construction in stages. First, we discuss how an existing
+miner can compress their full state. Next, we discuss how a newly booting
+miner can bootstrap from genesis using only the compressed state.
+Subsequently, we show how a miner with only the compressed state can
+mine new blocks, giving rise to both \emph{light} and \emph{full} miners.
+Finally, we assemble our complete protocol, in which \emph{all} miners are \emph{light}
+miners. These constructions are accompanied by high-level security arguments
+and building an intuitive understanding of why the protocol works.
+After the full construction has been presented,
+the formal security analysis in the random oracle and backbone model follows.
+This analysis part is also where our mathematical
+framework for the treatment of suppression attacks is put forth. We conclude
+by discussing the limitations and shortcomings of our protocol.

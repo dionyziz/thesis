@@ -1,0 +1,92 @@
+\section{Mining New Blocks}\label{sec.mining13}
+
+So far, we have used full nodes to help bootstrap newly
+booting miners. Can light miners be used to bootstrap newly
+booting miners instead? If we can achieve this, then we might
+as well get rid of full nodes altogether.
+
+Our light miner already holds a valid proof $\Pi = \pi\chi$
+corresponding to an underlying honest full node chain $\chain$ at
+the time it is bootstrapped by others. Before further blocks
+are mined on the network (either by itself, or by others),
+it can send this $\Pi$ to newly booting miners, and they,
+too, will be convinced of the current application data snapshot.
+The question is how to update this $\Pi$ when a new block is
+mined. Suppose a new block $b$ is mined on top of $\chain$,
+either by our light miner or by someone else. The underlying
+honest chain then becomes $\chain' = \chain b$. Can we
+produce a proof $\Pi'$ corresponding to $\chain'$ by only
+utilizing $\Pi$? More specifically, given $\Pi = \textsf{Compress}_{m,k}(\chain)$
+and $b$, but not given $\chain$, can we produce
+$\Pi' = \textsf{Compress}_{m,k}(\chain b)$? Indeed we can. In fact,
+it is as simple as evaluating
+$\chain'\allowbreak=\allowbreak\textsf{Compress}_{m,k}(\Pi b)$.
+
+\begin{theorem}[Online]
+  Consider $\Pi = \textsf{Compress}_{m,k}(\chain)$ generated about an underlying honest chain
+  $\chain$, and a block $b$ mined on top of $\chain$. Then
+  $\textsf{Compress}_{m,k}(\chain b) = \textsf{Compress}_{m,k}(\Pi b)$.
+\end{theorem}
+\begin{proof}
+  Consider which blocks are sampled and which blocks are pruned
+  when calling $\textsf{Compress}_{m,k}(\chain b)$.
+  Clearly the block $b$ will be included in both the output of $\textsf{Compress}_{m,k}(\chain b)$
+  as well as the output of $\textsf{Compress}_{m,k}(\Pi b)$. All the other blocks selected by
+  $\textsf{Compress}_{m,k}(\chain b)$ will already exist in $\Pi$, and in
+  the correct positions. For, the blocks selected from a level are the last $2m$
+  of a level, or the last $m$ spanning the level above, and adding block $b$
+  at the end can only render a previously sampled block irrelevant, but not
+  add further block requirements from the past.
+\end{proof}
+
+Note also that, when mining a new block $b$, all the data required to compute
+the interlink pointers of $b$ is readily available in $\pi\chi$, as $\pi$
+contains the most recent $2m$ blocks of every level, and only the most recent
+one is needed for interlinking.
+
+\import{./}{chapters/superlight/algorithms/alg.miner.tex}
+
+Our final light miner therefore works as follows. It maintains a \emph{current} proof
+$\Pi = \pi\chi$ and mines using $\chi[-1]$ as the chain tip. If it is successful
+in mining $b$ on top of $\chi$, it replaces $\Pi$ by setting it to
+$\Pi' = \textsf{Compress}_{m,k}(\Pi b)$ and broadcasts this to the network.
+As all of the other online miners, light or full, will hold their own $\chi^*$
+not differing more than $k$ blocks from $\chi$, it is, in fact, sufficient that it broadcasts
+the new $\chi' = \chi[1{:}] b$ portion of $\Pi'$. Now the newly computed $\Pi$ corresponds
+to the chain $\chain b$, which the miner never sees, as it has been pruned.
+Regardless, $\Pi$ can be used to bootstrap new light miners from genesis.
+
+Consider now the case that our light miner holds a $\Pi = \pi\chi$ and a different
+miner mines a new block $b$. By the Common Prefix property, this block will
+not deviate more than $k$ blocks from the $\chi$ that our light miner already
+holds. Typically, it will be just a block on top of $\chi$, but occassionally
+it could correspond to a chain reorganization up to $k$ blocks long. In the case of a reorganization,
+the light miner requests the last $k$ blocks $\chi'$ on top of which $b$ was mined.
+These can be provided to us if the block $b$ was mined by a light
+or a full miner, as both hold and can send $\chi'$.
+The blocks in $\chi'$ will intersect the previously known $\chi$ at some
+fork point. The light miner checks that the transactions included in this
+$\chi'$ can be applied to the application data snapshot that the light
+miner has independently calculated for the fork point. This amounts to
+full block validation. The light miner also checks that the newly mined
+block really does correspond to a longer chain and that a reorganization is warranted
+by ensuring that there are more blocks in $\chi'$ after the fork point $b$ than
+there are in $\chi$ after the fork point
+(i.e., that $|\chi'\{b{:}\}| > |\chi\{b{:}\}|$).
+It then replaces the stored proof by setting $\Pi$ to be the proof corresponding
+to $\pi\chi$ when the portion of $\chi$ after the most recent common
+block between $\chi$ and $\chi'$ is replaced by the blocks in $\chi'$, i.e.,
+it updates its stored proof to be
+$\Pi' = \textsf{Compress}_{m,k}(\pi \chi\{{:}b\} \chi'\{b{:}\})$.
+
+The light miner is illustrated in Algorithm~\ref{alg.miner}.
+At this point, full nodes are no longer necessary. Light miners
+can bootstrap from genesis. They have all the data needed to mine on their
+own, and to validate newly mined blocks from the network. If a newly booting
+light miner wishes to synchronize with the network, they have sufficient
+data to help them do so. The blockchain protocol remains exactly the same
+as in traditional blockchains, but all the instances of \emph{chains} are
+replaced by \emph{proofs} instead. Light miners mine on top of their current
+proof instead of mining on top of a chain. When they discover a new block,
+they send the newly computed proof instead of a chain.
+This concludes our construction.

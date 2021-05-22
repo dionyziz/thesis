@@ -1,0 +1,33 @@
+\begin{figure}[t]
+\begin{algorithm}[H]
+    \caption{\label{alg.extension} The execution extension experiment
+             parameterized by an adversary $\mathcal{A}$, a block predicate $Q$,
+             an execution $\textsf{EXEC}$ and a (potentially empty) block $B$.}
+    \begin{algorithmic}[1]
+        \Function{\textsf{extend}$_{\mathcal{A},\textsf{EXEC},Q,B}$}{}
+            \State{$\textsf{EXEC}' \gets \{\textsf{EXEC'}: \textsf{EXEC} \prec \textsf{EXEC'}\}$}
+            \If{$|H_{\textsf{EXEC}'}| = |H_{\textsf{EXEC}}|$}
+              \State\Return{$\bot$}
+            \EndIf
+            \Let{W}{H_{\textsf{EXEC}'}[|H_{\textsf{EXEC'}}|]}
+            \If{$W$ is \emph{un}successful}
+              \State\Return{$\bot$}
+            \EndIf
+            \If{$B = \eps$}
+              \If{$\textsf{party}(W)$ is adversarial}
+                \State\Return{$\bot$}
+              \EndIf
+            \Else
+              \If{$\textsf{party}(W)$ is honest}
+                \State\Return{$\bot$}
+              \EndIf
+              \If{$W$ does \emph{not} extend block $B$}
+                \State\Return{$\bot $}
+              \EndIf
+            \EndIf
+            \State\Return{$Q_\textsf{EXEC'}(\textsf{input}(W))$}
+        \EndFunction
+        \vskip8pt
+    \end{algorithmic}
+\end{algorithm}
+\end{figure}

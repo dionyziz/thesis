@@ -1,0 +1,127 @@
+\section{Deploying with a Soft Fork}\label{sec.deploy}
+
+It should be clear that the protocols proposed in the previous sections can be
+deployed in new blockchains from Genesis and can also be deployed in existing
+blockchains using a hard fork. It is interesting to consider whether it is also
+possible to deploy these protocols using a soft fork. We explore this question
+for the concrete case of Ethereum; other cryptocurrencies can be soft forked in
+a similar manner.
+
+The protocol of Section~\ref{sec.mining13} against $1/3$ adversaries can easily
+be deployed using a soft fork. In order to do that, the interlink set described
+in Chapter~\ref{chapter:work} needs to be included in every block. To achieve
+backwards compatibility, it can be placed into an \emph{interlink Merkle tree}
+whose root is placed in the \texttt{extraData} field. Whenever a
+proof is constructed, the prover must prove to the verifier that the proof forms
+a chain. Hence, along with each block in the proof, the respective pointer to
+the previous block in the proof must be presented. Therefore the prover
+accompanies each block with a Merkle Tree proof-of-inclusion which
+proves that the pointer is included within the interlink
+Merkle tree.
+
+The protocol of Section~\ref{sec.mining12} is more challenging to deploy. Again,
+we include the witness-augmented interlink vector into a Merkle tree whose root
+is stored in the \texttt{extraData} field.
+Recall
+that the current block header format of Ethereum is $H(ctr || x || previd)$,
+where $ctr$ denotes the mining nonce, $x$ indicates the application data, and $previd$
+denotes the hash of the parent block. We require upgraded miners to mine by
+searching for a $ctr'$ such that $H(B) \leq T$, where
+$B = H(ctr') || x || previd$. The blinded block
+value is then defined as $\xi = H(ctr' || H(H(ctr') || x || previd))$ and the
+block level is defined as the maximum $\mu$ such that
+$\xi \leq \frac{T}{2^\mu}$. In this scheme, the value $H(ctr')$ looks like the
+value $ctr$ to unupgraded miners. Note that at this point, it is
+indistinguishable for the parties that did not mine the block in question
+whether it was mined using the old ($ctr$) or the new protocol ($H(ctr')$) prior
+to the value $ctr'$ being disclosed, as, in the old protocol, $ctr$ is chosen
+uniformly at random, while in the new protocol, the value $H(ctr')$ is
+determined by a Random Oracle. Consider a block $B$ mined by an honest miner
+$p$. The value $ctr'$ is revealed after the block $B$ is burried under $2k + 2\ell$
+blocks in the view of $p$. The revelation of $ctr'$ takes place by having $p$
+create a transaction $tx_\textsc{Reveal}$ which contains
+$ctr'$ as well as the index of $B$ in $p$'s chain. As $B$ is stable, this
+position will be the same for all other honest parties as well.
+
+While the above scheme works in our cryptographic treatment, it is worth
+considering the incentives of such a scheme. In particular, observe that,
+without further modification, miners are not incentivized to mine using the new
+protocol and can continue mining with the unupgraded protocol, while never
+revealing any preimage $ctr'$. Hence, we want to incentivize miners to reveal
+the value $ctr'$. For this purpose, we can design the protocol so that the
+mining rewards are only paid out conditioned on the fact that $ctr'$ is
+properly revealed.
+
+This can be done with a soft fork as follows: The block
+beneficiary field is modified to pay out to a smart contract instead of a regular
+beneficiary address. The smart contract for this purpose is illustrated in
+Algorithm~\ref{alg.blinded-contract}. It is deployed once into
+a known address and upgraded miners require that the beneficiary of every block
+is the particular smart contract.
+
+ The smart contract is parameterized by two
+constant hard-coded parameters $k$ and $\ell$, the common prefix and liveness
+parameters respectively. The parameter $k$ ensures that a block buried under $k$
+blocks is considered stable and the parameter $\ell$ ensures that after $\ell$
+blocks are broadcast during which an honest transaction appears in the mempool,
+it will have the chance to be included in the blockchain.
+
+\import{./}{chapters/superlight/algorithms/alg.blinded-contract}
+
+The smart contract is used by an honest miner as follows. The miner places one special
+transaction $tx_\textsc{Claim}$ at the beginning of his newly mined block. That transaction calls
+the $\textsc{ClaimBlock}$ function of the smart contract and claims the block to
+the miner's address before anyone else is able to do so. As the beneficiary
+address is taken up by the smart contract's address, this allows the miner to
+claim the block with his public key. The miner then waits for $2k + 2\ell$
+blocks to pass and subsequently calls the $\textsc{OnTimeReveal}$ function in
+the $tx_\textsc{Reveal}$ transaction (and note that if anyone else happens to
+call this function, the rightful miner is still paid out). He
+passes the block number to be claimed, $idx$, as well as the nonce preimage
+$ctr'$ that was used when he mined the block in question and the surrounding
+data in the block header $\alpha$ and $\beta$. The smart contract verifies that
+the nonce $H(ctr')$ was indeed used by comparing against the block hash, marks
+the block reward as paid, and pays the miner. Due to liveness guarantees, the
+transaction in which the miner calls $\textsc{OnTimeReveal}$ will be included
+from $3k + 2\ell$ blocks until $3k + 3\ell$ blocks after the block in question
+was mined and hence will fall within the \textsf{desiredPeriod} mandated by the
+smart contract. In case the miner reveals late, the reward is lost.
+
+It is undesirable that the miner reveals $\textsf{ctr'}$ to another party before
+$k$ blocks have passed. In case that happens, the party which has received the
+revelation can slash the miner's rewards. This is performed as follows. The
+party who has early knowledge of $\textsf{ctr'}$ calls the function
+$\textsc{EarlyCommit}$ within $k$ blocks of the block in question, committing to
+a claim that they will perform an early reveal of the preimage. The commitment
+includes the address of the claimant as well as the secret preimage, so that
+contesting claimants cannot copy the claim and enter into a transaction race.
+This transaction will be included after at most $\ell$ blocks have passed. After it
+is included, the claimant waits for $k$ blocks for confirmation to ensure no chain reorg
+will cause his commitment to be reversed. Hence, $2k + \ell$ blocks after the
+mined block in question, the claimant calls the function $\textsc{EarlyReveal}$
+in which an early revelation of the preimage is verified by the smart contract
+by ensuring the claim matches the given commitment. In that case, the claimant
+is paid a small percentage of the block rewards (in our example we use $10\%$),
+while the rest of the rewards are slashed and cannot be later claimed by the
+miner. Note that the full amount cannot be paid to the claimant, as we wish to
+discourage the miner from being the claimant himself. The transaction making the claim
+will take at most $\ell$ blocks to be included, and hence the total period for
+early claiming has a duration of $2k + 2\ell$ blocks. The reason we allow
+on-time revealing only after this period has passed is to allow for claimants
+that have learned the preimage during the first $k$ blocks after the mined block
+to have a fair chance of committing and revealing it during the early period.
+The honest miner will make the claim only after $3k + 2\ell$ blocks have passed,
+so as to avoid the potential for chain reorgs to allow for subsequent early
+revelation (once the blockchain has $3k + 2\ell$ blocks, no new blockchain can
+be adopted which has different transactions prior to the $2k + 2\ell$ point).
+
+In summary, this scheme disincentivizes miners to reveal prior to seeing that
+$k$ blocks have buried their newly mined block (in which case they are
+guaranteed to be slashed) and incentivizes them to reveal
+after $3k + 2\ell$ blocks have passed (in which case they are guaranteed not to
+be slashed), but before $3k + 3\ell$ blocks have passed (so that they still
+receive their reward). This is sufficient for the construction of our blinded
+mining scheme.
+
+We note here that smart contracts like the one described can be used as soft
+forks for any desirable reward distribution change in Ethereum.
