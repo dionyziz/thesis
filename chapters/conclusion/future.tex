@@ -19,7 +19,7 @@ security is more complicated than what it seems on the surface. At first
 glance it seems that the adversary cannot benefit from including incorrect
 pointers: She can only include either altogether \emph{wrong} pointers, or
 pointers that point to the correct superblock level but are not the most recent
-superblock. The first ones can be filtered out by the verified who can check the
+superblock. The first ones can be filtered out by the verifier who can check the
 hash of the superblock pointer. As for the wrong ones, it seems that the
 adversary can only submit pointers to older blocks in the same chain, which
 would only harm their success rate. However, upon closer inspection one observes
@@ -78,7 +78,7 @@ superblocks are suppressed. In the case of our \emph{charity with goodness}
 construction, such bribes can only harm the succinctness of the proofs, not
 their security. However, a harm in succinctness can translate to a harm in
 security depending on the application. For example, a cross-chain smart contract
-as disucussed in Chapter~\ref{chapter:sidechains} has very limited gas
+as discussed in Chapter~\ref{chapter:sidechains} has very limited gas
 available, and proofs that are $\omega(polylog(|\chain|))$ would easily exhaust
 those limits. A failure of the smart contract to receive proofs would not only
 cause a denial of service, but can easily have financial cost incured by the
